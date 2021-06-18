@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="../styles.css" />
+
+    <title></title>
+    <meta name="description" content="" />
+  </head>
+  <body data-instant-intensity="all" class="primo-page">
+    <div class="block" id="block-tvemi">
+      <div class="primo-component" id="component-tvemi">
+        <div>
+          <nav>
+            <a href="https://primo.af">
+              <img src="" alt="" />
+            </a>
+            <a href="/">Introduction</a>
+            <span>|</span>
+            <a href="/">Building</a>
+            <span>|</span>
+            <a href="/">Managing</a>
+            <span>|</span>
+            <a href="/">Publishing</a>
+          </nav>
+        </div>
+      </div>
+      <style type="text/css">
+        #component-tvemi nav {
+            padding: 3rem 0;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+          }
+            #component-tvemi nav a {
+              font-weight: 600;
+            }
+            #component-tvemi nav span {
+              display: none;
+              margin: 0 2rem;
+            }
+          @media (min-width: 600px) {
+            #component-tvemi nav {
+              flex-direction: row;
+              justify-content: center;
+            }
+              #component-tvemi nav span {
+                display: inline;
+              }
+          }
+      </style>
+    </div>
+
+    <div class="block" id="block-cuoqv">
+      <div class="primo-copy" id="copy-cuoqv">
+        <h1>Publishing your site</h1>
+        <h2>Github Pages</h2>
+        <ol>
+          <li>
+            <p>Make sure you've built your primo site out to a repository</p>
+          </li>
+          <li>
+            <p>
+              Go to that repository's settings and scroll down to Github Pages
+            </p>
+          </li>
+          <li><p>Enable Github Pages, pointing it at your repo's root</p></li>
+        </ol>
+        <h2>Vercel</h2>
+        <ol>
+          <li>
+            <p>Make sure you've built your primo site out to a repository</p>
+          </li>
+          <li>
+            <p>
+              Follow the [instructions](<a
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                href="https://vercel.com/docs/git/vercel-for-github"
+                >https://vercel.com/docs/git/vercel-for-github</a
+              >) for importing a Github repository.&nbsp;
+            </p>
+          </li>
+          <li>
+            <p>
+              There's no need to configure the install. Just point it to the
+              root of the repo.&nbsp;
+            </p>
+          </li>
+        </ol>
+        <h2>Netlify</h2>
+        <ol>
+          <li>
+            <p>
+              Follow the [instructions](<a
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                href="https://www.netlify.com/blog/2016/09/29/a-step-by-step-guide-deploying-on-netlify/"
+                >https://www.netlify.com/blog/2016/09/29/a-step-by-step-guide-deploying-on-netlify/</a
+              >) for deploying to Netlify.&nbsp;
+            </p>
+          </li>
+          <li>
+            <p>
+              When configuring the settings, do not enter a build command or a
+              public directory (the site is pre-built and index.html is in the
+              root)
+            </p>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+      integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+      crossorigin="anonymous"
+    />
+  </body>
+</html>

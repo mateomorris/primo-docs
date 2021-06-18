@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="../styles.css" />
+
+    <title></title>
+    <meta name="description" content="" />
+  </head>
+  <body data-instant-intensity="all" class="primo-page">
+    <div class="block" id="block-swmmo">
+      <div class="primo-component" id="component-swmmo">
+        <div>
+          <nav>
+            <a href="https://primo.af">
+              <img src="" alt="" />
+            </a>
+            <a href="/">Introduction</a>
+            <span>|</span>
+            <a href="/">Building</a>
+            <span>|</span>
+            <a href="/">Managing</a>
+            <span>|</span>
+            <a href="/">Publishing</a>
+          </nav>
+        </div>
+      </div>
+      <style type="text/css">
+        #component-swmmo nav {
+            padding: 3rem 0;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+          }
+            #component-swmmo nav a {
+              font-weight: 600;
+            }
+            #component-swmmo nav span {
+              display: none;
+              margin: 0 2rem;
+            }
+          @media (min-width: 600px) {
+            #component-swmmo nav {
+              flex-direction: row;
+              justify-content: center;
+            }
+              #component-swmmo nav span {
+                display: inline;
+              }
+          }
+      </style>
+    </div>
+
+    <div class="block" id="block-ehfwe">
+      <div class="primo-copy" id="copy-ehfwe">
+        <h1>Building your site (i.e. writing code)</h1>
+        <h2>Modifying a Component</h2>
+        <h3>Content (HTML)</h3>
+        <ul>
+          <li><p>See an instant preview of what your code looks like</p></li>
+          <li>
+            <p>
+              Use [Handlebars](<a
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                href="https://handlebarsjs.com/"
+                >https://handlebarsjs.com/</a
+              >) to wire up your fields
+            </p>
+          </li>
+          <li>
+            <p>
+              Use [Emmet](<a
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                href="https://docs.emmet.io/abbreviations/syntax/"
+                >https://docs.emmet.io/abbreviations/syntax/</a
+              >) to quickly write HTML (e.g.&nbsp;<code
+                >div&gt;div&gt;h1.heading</code
+              >
+              and press Tab)
+            </p>
+          </li>
+        </ul>
+        <h3>Styles (CSS)</h3>
+        <ul>
+          <li>
+            <p>
+              Styles are encapsulated (so if you only have one image tag in your
+              component, you can safely select it with&nbsp;<code>img.</code>
+            </p>
+            <p>).</p>
+          </li>
+          <li>
+            <p>
+              Nested styles are supported (using [postcss-nested](<a
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                href="https://github.com/postcss/postcss-nested"
+                >https://github.com/postcss/postcss-nested</a
+              >))
+            </p>
+          </li>
+        </ul>
+        <h3>Logic (JS)</h3>
+        <ul>
+          <li>
+            <p>
+              You can import any JS modules by name with&nbsp;<code
+                >import module from 'module-name'</code
+              >&nbsp;, where&nbsp;<code>module-name</code>&nbsp;is the module's
+              name on
+              <a
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                href="https://www.npmjs.com/"
+                >npm</a
+              >
+              (e.g. <code>import confetti from 'canvas-confetti'</code>). In the
+              background, primo turns that into a request to
+              <a
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                href="https://skypack.dev/"
+                >Skypack</a
+              >
+              that looks like
+            </p>
+            <p>
+              <code
+                >import module from 'https://cdn.skypack.dev/module-name'.</code
+              >
+              Skypack is a CDN that sends visitors pre-optimized packages.&nbsp;
+            </p>
+          </li>
+          <li>
+            <p>
+              Additional values related to the component can be found under a
+              variable labeled&nbsp;<code>primo</code>
+            </p>
+            <p></p>
+            <p>
+              <code>primo.id</code> contains the component's unique ID.
+              Typically used to select the component's node.&nbsp;
+            </p>
+            <p>
+              <code>primo.data</code> contains the entered data for the
+              component
+            </p>
+            <p></p>
+            <p><code>primo.fields</code> contains the component's fields</p>
+          </li>
+        </ul>
+        <p></p>
+        <h3>Calling a JS function from the HTML</h3>
+        <h6>Sometimes you'll need to call a function from your HTML</h6>
+        <pre><code class="language-codeLine-a3169fbc">&lt;button onclick="doSomething()"&gt;click&lt;/button&gt;</code></pre>
+        <p>
+          To do so, you'll need to define the function globally from the
+          component's JS&nbsp;
+        </p>
+        <pre><code class="language-codeLine-a3169fbc">window.doSomething = function() {}</code></pre>
+        <p>
+          To avoid overwriting a global function (especially when reusing a
+          component), create a global namespace using the component's ID.&nbsp;
+        </p>
+        <pre><code class="language-codeLine-a3169fbc">window[primo.id] = {    ...window[`component${primo.id}`] || {},    doSomething: function() {}}</code></pre>
+        <p>And access it from the component's HTML&nbsp;</p>
+        <pre><code class="language-codeLine-a3169fbc">&lt;button onclick="{{id}}.doSomething()"&gt;click&lt;/button&gt;</code></pre>
+        <p></p>
+        <blockquote></blockquote>
+      </div>
+    </div>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+      integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+      crossorigin="anonymous"
+    />
+  </body>
+</html>
