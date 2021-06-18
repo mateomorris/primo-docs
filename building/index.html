@@ -13,8 +13,8 @@
       <div class="primo-component" id="component-swmmo">
         <div>
           <nav>
-            <a href="https://primo.af">
-              <img src="" alt="" />
+            <a class="logo" href="https://primo.af">
+              <img src="/assets/Group%2025.png" alt="primo logo" />
             </a>
             <a href="/">Introduction</a>
             <span>|</span>
@@ -34,6 +34,15 @@
             flex-direction: column;
             text-align: center;
           }
+            #component-swmmo nav .logo {
+              width: 3rem;
+              transition: opacity 0.1s;
+              align-self: center;
+              margin-bottom: 1rem;
+            }
+            #component-swmmo nav .logo:hover {
+                opacity: 0.8;
+              }
             #component-swmmo nav a {
               font-weight: 600;
             }
@@ -46,6 +55,9 @@
               flex-direction: row;
               justify-content: center;
             }
+              #component-swmmo nav .logo {
+                margin-right: 1.5rem;
+              }
               #component-swmmo nav span {
                 display: inline;
               }
