@@ -3,11 +3,11 @@
 
 <head>
     <meta name="generator" content="Primo" />
-    <title>Primo Docs</title><!-- HEAD_svelte-5o43ku_START -->
+    <title>Primo Docs: Getting Started</title><!-- HEAD_svelte-5o43ku_START -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <link rel="shortcut icon" type="image/png" href="https://res.cloudinary.com/primoaf/image/upload/v1659676914/favicon_roaxv0.png">
-    <meta name="description" content="Primo is a free &amp; open source, component-based CMS that makes it easy to build visually-editable static sites.">
+    <meta name="description" content="You can download Primo as a desktop application or host it from any static host. ">
     <style>
         @import url("https://unpkg.com/@primo-app/primo@1.3.64/reset.css");
         @import url(https://fonts.bunny.net/css?family=archivo:200,300,300i,400,400i,500,500i,600,600i,700,700i|inter:300,400,500,600,700,800);
@@ -400,7 +400,7 @@
 
 <body id="page">
 
-    <div class="section" id="section-8c1c0802-e574-4242-9583-f032b0d46042">
+    <div class="section" id="section-0a4216c5-12e9-41ce-87f4-cc77fa544acf">
         <div class="component">
             <header class="svelte-epe26v">
                 <div class="section-container svelte-epe26v">
@@ -434,31 +434,88 @@
             </header>
         </div>
     </div>
-    <div class="section" id="section-a27d2a89-a841-4f31-b038-011c23026664">
+    <div class="section" id="section-e6d9ef29-ba11-49cd-8d35-ec7a4cd148b3">
         <div class="component">
             <section class="section-container svelte-5d1jwb">
-                <nav class="svelte-5d1jwb"><a href="#" class="H1 svelte-5d1jwb"><span class="svelte-5d1jwb">Primo</span>
+                <nav class="svelte-5d1jwb"><a href="#" class="H1 svelte-5d1jwb"><span class="svelte-5d1jwb">Templating</span>
 
-                    </a><a href="#" class="H2 svelte-5d1jwb"><span class="svelte-5d1jwb">Comparison</span>
+                    </a><a href="#" class="H2 svelte-5d1jwb"><span class="svelte-5d1jwb">Fields</span>
 
-                    </a><a href="#" class="H2 svelte-5d1jwb"><span class="svelte-5d1jwb">Project Status</span>
+                    </a><a href="#" class="H2 svelte-5d1jwb"><span class="svelte-5d1jwb">Svelte</span>
 
-                    </a><a href="#" class="H2 svelte-5d1jwb"><span class="svelte-5d1jwb">How it works</span>
+                    </a><a href="#" class="H3 svelte-5d1jwb"><span class="svelte-5d1jwb">Text</span>
+
+                    </a><a href="#" class="H3 svelte-5d1jwb"><span class="svelte-5d1jwb">HTML (Markdown Field)</span>
+
+                    </a><a href="#" class="H3 svelte-5d1jwb"><span class="svelte-5d1jwb">If Conditional</span>
+
+                    </a><a href="#" class="H3 svelte-5d1jwb"><span class="svelte-5d1jwb">Each Loop</span>
 
                     </a></nav>
                 <main class="svelte-5d1jwb">
                     <div class="content svelte-5d1jwb" data-key="content"><!-- HTML_TAG_START -->
-                        <h1><strong>Primo</strong></h1>
-                        <p>Primo is a new kind of monolithic CMS that makes it significantly easier to publish websites by providing a delightful content management experience and an embedded development environment. Primo sites get uploaded to a Github repository as a static site bundle, from where they can be deployed to any web host (usually for free).</p>
-                        <h2><strong>Comparison</strong></h2>
-                        <p>Primo is most technically different from traditional monolithic CMSs like WordPress, Drupal, and Joomla in that it doesn't host your site for you, but instead builds the site as a static bundle so that they can be hosted by a separate server. Additionally, Primo offers far greater control over the site's code by embedding a modular development environment, where custom development in a traditional monolithic CMS is a much more involved process.</p>
-                        <h2><strong>Project Status</strong></h2>
-                        <p>Primo version 2 is in Public Beta as of April 21, 2023. Version 2 introduces some significant usability and stability improvements over version 1 (which was itself in beta a few months ago), and is a lot more scalable since it utilizes a database instead of a flat file backend.</p>
-                        <h2>How it works</h2>
-                        <p>Primo is a SvelteKit application using Supabase as a backend. Sites, pages, page sections, and symbols (i.e. parent components) are all stored in the database as individual rows containing each's code, fields, and content.</p>
-                        <p>On-page editing works by matching a block's field values to text, link, and image values or explicitly set <code>data-key</code> attributes within the block's rendered HTML. Editable text is powered by <code>contentEditable = true</code> and a TipTap/ProseMirror editor for Markdown fields. The dev environment is powered by CodeMirror.</p>
-                        <p>Rollup and the Svelte compiler are used to compile page blocks into Svelte components (alongside PostCSS for nesting) and to build the static files for the deployed website, which Primo then uploads to Github via its REST API.</p>
-                        <p><br></p><!-- HTML_TAG_END -->
+                        <h1>Templating</h1>
+                        <p>Primo utilizes <a target="_blank" rel="noopener noreferrer nofollow" class="link link link link link link link link link link link link link link link link link link link link link link link link link" href="https://svelte.dev/">Svelte</a> as a templating engine. Svelte is a popular next-generation web development framework used to build interactive web applications. Since Svelte is a superset of HTML and has much more powerful templating capabilities compared to more traditional templating engines like <a target="_blank" rel="noopener noreferrer nofollow" class="link link link link link link link link link link link link link link link link link link link link link link link link link" href="https://handlebarsjs.com/">Handlebars</a>, it's the perfect tool for creating simple, powerful components.</p>
+                        <h2>Fields</h2>
+                        <p>Component Fields allow you to define form fields that appear on the CMS side of Primo. When the site is published, the value of those fields is compiled into static HTML.</p>
+                        <p>At the moment, you can define 7 basic input types (text, image, Markdown, number, switch, URL, link), 1 informational type, and 2 composite types (group &amp; repeater).</p>
+                        <ul>
+                            <li>
+                                <p>Text</p>
+                            </li>
+                            <li>
+                                <p>Image - accessible with {image.url} and {image.alt}</p>
+                            </li>
+                            <li>
+                                <p>Markdown - accessible with {@html description}</p>
+                            </li>
+                            <li>
+                                <p>Number</p>
+                            </li>
+                            <li>
+                                <p>Switch (true/false)</p>
+                            </li>
+                            <li>
+                                <p>URL</p>
+                            </li>
+                            <li>
+                                <p>Link - accessible with {link.url} and {link.label}</p>
+                            </li>
+                            <li>
+                                <p>Info (enables writing instructions to CMS users)</p>
+                            </li>
+                            <li>
+                                <p>Group (used to group fields together)</p>
+                            </li>
+                            <li>
+                                <p>Repeater (used for content lists)</p>
+                            </li>
+                        </ul>
+                        <h2><strong>Svelte</strong></h2>
+                        <p>Field values can be accessed from the code using the field's key in order to output values into code, conditionally render content, and more.</p>
+                        <h3><a target="_blank" rel="noopener noreferrer nofollow" class="link link link link link link link link link link link link link link link link link link link link link link link link link" href="https://svelte.dev/docs#template-syntax-text-expressions"><strong>Text</strong></a></h3>
+                        <p>Output the value of a text/number field or the value of a JavaScript expression.</p>
+                        <pre><code>&lt;h1&gt;{heading}&lt;/h1&gt;
+&lt;h2&gt;{heading.toUpperCase()}&lt;/h2&gt;</code></pre>
+                        <h3><a target="_blank" rel="noopener noreferrer nofollow" class="link link link link link link link link link link link link link link link link link link link link link link link link link" href="https://svelte.dev/docs#template-syntax-html"><strong>HTML (Markdown Field)</strong></a></h3>
+                        <p>Output the HTML value of <strong>Markdown</strong> field using the @html tag inside a text expression. Use the :global() modifier to target tags within the content (e.g. :global(h1) { font-size: 30px }).</p>
+                        <pre><code>&lt;div&gt;{@html content}&lt;/div&gt;</code></pre>
+                        <h3><a target="_blank" rel="noopener noreferrer nofollow" class="link link link link link link link link link link link link link link link link link link link link link link link link link" href="https://svelte.dev/docs#template-syntax-if"><strong>If Conditional</strong></a></h3>
+                        <p>Conditionally render a block of code.</p>
+                        <pre><code>{#if image.url}
+  &lt;img src={image.url} /&gt;
+{:else if heading}
+  &lt;h2&gt;{heading}&lt;/h2&gt;
+{:else}
+  &lt;span&gt;{fallback}&lt;/span&gt;
+{/if}</code></pre>
+                        <p>In some cases, it may be preferable to simply use an OR or ternary operator within a text expression.</p>
+                        <pre><code class="language-html">&lt;h1&gt;{heading || title || fallback}&lt;/h1&gt;</code></pre>
+                        <h3><a target="_blank" rel="noopener noreferrer nofollow" class="link link link link link link link link link link link link link link link link link link link link link link link link link" href="https://svelte.dev/docs#template-syntax-each"><strong>Each Loop</strong></a></h3>
+                        <p>Iteratively render a <strong>Repeater</strong> field.</p>
+                        <pre><code>{#each links as link}
+  &lt;a href={link.url}&gt;{link.label}&lt;/a&gt;
+{/each}</code></pre><!-- HTML_TAG_END -->
                     </div>
                 </main>
             </section>
