@@ -4175,7 +4175,7 @@ function create_fragment$4(ctx) {
 					{ "link": { "url": "/", "label": "About" } },
 					{
 						"link": {
-							"url": "https://primosites.vercel.app/getting-started",
+							"url": "/getting-started",
 							"label": "Getting Started"
 						}
 					},
