@@ -4196,17 +4196,26 @@ function create_fragment$4(ctx) {
 				nav: [
 					{ "link": { "url": "/", "label": "About" } },
 					{
-						"link": { "url": "/", "label": "Getting Started" }
+						"link": {
+							"url": "/getting-started",
+							"label": "Getting Started"
+						}
 					},
 					{
-						"link": { "url": "/", "label": "Development" }
+						"link": {
+							"url": "/templating",
+							"label": "Templating"
+						}
 					},
 					{
-						"link": { "url": "/", "label": "Templating" }
+						"link": {
+							"url": "/development",
+							"label": "Development"
+						}
 					}
 				],
 				social: [],
-				secondary_logo: { "url": "/", "label": "Docs" },
+				secondary_logo: { "url": "/", "label": "docs" },
 				title: "Primo Docs",
 				description: "Primo is a free & open source, component-based CMS that makes it easy to build visually-editable static sites."
 			}
