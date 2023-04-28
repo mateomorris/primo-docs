@@ -2981,7 +2981,7 @@ function create_each_block_1(ctx) {
 		},
 		h() {
 			attr(a, "href", a_href_value = /*link*/ ctx[6].url);
-			attr(a, "class", "link svelte-mjegg1");
+			attr(a, "class", "link svelte-wim4av");
 			toggle_class(a, "active", window.location.pathname === /*link*/ ctx[6].url);
 		},
 		m(target, anchor) {
@@ -3085,12 +3085,12 @@ function create_if_block$1(ctx) {
 			attr(svg, "xmlns", "http://www.w3.org/2000/svg");
 			attr(svg, "viewBox", "0 0 20 20");
 			attr(svg, "fill", "currentColor");
-			attr(svg, "class", "svelte-mjegg1");
+			attr(svg, "class", "svelte-wim4av");
 			attr(button, "id", "close");
 			attr(button, "aria-label", "Close Navigation");
-			attr(button, "class", "svelte-mjegg1");
+			attr(button, "class", "svelte-wim4av");
 			attr(nav_1, "id", "mobile-nav");
-			attr(nav_1, "class", "svelte-mjegg1");
+			attr(nav_1, "class", "svelte-wim4av");
 		},
 		m(target, anchor) {
 			insert_hydration(target, nav_1, anchor);
@@ -3184,7 +3184,7 @@ function create_each_block(ctx) {
 		},
 		h() {
 			attr(a, "href", a_href_value = /*link*/ ctx[6].url);
-			attr(a, "class", "link svelte-mjegg1");
+			attr(a, "class", "link svelte-wim4av");
 		},
 		m(target, anchor) {
 			insert_hydration(target, a, anchor);
@@ -3445,14 +3445,14 @@ function create_fragment$2(ctx) {
 			attr(svg0, "viewBox", "0 0 442 104");
 			attr(svg0, "fill", "none");
 			attr(svg0, "xmlns", "http://www.w3.org/2000/svg");
-			attr(svg0, "class", "svelte-mjegg1");
+			attr(svg0, "class", "svelte-wim4av");
 			attr(a0, "href", "https://primo.so");
 			attr(a0, "class", "is-primo");
-			attr(span, "class", "svelte-mjegg1");
+			attr(span, "class", "svelte-wim4av");
 			attr(a1, "href", a1_href_value = /*secondary_logo*/ ctx[0].url);
-			attr(a1, "class", "link svelte-mjegg1");
-			attr(div0, "class", "logos svelte-mjegg1");
-			attr(nav_1, "class", "svelte-mjegg1");
+			attr(a1, "class", "link svelte-wim4av");
+			attr(div0, "class", "logos svelte-wim4av");
+			attr(nav_1, "class", "svelte-wim4av");
 			attr(path9, "d", "M19.4643 17.0213H0.535714C0.239866 17.0213 0 17.3071 0 17.6596V19.3617C0 19.7142 0.239866 20 0.535714 20H19.4643C19.7601 20 20 19.7142 20 19.3617V17.6596C20 17.3071 19.7601 17.0213 19.4643 17.0213ZM19.4643 8.51064H0.535714C0.239866 8.51064 0 8.79644 0 9.14894V10.8511C0 11.2036 0.239866 11.4894 0.535714 11.4894H19.4643C19.7601 11.4894 20 11.2036 20 10.8511V9.14894C20 8.79644 19.7601 8.51064 19.4643 8.51064ZM19.4643 0H0.535714C0.239866 0 0 0.285797 0 0.638296V2.34042C0 2.69292 0.239866 2.97872 0.535714 2.97872H19.4643C19.7601 2.97872 20 2.69292 20 2.34042V0.638296C20 0.285797 19.7601 0 19.4643 0Z");
 			attr(path9, "fill", "currentColor");
 			attr(svg1, "width", "20");
@@ -3460,12 +3460,12 @@ function create_fragment$2(ctx) {
 			attr(svg1, "viewBox", "0 0 20 20");
 			attr(svg1, "fill", "none");
 			attr(svg1, "xmlns", "http://www.w3.org/2000/svg");
-			attr(svg1, "class", "svelte-mjegg1");
+			attr(svg1, "class", "svelte-wim4av");
 			attr(button, "id", "open");
-			attr(button, "class", "svelte-mjegg1");
-			attr(div1, "class", "call-to-action svelte-mjegg1");
-			attr(div2, "class", "section-container svelte-mjegg1");
-			attr(header, "class", "svelte-mjegg1");
+			attr(button, "class", "svelte-wim4av");
+			attr(div1, "class", "call-to-action svelte-wim4av");
+			attr(div2, "class", "section-container svelte-wim4av");
+			attr(header, "class", "svelte-wim4av");
 			attr(div3, "class", "component");
 			attr(div4, "class", "section");
 			attr(div4, "id", "section-8c1c0802-e574-4242-9583-f032b0d46042");
