@@ -2959,7 +2959,7 @@ function get_each_context_1(ctx, list, i) {
 	return child_ctx;
 }
 
-// (198:6) {#each nav as {link}}
+// (208:6) {#each nav as {link}}
 function create_each_block_1(ctx) {
 	let a;
 	let t_value = /*link*/ ctx[6].label + "";
@@ -2981,7 +2981,7 @@ function create_each_block_1(ctx) {
 		},
 		h() {
 			attr(a, "href", a_href_value = /*link*/ ctx[6].url);
-			attr(a, "class", "link svelte-wim4av");
+			attr(a, "class", "link svelte-1qa91hg");
 			toggle_class(a, "active", window.location.pathname === /*link*/ ctx[6].url);
 		},
 		m(target, anchor) {
@@ -3005,7 +3005,7 @@ function create_each_block_1(ctx) {
 	};
 }
 
-// (216:4) {#if mobileNavOpen}
+// (226:4) {#if mobileNavOpen}
 function create_if_block$1(ctx) {
 	let nav_1;
 	let t;
@@ -3085,12 +3085,12 @@ function create_if_block$1(ctx) {
 			attr(svg, "xmlns", "http://www.w3.org/2000/svg");
 			attr(svg, "viewBox", "0 0 20 20");
 			attr(svg, "fill", "currentColor");
-			attr(svg, "class", "svelte-wim4av");
+			attr(svg, "class", "svelte-1qa91hg");
 			attr(button, "id", "close");
 			attr(button, "aria-label", "Close Navigation");
-			attr(button, "class", "svelte-wim4av");
+			attr(button, "class", "svelte-1qa91hg");
 			attr(nav_1, "id", "mobile-nav");
-			attr(nav_1, "class", "svelte-wim4av");
+			attr(nav_1, "class", "svelte-1qa91hg");
 		},
 		m(target, anchor) {
 			insert_hydration(target, nav_1, anchor);
@@ -3162,7 +3162,7 @@ function create_if_block$1(ctx) {
 	};
 }
 
-// (218:6) {#each nav as {link}}
+// (228:6) {#each nav as {link}}
 function create_each_block(ctx) {
 	let a;
 	let t_value = /*link*/ ctx[6].label + "";
@@ -3184,7 +3184,7 @@ function create_each_block(ctx) {
 		},
 		h() {
 			attr(a, "href", a_href_value = /*link*/ ctx[6].url);
-			attr(a, "class", "link svelte-wim4av");
+			attr(a, "class", "link svelte-1qa91hg");
 		},
 		m(target, anchor) {
 			insert_hydration(target, a, anchor);
@@ -3211,6 +3211,7 @@ function create_fragment$2(ctx) {
 	let div0;
 	let a0;
 	let svg0;
+	let g;
 	let path0;
 	let path1;
 	let path2;
@@ -3224,6 +3225,12 @@ function create_fragment$2(ctx) {
 	let linearGradient;
 	let stop0;
 	let stop1;
+	let stop2;
+	let stop3;
+	let stop4;
+	let stop5;
+	let clipPath;
+	let rect;
 	let t0;
 	let icon;
 	let t1;
@@ -3269,6 +3276,7 @@ function create_fragment$2(ctx) {
 			div0 = element("div");
 			a0 = element("a");
 			svg0 = svg_element("svg");
+			g = svg_element("g");
 			path0 = svg_element("path");
 			path1 = svg_element("path");
 			path2 = svg_element("path");
@@ -3282,6 +3290,12 @@ function create_fragment$2(ctx) {
 			linearGradient = svg_element("linearGradient");
 			stop0 = svg_element("stop");
 			stop1 = svg_element("stop");
+			stop2 = svg_element("stop");
+			stop3 = svg_element("stop");
+			stop4 = svg_element("stop");
+			stop5 = svg_element("stop");
+			clipPath = svg_element("clipPath");
+			rect = svg_element("rect");
 			t0 = space();
 			create_component(icon.$$.fragment);
 			t1 = space();
@@ -3326,24 +3340,27 @@ function create_fragment$2(ctx) {
 			});
 
 			var svg0_nodes = children(svg0);
-			path0 = claim_svg_element(svg0_nodes, "path", { d: true, fill: true });
+			g = claim_svg_element(svg0_nodes, "g", { "clip-path": true });
+			var g_nodes = children(g);
+			path0 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
 			children(path0).forEach(detach);
-			path1 = claim_svg_element(svg0_nodes, "path", { d: true, fill: true });
+			path1 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
 			children(path1).forEach(detach);
-			path2 = claim_svg_element(svg0_nodes, "path", { d: true, fill: true });
+			path2 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
 			children(path2).forEach(detach);
-			path3 = claim_svg_element(svg0_nodes, "path", { d: true, fill: true });
+			path3 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
 			children(path3).forEach(detach);
-			path4 = claim_svg_element(svg0_nodes, "path", { d: true, fill: true });
+			path4 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
 			children(path4).forEach(detach);
-			path5 = claim_svg_element(svg0_nodes, "path", { d: true, fill: true });
+			path5 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
 			children(path5).forEach(detach);
-			path6 = claim_svg_element(svg0_nodes, "path", { d: true, fill: true });
+			path6 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
 			children(path6).forEach(detach);
-			path7 = claim_svg_element(svg0_nodes, "path", { d: true, fill: true });
+			path7 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
 			children(path7).forEach(detach);
-			path8 = claim_svg_element(svg0_nodes, "path", { d: true, fill: true });
+			path8 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
 			children(path8).forEach(detach);
+			g_nodes.forEach(detach);
 			defs = claim_svg_element(svg0_nodes, "defs", {});
 			var defs_nodes = children(defs);
 
@@ -3361,7 +3378,20 @@ function create_fragment$2(ctx) {
 			children(stop0).forEach(detach);
 			stop1 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
 			children(stop1).forEach(detach);
+			stop2 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
+			children(stop2).forEach(detach);
+			stop3 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
+			children(stop3).forEach(detach);
+			stop4 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
+			children(stop4).forEach(detach);
+			stop5 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
+			children(stop5).forEach(detach);
 			linearGradient_nodes.forEach(detach);
+			clipPath = claim_svg_element(defs_nodes, "clipPath", { id: true });
+			var clipPath_nodes = children(clipPath);
+			rect = claim_svg_element(clipPath_nodes, "rect", { width: true, height: true, fill: true });
+			children(rect).forEach(detach);
+			clipPath_nodes.forEach(detach);
 			defs_nodes.forEach(detach);
 			svg0_nodes.forEach(detach);
 			a0_nodes.forEach(detach);
@@ -3415,44 +3445,57 @@ function create_fragment$2(ctx) {
 			this.h();
 		},
 		h() {
-			attr(path0, "d", "M27.3916 19.9674C30.4275 16.9314 35.3497 16.9314 38.3857 19.9674C41.3296 22.9113 41.4188 27.6289 38.6533 30.6804L38.3857 30.9615L18.7832 50.5613L55.1495 86.7242C58.1017 89.6598 58.2043 94.3771 55.4474 97.4364L55.1806 97.7182C52.245 100.67 47.5276 100.773 44.4684 98.0162L44.1865 97.7493L2.29252 56.0916C-0.665636 53.1502 -0.761839 48.4213 2.0088 45.3637L2.27695 45.082L27.3916 19.9674Z");
-			attr(path0, "fill", "url(#paint0_linear_70_4)");
-			attr(path1, "d", "M77.7927 15.5112C97.161 15.5112 112.861 31.212 112.861 50.5797C112.861 69.9474 97.161 85.6482 77.7927 85.6482C73.4992 85.6482 70.0187 82.1676 70.0187 77.8742C70.0187 73.5807 73.4992 70.1002 77.7927 70.1002C88.5739 70.1002 97.3132 61.3606 97.3132 50.5797C97.3132 39.7988 88.5739 31.0592 77.7927 31.0592C67.1713 31.0592 58.5312 39.5438 58.2779 50.2539L58.2722 50.7349L57.4404 92.3926C57.3547 96.6852 53.8053 100.096 49.5127 100.01C45.3331 99.9264 41.9899 96.5592 41.8955 92.4195V92.0822L42.7258 50.5797C42.7258 31.2123 58.4256 15.5112 77.7927 15.5112Z");
-			attr(path1, "fill", "#35D994");
-			attr(path2, "d", "M117.201 19.9667C120.145 17.0229 124.863 16.9338 127.914 19.6994L128.195 19.9671L153.31 45.0833C156.254 48.0273 156.343 52.7449 153.577 55.7963L153.31 56.0773L128.195 81.1904C125.159 84.2263 120.237 84.2261 117.201 81.1901C114.257 78.2461 114.168 73.5284 116.934 70.4771L117.201 70.196L136.819 50.5784L117.201 30.9608C114.257 28.0168 114.168 23.2991 116.934 20.2478L117.201 19.9667Z");
-			attr(path2, "fill", "#35D994");
-			attr(path3, "d", "M193.206 103.761C190.104 103.761 187.587 101.244 187.587 98.1417V49.8351C187.587 34.707 199.905 22.3887 215.033 22.3887C230.161 22.3887 242.48 34.707 242.48 49.8351C242.48 64.9632 230.161 77.2816 215.033 77.2816C211.931 77.2816 209.413 74.7639 209.413 71.6619C209.413 68.5598 211.931 66.0422 215.033 66.0422C223.957 66.0422 231.24 58.7816 231.24 49.8351C231.24 40.8886 223.98 33.628 215.033 33.628C206.087 33.628 198.826 40.8886 198.826 49.8351V98.1417C198.826 101.244 196.308 103.761 193.206 103.761V103.761Z");
-			attr(path3, "fill", "currentColor");
-			attr(path4, "d", "M255.764 77.2816C252.662 77.2816 250.145 74.7639 250.145 71.6619V49.8351C250.145 34.707 262.463 22.3887 277.591 22.3887C280.693 22.3887 283.211 24.9063 283.211 28.0083C283.211 31.1104 280.693 33.628 277.591 33.628C268.667 33.628 261.384 40.8886 261.384 49.8351V71.6619C261.384 74.7639 258.866 77.2816 255.764 77.2816Z");
-			attr(path4, "fill", "currentColor");
-			attr(path5, "d", "M414.554 77.3489C399.425 77.3489 387.107 65.0306 387.107 49.9025C387.107 34.7744 399.425 22.4561 414.554 22.4561C429.682 22.4561 442 34.7744 442 49.9025C442 65.0306 429.682 77.3489 414.554 77.3489ZM414.554 33.6954C405.63 33.6954 398.347 40.956 398.347 49.9025C398.347 58.849 405.607 66.1096 414.554 66.1096C423.5 66.1096 430.761 58.849 430.761 49.9025C430.761 40.956 423.5 33.6954 414.554 33.6954Z");
-			attr(path5, "fill", "currentColor");
-			attr(path6, "d", "M297.912 77.2816C294.81 77.2816 292.292 74.7639 292.292 71.6619V28.0083C292.292 24.9063 294.81 22.3887 297.912 22.3887C301.014 22.3887 303.532 24.9063 303.532 28.0083V71.6619C303.532 74.7639 301.014 77.2816 297.912 77.2816Z");
-			attr(path6, "fill", "currentColor");
-			attr(path7, "d", "M297.912 11.7339C301.152 11.7339 303.779 9.10714 303.779 5.86693C303.779 2.62671 301.152 0 297.912 0C294.672 0 292.045 2.62671 292.045 5.86693C292.045 9.10714 294.672 11.7339 297.912 11.7339Z");
-			attr(path7, "fill", "currentColor");
-			attr(path8, "d", "M361.032 22.4561C355.637 22.4561 350.782 24.659 347.252 28.2106C343.746 24.659 338.868 22.4561 333.473 22.4561C322.773 22.4561 314.074 31.1553 314.074 41.8551V71.7293C314.074 74.8313 316.592 77.3489 319.694 77.3489C322.796 77.3489 325.313 74.8313 325.313 71.7293V41.8551C325.313 37.3594 328.977 33.6954 333.473 33.6954C337.969 33.6954 341.633 37.3594 341.633 41.8551V71.7293C341.633 74.8313 344.15 77.3489 347.252 77.3489C350.355 77.3489 352.872 74.8313 352.872 71.7293V41.8551C352.872 37.3594 356.536 33.6954 361.032 33.6954C365.528 33.6954 369.192 37.3594 369.192 41.8551V71.7293C369.192 74.8313 371.709 77.3489 374.811 77.3489C377.913 77.3489 380.431 74.8313 380.431 71.7293V41.8551C380.431 31.1553 371.732 22.4561 361.032 22.4561Z");
-			attr(path8, "fill", "currentColor");
+			attr(path0, "d", "M814.062 159.924C782.686 159.924 757.171 134.408 757.171 103.032C757.171 71.6567 782.686 46.1408 814.062 46.1408C845.438 46.1408 870.954 71.6567 870.954 103.032C870.954 134.408 845.438 159.924 814.062 159.924ZM814.062 70.3186C796.021 70.3186 781.395 84.9914 781.395 102.986C781.395 120.981 796.067 135.654 814.062 135.654C832.057 135.654 846.73 120.981 846.73 102.986C846.73 84.9914 832.057 70.3186 814.062 70.3186V70.3186Z");
+			attr(path0, "fill", "#FDFDFD");
+			attr(path1, "d", "M700.925 46.0947C689.897 46.0947 679.931 50.5242 672.641 57.676C665.35 50.5242 655.384 46.0947 644.356 46.0947C622.07 46.0947 603.983 64.228 603.983 86.4679V147.789C603.983 154.479 609.382 159.878 616.072 159.878C622.763 159.878 628.161 154.479 628.161 147.789V86.4679C628.161 77.5627 635.405 70.3186 644.31 70.3186C653.215 70.3186 660.46 77.5627 660.46 86.4679V147.789C660.46 154.479 665.858 159.878 672.548 159.878C679.239 159.878 684.637 154.479 684.637 147.789V86.4679C684.637 77.5627 691.881 70.3186 700.787 70.3186C709.692 70.3186 716.936 77.5627 716.936 86.4679V147.789C716.936 154.479 722.334 159.878 729.025 159.878C735.715 159.878 741.114 154.479 741.114 147.789V86.4679C741.114 64.1819 722.98 46.0947 700.74 46.0947H700.925Z");
+			attr(path1, "fill", "#FDFDFD");
+			attr(path2, "d", "M571.039 159.786C564.348 159.786 558.95 154.387 558.95 147.697V58.0913C558.95 51.4009 564.348 46.0024 571.039 46.0024C577.729 46.0024 583.128 51.4009 583.128 58.0913V147.697C583.128 154.387 577.729 159.786 571.039 159.786Z");
+			attr(path2, "fill", "#FDFDFD");
+			attr(path3, "d", "M571.039 26.4848C578.352 26.4848 584.281 20.556 584.281 13.2424C584.281 5.92883 578.352 0 571.039 0C563.725 0 557.796 5.92883 557.796 13.2424C557.796 20.556 563.725 26.4848 571.039 26.4848Z");
+			attr(path3, "fill", "#FDFDFD");
+			attr(path4, "d", "M482.356 159.785C475.666 159.785 470.267 154.387 470.267 147.697V102.894C470.267 71.5181 495.783 46.0023 527.159 46.0023C533.849 46.0023 539.248 51.4007 539.248 58.0911C539.248 64.7816 533.849 70.18 527.159 70.18C509.118 70.18 494.491 84.8528 494.491 102.848V147.65C494.491 154.341 489.093 159.739 482.402 159.739L482.356 159.785Z");
+			attr(path4, "fill", "#FDFDFD");
+			attr(path5, "d", "M349.701 197.99C343.011 197.99 337.612 192.592 337.612 185.901V102.894C337.612 71.5182 363.128 46.0024 394.504 46.0024C425.88 46.0024 451.396 71.5182 451.396 102.894C451.396 134.27 425.88 159.786 394.504 159.786C387.814 159.786 382.415 154.387 382.415 147.697C382.415 141.006 387.814 135.608 394.504 135.608C412.545 135.608 427.172 120.935 427.172 102.94C427.172 84.9452 412.499 70.2724 394.504 70.2724C376.509 70.2724 361.836 84.9452 361.836 102.94V185.947C361.836 192.638 356.438 198.036 349.747 198.036L349.701 197.99Z");
+			attr(path5, "fill", "#FDFDFD");
+			attr(path6, "d", "M222.814 159.371C219.723 159.371 216.631 158.171 214.232 155.818C209.526 151.065 209.526 143.406 214.232 138.699L249.668 103.263L214.232 67.8271C209.526 63.0746 209.526 55.4153 214.232 50.7089C218.984 45.9564 226.644 45.9564 231.35 50.7089L275.369 94.7272C280.075 99.4797 280.075 107.139 275.369 111.845L231.35 155.864C228.997 158.217 225.906 159.417 222.768 159.417L222.814 159.371Z");
+			attr(path6, "fill", "#35D994");
+			attr(path7, "d", "M94.7272 197.99C91.6358 197.99 88.5443 196.791 86.145 194.437L3.55296 111.799C-1.1534 107.047 -1.1534 99.3874 3.55296 94.681L47.5713 50.6627C52.3238 45.9102 59.9832 45.9102 64.6895 50.6627C69.3959 55.4152 69.3959 63.0746 64.6895 67.7809L29.2073 103.217L103.263 177.273C107.97 182.026 107.97 189.685 103.263 194.391C100.91 196.744 97.8186 197.944 94.6811 197.944L94.7272 197.99Z");
+			attr(path7, "fill", "url(#paint0_linear_250_527)");
+			attr(path8, "d", "M94.7273 197.99C88.0369 197.99 82.6384 192.592 82.6384 185.901V102.894C82.6384 71.5181 108.154 46.0023 139.53 46.0023C170.906 46.0023 196.422 71.5181 196.422 102.894C196.422 134.27 170.906 159.785 139.53 159.785C132.84 159.785 127.441 154.387 127.441 147.697C127.441 141.006 132.84 135.608 139.53 135.608C157.571 135.608 172.198 120.935 172.198 102.94C172.198 84.9451 157.525 70.2723 139.53 70.2723C121.535 70.2723 106.862 84.9451 106.862 102.94V185.947C106.862 192.638 101.464 198.036 94.7735 198.036L94.7273 197.99Z");
+			attr(path8, "fill", "#35D994");
+			attr(g, "clip-path", "url(#clip0_250_527)");
 			attr(stop0, "stop-color", "#35D994");
-			attr(stop1, "offset", "1");
-			attr(stop1, "stop-color", "#111111");
-			attr(linearGradient, "id", "paint0_linear_70_4");
-			attr(linearGradient, "x1", "22.684");
-			attr(linearGradient, "y1", "62.427");
-			attr(linearGradient, "x2", "52.3086");
-			attr(linearGradient, "y2", "89.5041");
+			attr(stop1, "offset", "0.16");
+			attr(stop1, "stop-color", "#32D28E");
+			attr(stop2, "offset", "0.38");
+			attr(stop2, "stop-color", "#29BF80");
+			attr(stop3, "offset", "0.64");
+			attr(stop3, "stop-color", "#1CA169");
+			attr(stop4, "offset", "0.93");
+			attr(stop4, "stop-color", "#097649");
+			attr(stop5, "offset", "0.95");
+			attr(stop5, "stop-color", "#097548");
+			attr(linearGradient, "id", "paint0_linear_250_527");
+			attr(linearGradient, "x1", "25.5621");
+			attr(linearGradient, "y1", "72.6719");
+			attr(linearGradient, "x2", "125.319");
+			attr(linearGradient, "y2", "172.428");
 			attr(linearGradient, "gradientUnits", "userSpaceOnUse");
-			attr(svg0, "viewBox", "0 0 442 104");
+			attr(rect, "width", "871");
+			attr(rect, "height", "197.99");
+			attr(rect, "fill", "white");
+			attr(clipPath, "id", "clip0_250_527");
+			attr(svg0, "viewBox", "0 0 871 198");
 			attr(svg0, "fill", "none");
 			attr(svg0, "xmlns", "http://www.w3.org/2000/svg");
-			attr(svg0, "class", "svelte-wim4av");
+			attr(svg0, "class", "svelte-1qa91hg");
 			attr(a0, "href", "https://primo.so");
 			attr(a0, "class", "is-primo");
-			attr(span, "class", "svelte-wim4av");
+			attr(span, "class", "svelte-1qa91hg");
 			attr(a1, "href", a1_href_value = /*secondary_logo*/ ctx[0].url);
-			attr(a1, "class", "link svelte-wim4av");
-			attr(div0, "class", "logos svelte-wim4av");
-			attr(nav_1, "class", "svelte-wim4av");
+			attr(a1, "class", "link svelte-1qa91hg");
+			attr(div0, "class", "logos svelte-1qa91hg");
+			attr(nav_1, "class", "svelte-1qa91hg");
 			attr(path9, "d", "M19.4643 17.0213H0.535714C0.239866 17.0213 0 17.3071 0 17.6596V19.3617C0 19.7142 0.239866 20 0.535714 20H19.4643C19.7601 20 20 19.7142 20 19.3617V17.6596C20 17.3071 19.7601 17.0213 19.4643 17.0213ZM19.4643 8.51064H0.535714C0.239866 8.51064 0 8.79644 0 9.14894V10.8511C0 11.2036 0.239866 11.4894 0.535714 11.4894H19.4643C19.7601 11.4894 20 11.2036 20 10.8511V9.14894C20 8.79644 19.7601 8.51064 19.4643 8.51064ZM19.4643 0H0.535714C0.239866 0 0 0.285797 0 0.638296V2.34042C0 2.69292 0.239866 2.97872 0.535714 2.97872H19.4643C19.7601 2.97872 20 2.69292 20 2.34042V0.638296C20 0.285797 19.7601 0 19.4643 0Z");
 			attr(path9, "fill", "currentColor");
 			attr(svg1, "width", "20");
@@ -3460,12 +3503,12 @@ function create_fragment$2(ctx) {
 			attr(svg1, "viewBox", "0 0 20 20");
 			attr(svg1, "fill", "none");
 			attr(svg1, "xmlns", "http://www.w3.org/2000/svg");
-			attr(svg1, "class", "svelte-wim4av");
+			attr(svg1, "class", "svelte-1qa91hg");
 			attr(button, "id", "open");
-			attr(button, "class", "svelte-wim4av");
-			attr(div1, "class", "call-to-action svelte-wim4av");
-			attr(div2, "class", "section-container svelte-wim4av");
-			attr(header, "class", "svelte-wim4av");
+			attr(button, "class", "svelte-1qa91hg");
+			attr(div1, "class", "call-to-action svelte-1qa91hg");
+			attr(div2, "class", "section-container svelte-1qa91hg");
+			attr(header, "class", "svelte-1qa91hg");
 			attr(div3, "class", "component");
 			attr(div4, "class", "section");
 			attr(div4, "id", "section-0a4216c5-12e9-41ce-87f4-cc77fa544acf");
@@ -3478,19 +3521,26 @@ function create_fragment$2(ctx) {
 			append_hydration(div2, div0);
 			append_hydration(div0, a0);
 			append_hydration(a0, svg0);
-			append_hydration(svg0, path0);
-			append_hydration(svg0, path1);
-			append_hydration(svg0, path2);
-			append_hydration(svg0, path3);
-			append_hydration(svg0, path4);
-			append_hydration(svg0, path5);
-			append_hydration(svg0, path6);
-			append_hydration(svg0, path7);
-			append_hydration(svg0, path8);
+			append_hydration(svg0, g);
+			append_hydration(g, path0);
+			append_hydration(g, path1);
+			append_hydration(g, path2);
+			append_hydration(g, path3);
+			append_hydration(g, path4);
+			append_hydration(g, path5);
+			append_hydration(g, path6);
+			append_hydration(g, path7);
+			append_hydration(g, path8);
 			append_hydration(svg0, defs);
 			append_hydration(defs, linearGradient);
 			append_hydration(linearGradient, stop0);
 			append_hydration(linearGradient, stop1);
+			append_hydration(linearGradient, stop2);
+			append_hydration(linearGradient, stop3);
+			append_hydration(linearGradient, stop4);
+			append_hydration(linearGradient, stop5);
+			append_hydration(defs, clipPath);
+			append_hydration(clipPath, rect);
 			append_hydration(div0, t0);
 			mount_component(icon, div0, null);
 			append_hydration(div0, t1);
