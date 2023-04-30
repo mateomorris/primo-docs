@@ -3,7 +3,7 @@
 
 <head>
     <meta name="generator" content="Primo" />
-    <title>Primo Docs: Getting Started</title><!-- HEAD_svelte-1jci69e_START -->
+    <title>Primo Docs: Getting Started</title><!-- HEAD_svelte-adjov1_START -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <link rel="shortcut icon" type="image/png" href="https://res.cloudinary.com/primoaf/image/upload/v1659676914/favicon_roaxv0.png">
@@ -57,6 +57,11 @@
             padding: 0.25rem 0;
             line-height: 1.5;
             color: var(--color);
+        }
+
+        .content strong {
+            font-weight: 500;
+            color: white;
         }
 
         .content a {
@@ -158,7 +163,7 @@
             color: var(--color-accent);
             border: 2px solid var(--color-accent);
         }
-    </style><!-- HEAD_svelte-1jci69e_END -->
+    </style><!-- HEAD_svelte-adjov1_END -->
     <style>
         header.svelte-1qa91hg.svelte-1qa91hg {
             background: var(--background, white);
@@ -470,60 +475,49 @@
                 <main class="svelte-34p0ln">
                     <div class="content svelte-34p0ln" data-key="content"><!-- HTML_TAG_START -->
                         <h1>Getting Started</h1>
-                        <p>Primo depends on several [freemium] third-party services for easy hosting, authentication, database and storage, etc. Running your own Primo server is as easy as forking this repo and deploying it on a static host like Vercel or Netlify, which should only take a few minutes.</p>
+                        <p>Primo depends on several [freemium] third-party services for easy hosting, authentication, database and storage, etc. Running your own Primo server is as easy as forking the <a target="_blank" rel="noopener noreferrer nofollow" class="link link link link" href="https://github.com/primocms/primo"><strong>Primo repo</strong></a> and deploying it on a static host like Vercel or Netlify, which should only take a few minutes.</p>
                         <p>Third-party services (all can be signed into with Github):</p>
                         <ul>
                             <li>
-                                <p>A modern web host like <strong>Vercel</strong> or <strong>Netlify</strong> to host the Primo application.</p>
+                                <p>A modern web host like <a target="_blank" rel="noopener noreferrer nofollow" class="link link link link" href="https://vercel.com/"><strong>Vercel</strong></a> or <a target="_blank" rel="noopener noreferrer nofollow" class="link link link link" href="https://netlify.com"><strong>Netlify</strong></a> to host the Primo application &amp; published sites.</p>
                             </li>
                             <li>
-                                <p>A <strong>Supabase</strong> account to manage your server's authentication, database, and file storage.</p>
+                                <p>A <a target="_blank" rel="noopener noreferrer nofollow" class="link link link link" href="https://supabase.com"><strong>Supabase</strong></a> account to manage your server's authentication, database, and file storage.</p>
                             </li>
                             <li>
-                                <p>A <strong>Github</strong> account to deploy your sites to (unless you plan on downloading).</p>
-                            </li>
-                            <li>
-                                <p>A static web host for the final site (can be same host used for Primo itself).</p>
-                            </li>
-                            <li>
-                                <p>A <strong>Mailgun</strong> account for emailing collaborators with server invitations.</p>
+                                <p>A <a target="_blank" rel="noopener noreferrer nofollow" class="link link link link" href="https://github.com"><strong>Github</strong></a> account to deploy your sites to (unless you plan on downloading the site and connecting to a host).</p>
                             </li>
                         </ul>
                         <h2>Installation</h2>
                         <ol>
                             <li>
-                                <p>First, prepare your Supabase instance by copying the schema and pasting it into the SQL editor.</p>
+                                <p>Ensure you have an account with all the services listed above.</p>
                             </li>
                             <li>
-                                <p>Then fork the <a target="_blank" rel="noopener noreferrer nofollow" class="link link" href="https://github.com/primocms/primo">Primo repository</a>.</p>
+                                <p>Create a new Supabase project and prepare it by copying the <a target="_blank" rel="noopener noreferrer nofollow" class="link link link link" href="https://raw.githubusercontent.com/mateomorris/primo/master/primo_schema.sql">schema</a> and pasting it into the SQL editor.</p>
                             </li>
                             <li>
-                                <p>Go to your host and create a new project from your new repository, inputting your service credentials.</p>
-                            </li>
-                        </ol>
-                        <ul>
-                            <li>
-                                <p>PRIVATE_MAILGUN_KEY</p>
+                                <p>Fork the <a target="_blank" rel="noopener noreferrer nofollow" class="link link link link" href="https://github.com/primocms/primo">Primo repository</a>.</p>
                             </li>
                             <li>
-                                <p>PRIVATE_MAILGUN_EMAIL</p>
+                                <p>Go to your web host and create a new project from your new repository, inputting your Supabase details as environment variables.</p>
+                                <ul>
+                                    <li>
+                                        <p>PUBLIC_SUPABASE_URL</p>
+                                    </li>
+                                    <li>
+                                        <p>PUBLIC_SUPABASE_PUBLIC_KEY</p>
+                                    </li>
+                                    <li>
+                                        <p>PRIVATE_SUPABASE_PRIVATE_KEY</p>
+                                    </li>
+                                </ul>
                             </li>
                             <li>
-                                <p>PUBLIC_SUPABASE_URL</p>
+                                <p>Publish the project and navigate to the Primo authentication screen.</p>
                             </li>
                             <li>
-                                <p>PUBLIC_SUPABASE_PUBLIC_KEY</p>
-                            </li>
-                            <li>
-                                <p>PRIVATE_SUPABASE_PRIVATE_KEY</p>
-                            </li>
-                        </ul>
-                        <ol start="4">
-                            <li>
-                                <p>Publish the project and navigate to the authentication screen. From Supabase, update the project URL (e.g. <a target="_blank" rel="noopener noreferrer nofollow" class="link link" href="https://my-primo.vercel.app">https://my-primo.vercel.app</a>).</p>
-                            </li>
-                            <li>
-                                <p>The user account you create will be the server owner. You can manage the entire project's data from the Supabase backend.</p>
+                                <p>The user account you create will be the server owner. You can manage the entire project's data from the Supabase project dashboard.</p>
                             </li>
                         </ol><!-- HTML_TAG_END -->
                     </div>
