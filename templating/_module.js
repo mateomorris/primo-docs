@@ -4171,11 +4171,14 @@ function create_fragment$4(ctx) {
 				title: "Primo Docs: Getting Started",
 				description: "You can download Primo as a desktop application or host it from any static host. ",
 				secondary_logo: {
-					"url": "http://localhost:5173/primo-docs",
-					"label": "docs"
+					"url": "/",
+					"label": "Docs",
+					"active": false
 				},
 				nav: [
-					{ "link": { "url": "/", "label": "ABOOT" } },
+					{
+						"link": { "url": "/", "label": "Introduction" }
+					},
 					{
 						"link": {
 							"url": "/getting-started",
@@ -4184,14 +4187,14 @@ function create_fragment$4(ctx) {
 					},
 					{
 						"link": {
-							"url": "/templating",
-							"label": "Templating"
+							"url": "/development",
+							"label": "Development"
 						}
 					},
 					{
 						"link": {
-							"url": "/development",
-							"label": "Development"
+							"url": "/templating",
+							"label": "Templating"
 						}
 					}
 				]
