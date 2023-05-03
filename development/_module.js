@@ -2959,7 +2959,7 @@ function get_each_context_1(ctx, list, i) {
 	return child_ctx;
 }
 
-// (208:6) {#each nav as {link}}
+// (234:6) {#each nav as { link }}
 function create_each_block_1(ctx) {
 	let a;
 	let t_value = /*link*/ ctx[6].label + "";
@@ -3005,7 +3005,7 @@ function create_each_block_1(ctx) {
 	};
 }
 
-// (226:4) {#if mobileNavOpen}
+// (255:4) {#if mobileNavOpen}
 function create_if_block$1(ctx) {
 	let nav_1;
 	let t;
@@ -3162,7 +3162,7 @@ function create_if_block$1(ctx) {
 	};
 }
 
-// (228:6) {#each nav as {link}}
+// (257:8) {#each nav as { link }}
 function create_each_block(ctx) {
 	let a;
 	let t_value = /*link*/ ctx[6].label + "";
@@ -3511,7 +3511,7 @@ function create_fragment$2(ctx) {
 			attr(header, "class", "svelte-1qa91hg");
 			attr(div3, "class", "component");
 			attr(div4, "class", "section");
-			attr(div4, "id", "section-e808143b-4b76-47a5-a795-08511a66085d");
+			attr(div4, "id", "section-5a6b74d9-f46c-4cca-bb66-1403ebb62576");
 		},
 		m(target, anchor) {
 			insert_hydration(target, div4, anchor);
@@ -4170,9 +4170,12 @@ function create_fragment$4(ctx) {
 			props: {
 				title: "Primo Docs: Development",
 				description: "",
-				secondary_logo: { "url": "/", "label": "docs" },
+				secondary_logo: {
+					"url": "http://localhost:5173/primo-docs",
+					"label": "docs"
+				},
 				nav: [
-					{ "link": { "url": "/", "label": "About" } },
+					{ "link": { "url": "/", "label": "ABOOT" } },
 					{
 						"link": {
 							"url": "/getting-started",

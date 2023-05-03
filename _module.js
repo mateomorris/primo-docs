@@ -2959,7 +2959,7 @@ function get_each_context_1(ctx, list, i) {
 	return child_ctx;
 }
 
-// (208:6) {#each nav as {link}}
+// (234:6) {#each nav as { link }}
 function create_each_block_1(ctx) {
 	let a;
 	let t_value = /*link*/ ctx[6].label + "";
@@ -3005,7 +3005,7 @@ function create_each_block_1(ctx) {
 	};
 }
 
-// (226:4) {#if mobileNavOpen}
+// (255:4) {#if mobileNavOpen}
 function create_if_block$1(ctx) {
 	let nav_1;
 	let t;
@@ -3162,7 +3162,7 @@ function create_if_block$1(ctx) {
 	};
 }
 
-// (228:6) {#each nav as {link}}
+// (257:8) {#each nav as { link }}
 function create_each_block(ctx) {
 	let a;
 	let t_value = /*link*/ ctx[6].label + "";
@@ -3511,7 +3511,7 @@ function create_fragment$2(ctx) {
 			attr(header, "class", "svelte-1qa91hg");
 			attr(div3, "class", "component");
 			attr(div4, "class", "section");
-			attr(div4, "id", "section-8c1c0802-e574-4242-9583-f032b0d46042");
+			attr(div4, "id", "section-dbb1a8cd-f825-482c-9c62-02d9e532d57a");
 		},
 		m(target, anchor) {
 			insert_hydration(target, div4, anchor);
@@ -4170,9 +4170,12 @@ function create_fragment$4(ctx) {
 			props: {
 				title: "Primo Docs",
 				description: "Primo is a free & open source, component-based CMS that makes it easy to build visually-editable static sites.",
-				secondary_logo: { "url": "/", "label": "docs" },
+				secondary_logo: {
+					"url": "http://localhost:5173/primo-docs",
+					"label": "docs"
+				},
 				nav: [
-					{ "link": { "url": "/", "label": "About" } },
+					{ "link": { "url": "/", "label": "ABOOT" } },
 					{
 						"link": {
 							"url": "/getting-started",

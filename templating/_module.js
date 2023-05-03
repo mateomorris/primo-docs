@@ -2959,7 +2959,7 @@ function get_each_context_1(ctx, list, i) {
 	return child_ctx;
 }
 
-// (208:6) {#each nav as {link}}
+// (234:6) {#each nav as { link }}
 function create_each_block_1(ctx) {
 	let a;
 	let t_value = /*link*/ ctx[6].label + "";
@@ -3005,7 +3005,7 @@ function create_each_block_1(ctx) {
 	};
 }
 
-// (226:4) {#if mobileNavOpen}
+// (255:4) {#if mobileNavOpen}
 function create_if_block$1(ctx) {
 	let nav_1;
 	let t;
@@ -3162,7 +3162,7 @@ function create_if_block$1(ctx) {
 	};
 }
 
-// (228:6) {#each nav as {link}}
+// (257:8) {#each nav as { link }}
 function create_each_block(ctx) {
 	let a;
 	let t_value = /*link*/ ctx[6].label + "";
@@ -4170,9 +4170,12 @@ function create_fragment$4(ctx) {
 			props: {
 				title: "Primo Docs: Getting Started",
 				description: "You can download Primo as a desktop application or host it from any static host. ",
-				secondary_logo: { "url": "/", "label": "docs" },
+				secondary_logo: {
+					"url": "http://localhost:5173/primo-docs",
+					"label": "docs"
+				},
 				nav: [
-					{ "link": { "url": "/", "label": "About" } },
+					{ "link": { "url": "/", "label": "ABOOT" } },
 					{
 						"link": {
 							"url": "/getting-started",

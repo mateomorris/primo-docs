@@ -2959,7 +2959,7 @@ function get_each_context_1(ctx, list, i) {
 	return child_ctx;
 }
 
-// (208:6) {#each nav as {link}}
+// (234:6) {#each nav as { link }}
 function create_each_block_1(ctx) {
 	let a;
 	let t_value = /*link*/ ctx[6].label + "";
@@ -3005,7 +3005,7 @@ function create_each_block_1(ctx) {
 	};
 }
 
-// (226:4) {#if mobileNavOpen}
+// (255:4) {#if mobileNavOpen}
 function create_if_block$1(ctx) {
 	let nav_1;
 	let t;
@@ -3162,7 +3162,7 @@ function create_if_block$1(ctx) {
 	};
 }
 
-// (228:6) {#each nav as {link}}
+// (257:8) {#each nav as { link }}
 function create_each_block(ctx) {
 	let a;
 	let t_value = /*link*/ ctx[6].label + "";
@@ -4170,9 +4170,12 @@ function create_fragment$4(ctx) {
 			props: {
 				title: "Primo Docs: Getting Started",
 				description: "You can download Primo as a desktop application or host it from any static host. ",
-				secondary_logo: { "url": "/", "label": "docs" },
+				secondary_logo: {
+					"url": "http://localhost:5173/primo-docs",
+					"label": "docs"
+				},
 				nav: [
-					{ "link": { "url": "/", "label": "About" } },
+					{ "link": { "url": "/", "label": "ABOOT" } },
 					{
 						"link": {
 							"url": "/getting-started",
@@ -4201,8 +4204,8 @@ function create_fragment$4(ctx) {
 				description: "You can download Primo as a desktop application or host it from any static host. ",
 				video_id: "LEcKmhJsUzo",
 				content: {
-					"html": "<h1 id=\"gettingstarted\">Getting Started</h1>\n<p>Primo depends on several [freemium] third-party services for easy hosting, authentication, database and storage, etc. Running your own Primo server is as easy as forking the <a href=\"https://github.com/primocms/primo\"><strong>Primo repo</strong></a> and deploying it on a static host like Vercel or Netlify, which should only take a few minutes.</p>\n<p>Third-party services (all can be signed into with Github):</p>\n<ul>\n<li><p>A modern web host like <a href=\"https://vercel.com/\"><strong>Vercel</strong></a> or <a href=\"https://netlify.com\"><strong>Netlify</strong></a> to host the Primo application &amp; published sites.</p></li>\n<li><p>A <a href=\"https://supabase.com\"><strong>Supabase</strong></a> account to manage your server's authentication, database, and file storage.</p></li>\n<li><p>A <a href=\"https://github.com\"><strong>Github</strong></a> account to deploy your sites to (unless you plan on downloading the site and connecting to a host).</p></li>\n</ul>\n<!-- -->\n<h2 id=\"installation\">Installation</h2>\n<ol>\n<li><p>Ensure you have an account with all the services listed above.</p></li>\n<li><p>Create a new Supabase project and prepare it by copying the <a href=\"https://raw.githubusercontent.com/mateomorris/primo/master/primo_schema.sql\">schema</a> and pasting it into the SQL editor.</p></li>\n<li><p>Fork the <a href=\"https://github.com/primocms/primo\">Primo repository</a>.</p></li>\n<li><p>Go to your web host and create a new project from your new repository, inputting your Supabase details as environment variables.</p>\n<ul>\n<li><p>PUBLIC_SUPABASE_URL</p></li>\n<li><p>PUBLIC_SUPABASE_PUBLIC_KEY</p></li>\n<li><p>PRIVATE_SUPABASE_PRIVATE_KEY</p></li></ul>\n<!-- --></li>\n<li><p>Publish the project and navigate to the Primo authentication screen.</p></li>\n<li><p>The user account you create will be the server owner. You can manage the entire project's data from the Supabase project dashboard.</p></li>\n</ol>\n<!-- -->",
-					"markdown": "# Getting Started\n\nPrimo depends on several [freemium] third-party services for easy hosting, authentication, database and storage, etc. Running your own Primo server is as easy as forking the [**Primo repo**](<https://github.com/primocms/primo>) and deploying it on a static host like Vercel or Netlify, which should only take a few minutes.\n\nThird-party services (all can be signed into with Github):\n\n- A modern web host like [**Vercel**](<https://vercel.com/>) or [**Netlify**](<https://netlify.com>) to host the Primo application & published sites.\n\n- A [**Supabase**](<https://supabase.com>) account to manage your server's authentication, database, and file storage.\n\n- A [**Github**](<https://github.com>) account to deploy your sites to (unless you plan on downloading the site and connecting to a host).\n\n\n<!-- -->\n\n## Installation\n\n1. Ensure you have an account with all the services listed above.\n\n2. Create a new Supabase project and prepare it by copying the [schema](<https://raw.githubusercontent.com/mateomorris/primo/master/primo_schema.sql>) and pasting it into the SQL editor.\n\n3. Fork the [Primo repository](<https://github.com/primocms/primo>).\n\n4. Go to your web host and create a new project from your new repository, inputting your Supabase details as environment variables.\n\n    - PUBLIC\\_SUPABASE\\_URL\n\n    - PUBLIC\\_SUPABASE\\_PUBLIC\\_KEY\n\n    - PRIVATE\\_SUPABASE\\_PRIVATE\\_KEY\n\n    <!-- -->\n\n5. Publish the project and navigate to the Primo authentication screen.\n\n6. The user account you create will be the server owner. You can manage the entire project's data from the Supabase project dashboard.\n\n\n<!-- -->\n\n"
+					"html": "<h1>Getting Started</h1><p>Primo depends on several [freemium] third-party services for easy hosting, authentication, database and storage, etc. Running your own Primo server is as easy as forking the <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link\" href=\"https://github.com/primocms/primo\"><strong>Primo repo</strong></a> and deploying it on a static host like Vercel or Netlify, which should only take a few minutes.</p><p>Third-party services (all can be signed into with Github):</p><ul><li><p>A modern web host like <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link\" href=\"https://vercel.com/\"><strong>Vercel</strong></a> or <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link\" href=\"https://netlify.com\"><strong>Netlify</strong></a> to host the Primo application &amp; published sites.</p></li><li><p>A <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link\" href=\"https://supabase.com\"><strong>Supabase</strong></a> account to manage your server's authentication, database, and file storage.</p></li><li><p>A <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link\" href=\"https://github.com\"><strong>Github</strong></a> account to deploy your sites to (unless you plan on downloading the site and connecting to a host).</p></li></ul><h2>Installation</h2><ol><li><p>Ensure you have an account with all the services listed above.</p></li><li><p>Create a new Supabase project, go to the SQL editor, add a new query and prepare it by copying the <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link\" href=\"https://raw.githubusercontent.com/mateomorris/primo/master/primo_schema.sql\">schema</a> and pasting it into the SQL editor.</p></li><li><p>Fork the <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link\" href=\"https://github.com/primocms/primo\">Primo repository</a>.</p></li><li><p>Go to your web host and create a new project from your new repository, inputting your Supabase details as environment variables.</p><ul><li><p>PUBLIC_SUPABASE_URL</p></li><li><p>PUBLIC_SUPABASE_PUBLIC_KEY</p></li><li><p>PRIVATE_SUPABASE_PRIVATE_KEY</p></li></ul></li><li><p>Publish the project and navigate to the Primo authentication screen.</p></li><li><p>The user account you create will be the server owner. You can manage the entire project's data from the Supabase project dashboard.</p></li></ol>",
+					"markdown": "# Getting Started\n\nPrimo depends on several [freemium] third-party services for easy hosting, authentication, database and storage, etc. Running your own Primo server is as easy as forking the [**Primo repo**](<https://github.com/primocms/primo>) and deploying it on a static host like Vercel or Netlify, which should only take a few minutes.\n\nThird-party services (all can be signed into with Github):\n\n- A modern web host like [**Vercel**](<https://vercel.com/>) or [**Netlify**](<https://netlify.com>) to host the Primo application & published sites.\n\n- A [**Supabase**](<https://supabase.com>) account to manage your server's authentication, database, and file storage.\n\n- A [**Github**](<https://github.com>) account to deploy your sites to (unless you plan on downloading the site and connecting to a host).\n\n\n<!-- -->\n\n<!-- -->\n\n## Installation\n\n1. Ensure you have an account with all the services listed above.\n\n2. Create a new Supabase project and prepare it by copying the [schema](<https://raw.githubusercontent.com/mateomorris/primo/master/primo_schema.sql>) and pasting it into the SQL editor.\n\n3. Fork the [Primo repository](<https://github.com/primocms/primo>).\n\n4. Go to your web host and create a new project from your new repository, inputting your Supabase details as environment variables.\n\n    - PUBLIC\\_SUPABASE\\_URL\n\n    - PUBLIC\\_SUPABASE\\_PUBLIC\\_KEY\n\n    - PRIVATE\\_SUPABASE\\_PRIVATE\\_KEY\n\n    <!-- -->\n\n    <!-- -->\n\n5. Publish the project and navigate to the Primo authentication screen.\n\n6. The user account you create will be the server owner. You can manage the entire project's data from the Supabase project dashboard.\n\n\n<!-- -->\n\n<!-- -->\n\n"
 				}
 			}
 		});
