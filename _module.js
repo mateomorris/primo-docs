@@ -268,6 +268,14 @@ function attr(node, attribute, value) {
     else if (node.getAttribute(attribute) !== value)
         node.setAttribute(attribute, value);
 }
+/**
+ * List of attributes that should always be set through the attr method,
+ * because updating them through the property setter doesn't work reliably.
+ * In the example of `width`/`height`, the problem is that the setter only
+ * accepts numeric values, but the attribute can also be set to a string like `50%`.
+ * If this list becomes too big, rethink this approach.
+ */
+const always_set_through_set_attribute = ['width', 'height'];
 function set_attributes(node, attributes) {
     // @ts-ignore
     const descriptors = Object.getOwnPropertyDescriptors(node.__proto__);
@@ -281,7 +289,7 @@ function set_attributes(node, attributes) {
         else if (key === '__value') {
             node.value = node[key] = attributes[key];
         }
-        else if (descriptors[key] && descriptors[key].set) {
+        else if (descriptors[key] && descriptors[key].set && always_set_through_set_attribute.indexOf(key) === -1) {
             node[key] = attributes[key];
         }
         else {
@@ -1010,18 +1018,18 @@ function create_fragment(ctx) {
 			link = element("link");
 			meta2 = element("meta");
 			style = element("style");
-			t = text("@import url(\"https://unpkg.com/@primo-app/primo@1.3.64/reset.css\");\n@import url(https://fonts.bunny.net/css?family=archivo:200,300,300i,400,400i,500,500i,600,600i,700,700i|inter:300,400,500,600,700,800);\n\nhtml {\n  /* Colors */\n  --color-accent: #35d994;\n\n  /* Default property values */\n  --background: #111;\n  --color: #C2C2C2;\n  --padding: 2rem;\n  --box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);\n  --border-radius: 8px;\n  --max-width: 1200px;\n  --border-color: #333;\n  --transition-time: 0.1s;\n  --transition: var(--transition-time) color,\n    var(--transition-time) background-color, var(--transition-time) border-color,\n    var(--transition-time) text-decoration-color,\n    var(--transition-time) box-shadow, var(--transtion-time) transform;\n}\n\n#page {\n  font-family: \"Inter\", sans-serif;\n  color: var(--color);\n  line-height: 1.6;\n  font-size: 1rem;\n  background: #111;\n  font-weight: 300;\n}\n\n.content {\n  max-width: var(--max-width);\n  margin: 0 auto;\n  padding: var(--padding);\n}\n\n.content img {\n    width: 100%;\n    margin: 2rem 0;\n    box-shadow: var(--box-shadow);\n    border-radius: var(--border-radius);\n  }\n\n.content p {\n    padding: 0.25rem 0;\n    line-height: 1.5;\n    color: var(--color);\n  }\n\n.content strong{\n    font-weight: 500;\n    color: white;\n  }\n\n.content a {\n    text-decoration: underline;\n  }\n\n.content h1 {\n    font-size: 2.25rem;\n    font-weight: 500;\n    margin-bottom:.5rem;\n    color: white;\n  }\n\n.content h2 {\n    font-size: 1.75rem;\n    font-weight: 500;\n    margin-bottom: 0.5rem;\n    margin-top: 2rem;\n    color: white;\n  }\n\n.content h3 {\n    font-size: 1.5rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content h4 {\n    font-size: 1.15rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content h5 {\n    font-size: 1rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content ul {\n    list-style: disc;\n    padding: 0.5rem 0;\n    padding-left: 1.25rem;\n  }\n\n.content ol {\n    list-style: decimal;\n    padding: 0.5rem 0;\n    padding-left: 1.25rem;\n  }\n\n.content blockquote {\n    padding: 2rem;\n    box-shadow: var(--box-shadow);\n    border-radius: var(--border-radius);\n  }\n\n.content pre {\n    padding: 2rem;\n    background: #222;\n    border-radius: 0.25rem;\n    margin-bottom: 2rem;\n    margin-top: 1em;\n  }\n\n.section-container {\n  max-width: var(--max-width, 1200px);\n  margin: 0 auto;\n  padding: 3rem var(--padding, 1rem);\n}\n\n.heading {\n  font-size: 3rem;\n  line-height: 1;\n  font-weight: 500;\n  margin: 0;\n}\n\n.button {\n  color: white;\n  background: var(--color-accent);\n  border-radius: 5px;\n  padding: 8px 20px;\n  transition: var(--transition);\n}\n\n.button:hover {\n    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);\n  }\n\n.button.inverted {\n    background: transparent;\n    color: var(--color-accent);\n    border: 2px solid var(--color-accent);\n  }");
+			t = text("@import url(\"https://unpkg.com/@primo-app/primo@1.3.64/reset.css\");\n@import url(https://fonts.bunny.net/css?family=archivo:200,300,300i,400,400i,500,500i,600,600i,700,700i|inter:300,400,500,600,700,800);\n\nhtml {\n  /* Colors */\n  --color-accent: #35d994;\n\n  /* Default property values */\n  --background: #111;\n  --color: #C2C2C2;\n  --padding: 2rem;\n  --box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);\n  --border-radius: 8px;\n  --max-width: 1200px;\n  --border-color: #333;\n  --transition-time: 0.1s;\n  --transition: var(--transition-time) color,\n    var(--transition-time) background-color, var(--transition-time) border-color,\n    var(--transition-time) text-decoration-color,\n    var(--transition-time) box-shadow, var(--transtion-time) transform;\n}\n\n#page {\n  font-family: \"Inter\", sans-serif;\n  color: var(--color);\n  line-height: 1.6;\n  font-size: 1rem;\n  background: #111;\n  font-weight: 300;\n}\n\n.content {\n  max-width: var(--max-width);\n  margin: 0 auto;\n  padding: var(--padding);\n\n/*   pre {\n    padding: 2rem;\n    background: #222;\n    border-radius: 0.25rem;\n    margin-bottom: 2rem;\n    margin-top: 1em;\n  } */\n}\n\n.content img {\n    width: 100%;\n    margin: 2rem 0;\n    box-shadow: var(--box-shadow);\n    border-radius: var(--border-radius);\n  }\n\n.content p {\n    padding: 0.25rem 0;\n    line-height: 1.5;\n    color: var(--color);\n  }\n\n.content strong{\n    font-weight: 500;\n    color: white;\n  }\n\n.content a {\n    text-decoration: underline;\n  }\n\n.content h1 {\n    font-size: 2.25rem;\n    font-weight: 500;\n    margin-bottom:.5rem;\n    color: white;\n  }\n\n.content h2 {\n    font-size: 1.75rem;\n    font-weight: 500;\n    margin-bottom: 0.5rem;\n    margin-top: 2rem;\n    color: white;\n  }\n\n.content h3 {\n    font-size: 1.5rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content h4 {\n    font-size: 1.15rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content h5 {\n    font-size: 1rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content ul {\n    list-style: disc;\n    padding: 0.5rem 0;\n    padding-left: 1.25rem;\n  }\n\n.content ol {\n    list-style: decimal;\n    padding: 0.5rem 0;\n    padding-left: 1.25rem;\n  }\n\n.content blockquote {\n    padding: 2rem;\n    box-shadow: var(--box-shadow);\n    border-radius: var(--border-radius);\n  }\n\n.section-container {\n  max-width: var(--max-width, 1200px);\n  margin: 0 auto;\n  padding: 3rem var(--padding, 1rem);\n}\n\n.heading {\n  font-size: 3rem;\n  line-height: 1;\n  font-weight: 500;\n  margin: 0;\n}\n\n.button {\n  color: white;\n  background: var(--color-accent);\n  border-radius: 5px;\n  padding: 8px 20px;\n  transition: var(--transition);\n}\n\n.button:hover {\n    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);\n  }\n\n.button.inverted {\n    background: transparent;\n    color: var(--color-accent);\n    border: 2px solid var(--color-accent);\n  }");
 			this.h();
 		},
 		l(nodes) {
-			const head_nodes = head_selector('svelte-adjov1', document.head);
+			const head_nodes = head_selector('svelte-1ed3n20', document.head);
 			meta0 = claim_element(head_nodes, "META", { name: true, content: true });
 			meta1 = claim_element(head_nodes, "META", { charset: true });
 			link = claim_element(head_nodes, "LINK", { rel: true, type: true, href: true });
 			meta2 = claim_element(head_nodes, "META", { name: true, content: true });
 			style = claim_element(head_nodes, "STYLE", {});
 			var style_nodes = children(style);
-			t = claim_text(style_nodes, "@import url(\"https://unpkg.com/@primo-app/primo@1.3.64/reset.css\");\n@import url(https://fonts.bunny.net/css?family=archivo:200,300,300i,400,400i,500,500i,600,600i,700,700i|inter:300,400,500,600,700,800);\n\nhtml {\n  /* Colors */\n  --color-accent: #35d994;\n\n  /* Default property values */\n  --background: #111;\n  --color: #C2C2C2;\n  --padding: 2rem;\n  --box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);\n  --border-radius: 8px;\n  --max-width: 1200px;\n  --border-color: #333;\n  --transition-time: 0.1s;\n  --transition: var(--transition-time) color,\n    var(--transition-time) background-color, var(--transition-time) border-color,\n    var(--transition-time) text-decoration-color,\n    var(--transition-time) box-shadow, var(--transtion-time) transform;\n}\n\n#page {\n  font-family: \"Inter\", sans-serif;\n  color: var(--color);\n  line-height: 1.6;\n  font-size: 1rem;\n  background: #111;\n  font-weight: 300;\n}\n\n.content {\n  max-width: var(--max-width);\n  margin: 0 auto;\n  padding: var(--padding);\n}\n\n.content img {\n    width: 100%;\n    margin: 2rem 0;\n    box-shadow: var(--box-shadow);\n    border-radius: var(--border-radius);\n  }\n\n.content p {\n    padding: 0.25rem 0;\n    line-height: 1.5;\n    color: var(--color);\n  }\n\n.content strong{\n    font-weight: 500;\n    color: white;\n  }\n\n.content a {\n    text-decoration: underline;\n  }\n\n.content h1 {\n    font-size: 2.25rem;\n    font-weight: 500;\n    margin-bottom:.5rem;\n    color: white;\n  }\n\n.content h2 {\n    font-size: 1.75rem;\n    font-weight: 500;\n    margin-bottom: 0.5rem;\n    margin-top: 2rem;\n    color: white;\n  }\n\n.content h3 {\n    font-size: 1.5rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content h4 {\n    font-size: 1.15rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content h5 {\n    font-size: 1rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content ul {\n    list-style: disc;\n    padding: 0.5rem 0;\n    padding-left: 1.25rem;\n  }\n\n.content ol {\n    list-style: decimal;\n    padding: 0.5rem 0;\n    padding-left: 1.25rem;\n  }\n\n.content blockquote {\n    padding: 2rem;\n    box-shadow: var(--box-shadow);\n    border-radius: var(--border-radius);\n  }\n\n.content pre {\n    padding: 2rem;\n    background: #222;\n    border-radius: 0.25rem;\n    margin-bottom: 2rem;\n    margin-top: 1em;\n  }\n\n.section-container {\n  max-width: var(--max-width, 1200px);\n  margin: 0 auto;\n  padding: 3rem var(--padding, 1rem);\n}\n\n.heading {\n  font-size: 3rem;\n  line-height: 1;\n  font-weight: 500;\n  margin: 0;\n}\n\n.button {\n  color: white;\n  background: var(--color-accent);\n  border-radius: 5px;\n  padding: 8px 20px;\n  transition: var(--transition);\n}\n\n.button:hover {\n    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);\n  }\n\n.button.inverted {\n    background: transparent;\n    color: var(--color-accent);\n    border: 2px solid var(--color-accent);\n  }");
+			t = claim_text(style_nodes, "@import url(\"https://unpkg.com/@primo-app/primo@1.3.64/reset.css\");\n@import url(https://fonts.bunny.net/css?family=archivo:200,300,300i,400,400i,500,500i,600,600i,700,700i|inter:300,400,500,600,700,800);\n\nhtml {\n  /* Colors */\n  --color-accent: #35d994;\n\n  /* Default property values */\n  --background: #111;\n  --color: #C2C2C2;\n  --padding: 2rem;\n  --box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);\n  --border-radius: 8px;\n  --max-width: 1200px;\n  --border-color: #333;\n  --transition-time: 0.1s;\n  --transition: var(--transition-time) color,\n    var(--transition-time) background-color, var(--transition-time) border-color,\n    var(--transition-time) text-decoration-color,\n    var(--transition-time) box-shadow, var(--transtion-time) transform;\n}\n\n#page {\n  font-family: \"Inter\", sans-serif;\n  color: var(--color);\n  line-height: 1.6;\n  font-size: 1rem;\n  background: #111;\n  font-weight: 300;\n}\n\n.content {\n  max-width: var(--max-width);\n  margin: 0 auto;\n  padding: var(--padding);\n\n/*   pre {\n    padding: 2rem;\n    background: #222;\n    border-radius: 0.25rem;\n    margin-bottom: 2rem;\n    margin-top: 1em;\n  } */\n}\n\n.content img {\n    width: 100%;\n    margin: 2rem 0;\n    box-shadow: var(--box-shadow);\n    border-radius: var(--border-radius);\n  }\n\n.content p {\n    padding: 0.25rem 0;\n    line-height: 1.5;\n    color: var(--color);\n  }\n\n.content strong{\n    font-weight: 500;\n    color: white;\n  }\n\n.content a {\n    text-decoration: underline;\n  }\n\n.content h1 {\n    font-size: 2.25rem;\n    font-weight: 500;\n    margin-bottom:.5rem;\n    color: white;\n  }\n\n.content h2 {\n    font-size: 1.75rem;\n    font-weight: 500;\n    margin-bottom: 0.5rem;\n    margin-top: 2rem;\n    color: white;\n  }\n\n.content h3 {\n    font-size: 1.5rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content h4 {\n    font-size: 1.15rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content h5 {\n    font-size: 1rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content ul {\n    list-style: disc;\n    padding: 0.5rem 0;\n    padding-left: 1.25rem;\n  }\n\n.content ol {\n    list-style: decimal;\n    padding: 0.5rem 0;\n    padding-left: 1.25rem;\n  }\n\n.content blockquote {\n    padding: 2rem;\n    box-shadow: var(--box-shadow);\n    border-radius: var(--border-radius);\n  }\n\n.section-container {\n  max-width: var(--max-width, 1200px);\n  margin: 0 auto;\n  padding: 3rem var(--padding, 1rem);\n}\n\n.heading {\n  font-size: 3rem;\n  line-height: 1;\n  font-weight: 500;\n  margin: 0;\n}\n\n.button {\n  color: white;\n  background: var(--color-accent);\n  border-radius: 5px;\n  padding: 8px 20px;\n  transition: var(--transition);\n}\n\n.button:hover {\n    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);\n  }\n\n.button.inverted {\n    background: transparent;\n    color: var(--color-accent);\n    border: 2px solid var(--color-accent);\n  }");
 			style_nodes.forEach(detach);
 			head_nodes.forEach(detach);
 			this.h();
@@ -3687,7 +3695,7 @@ function get_each_context$1(ctx, list, i) {
 	return child_ctx;
 }
 
-// (169:8) {#if link.active}
+// (173:8) {#if link.active}
 function create_if_block_1$1(ctx) {
 	let icon;
 	let current;
@@ -3719,7 +3727,7 @@ function create_if_block_1$1(ctx) {
 	};
 }
 
-// (166:4) {#each links as link}
+// (170:4) {#each links as link}
 function create_each_block$1(ctx) {
 	let a;
 	let span;
@@ -3756,9 +3764,9 @@ function create_each_block$1(ctx) {
 			this.h();
 		},
 		h() {
-			attr(span, "class", "svelte-34p0ln");
+			attr(span, "class", "svelte-1rlhl5p");
 			attr(a, "href", a_href_value = "#" + /*link*/ ctx[8].id);
-			attr(a, "class", a_class_value = "" + (null_to_empty(/*link*/ ctx[8].level) + " svelte-34p0ln"));
+			attr(a, "class", a_class_value = "" + (null_to_empty(/*link*/ ctx[8].level) + " svelte-1rlhl5p"));
 			toggle_class(a, "passed", /*link*/ ctx[8].passed);
 		},
 		m(target, anchor) {
@@ -3798,7 +3806,7 @@ function create_each_block$1(ctx) {
 				attr(a, "href", a_href_value);
 			}
 
-			if (!current || dirty & /*links*/ 4 && a_class_value !== (a_class_value = "" + (null_to_empty(/*link*/ ctx[8].level) + " svelte-34p0ln"))) {
+			if (!current || dirty & /*links*/ 4 && a_class_value !== (a_class_value = "" + (null_to_empty(/*link*/ ctx[8].level) + " svelte-1rlhl5p"))) {
 				attr(a, "class", a_class_value);
 			}
 
@@ -3822,7 +3830,7 @@ function create_each_block$1(ctx) {
 	};
 }
 
-// (176:4) {#if video_id}
+// (180:4) {#if video_id}
 function create_if_block$2(ctx) {
 	let div;
 	let iframe;
@@ -3857,8 +3865,8 @@ function create_if_block$2(ctx) {
 			attr(iframe, "frameborder", "0");
 			attr(iframe, "allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
 			iframe.allowFullscreen = true;
-			attr(iframe, "class", "svelte-34p0ln");
-			attr(div, "class", "video svelte-34p0ln");
+			attr(iframe, "class", "svelte-1rlhl5p");
+			attr(div, "class", "video svelte-1rlhl5p");
 		},
 		m(target, anchor) {
 			insert_hydration(target, div, anchor);
@@ -3941,7 +3949,7 @@ function create_fragment$3(ctx) {
 			var main_nodes = children(main);
 			if (if_block) if_block.l(main_nodes);
 			t1 = claim_space(main_nodes);
-			div0 = claim_element(main_nodes, "DIV", { class: true, "data-key": true });
+			div0 = claim_element(main_nodes, "DIV", { class: true });
 			var div0_nodes = children(div0);
 			div0_nodes.forEach(detach);
 			main_nodes.forEach(detach);
@@ -3953,11 +3961,10 @@ function create_fragment$3(ctx) {
 			this.h();
 		},
 		h() {
-			attr(nav, "class", "svelte-34p0ln");
-			attr(div0, "class", "content svelte-34p0ln");
-			attr(div0, "data-key", "content");
-			attr(main, "class", "svelte-34p0ln");
-			attr(section, "class", "section-container svelte-34p0ln");
+			attr(nav, "class", "svelte-1rlhl5p");
+			attr(div0, "class", "content svelte-1rlhl5p");
+			attr(main, "class", "svelte-1rlhl5p");
+			attr(section, "class", "section-container svelte-1rlhl5p");
 			attr(link, "rel", "stylesheet");
 			attr(link, "href", "https://unpkg.com/highlightjs@9.16.2/styles/solarized-dark.css");
 			attr(div1, "class", "component");
@@ -4171,9 +4178,8 @@ function create_fragment$4(ctx) {
 				title: "Primo Docs",
 				description: "Primo is a free & open source, component-based CMS that makes it easy to build visually-editable static sites.",
 				secondary_logo: {
-					"url": "/",
-					"label": "Docs",
-					"active": false
+					"url": "http://localhost:5173/primo-docs",
+					"label": "docs"
 				},
 				nav: [
 					{
@@ -4187,14 +4193,14 @@ function create_fragment$4(ctx) {
 					},
 					{
 						"link": {
-							"url": "/development",
-							"label": "Development"
+							"url": "/templating",
+							"label": "Templating"
 						}
 					},
 					{
 						"link": {
-							"url": "/templating",
-							"label": "Templating"
+							"url": "/development",
+							"label": "Development"
 						}
 					}
 				]
