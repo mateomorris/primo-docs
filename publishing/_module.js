@@ -718,70 +718,6 @@ function transition_out(block, local, detach, callback) {
     }
 }
 const null_transition = { duration: 0 };
-function create_in_transition(node, fn, params) {
-    const options = { direction: 'in' };
-    let config = fn(node, params, options);
-    let running = false;
-    let animation_name;
-    let task;
-    let uid = 0;
-    function cleanup() {
-        if (animation_name)
-            delete_rule(node, animation_name);
-    }
-    function go() {
-        const { delay = 0, duration = 300, easing = identity, tick = noop, css } = config || null_transition;
-        if (css)
-            animation_name = create_rule(node, 0, 1, duration, delay, easing, css, uid++);
-        tick(0, 1);
-        const start_time = now() + delay;
-        const end_time = start_time + duration;
-        if (task)
-            task.abort();
-        running = true;
-        add_render_callback(() => dispatch(node, true, 'start'));
-        task = loop(now => {
-            if (running) {
-                if (now >= end_time) {
-                    tick(1, 0);
-                    dispatch(node, true, 'end');
-                    cleanup();
-                    return running = false;
-                }
-                if (now >= start_time) {
-                    const t = easing((now - start_time) / duration);
-                    tick(t, 1 - t);
-                }
-            }
-            return running;
-        });
-    }
-    let started = false;
-    return {
-        start() {
-            if (started)
-                return;
-            started = true;
-            delete_rule(node);
-            if (is_function(config)) {
-                config = config(options);
-                wait().then(go);
-            }
-            else {
-                go();
-            }
-        },
-        invalidate() {
-            started = false;
-        },
-        end() {
-            if (running) {
-                cleanup();
-                running = false;
-            }
-        }
-    };
-}
 function create_bidirectional_transition(node, fn, params, intro) {
     const options = { direction: 'both' };
     let config = fn(node, params, options);
@@ -6458,11 +6394,6 @@ class Component$1 extends SvelteComponent {
 	}
 }
 
-function cubicOut(t) {
-    const f = t - 1.0;
-    return f * f * f + 1.0;
-}
-
 function fade(node, { delay = 0, duration = 400, easing = identity } = {}) {
     const o = +getComputedStyle(node).opacity;
     return {
@@ -6470,34 +6401,6 @@ function fade(node, { delay = 0, duration = 400, easing = identity } = {}) {
         duration,
         easing,
         css: t => `opacity: ${t * o}`
-    };
-}
-function slide(node, { delay = 0, duration = 400, easing = cubicOut, axis = 'y' } = {}) {
-    const style = getComputedStyle(node);
-    const opacity = +style.opacity;
-    const primary_property = axis === 'y' ? 'height' : 'width';
-    const primary_property_value = parseFloat(style[primary_property]);
-    const secondary_properties = axis === 'y' ? ['top', 'bottom'] : ['left', 'right'];
-    const capitalized_secondary_properties = secondary_properties.map((e) => `${e[0].toUpperCase()}${e.slice(1)}`);
-    const padding_start_value = parseFloat(style[`padding${capitalized_secondary_properties[0]}`]);
-    const padding_end_value = parseFloat(style[`padding${capitalized_secondary_properties[1]}`]);
-    const margin_start_value = parseFloat(style[`margin${capitalized_secondary_properties[0]}`]);
-    const margin_end_value = parseFloat(style[`margin${capitalized_secondary_properties[1]}`]);
-    const border_width_start_value = parseFloat(style[`border${capitalized_secondary_properties[0]}Width`]);
-    const border_width_end_value = parseFloat(style[`border${capitalized_secondary_properties[1]}Width`]);
-    return {
-        delay,
-        duration,
-        easing,
-        css: t => 'overflow: hidden;' +
-            `opacity: ${Math.min(t * 20, 1) * opacity};` +
-            `${primary_property}: ${t * primary_property_value}px;` +
-            `padding-${secondary_properties[0]}: ${t * padding_start_value}px;` +
-            `padding-${secondary_properties[1]}: ${t * padding_end_value}px;` +
-            `margin-${secondary_properties[0]}: ${t * margin_start_value}px;` +
-            `margin-${secondary_properties[1]}: ${t * margin_end_value}px;` +
-            `border-${secondary_properties[0]}-width: ${t * border_width_start_value}px;` +
-            `border-${secondary_properties[1]}-width: ${t * border_width_end_value}px;`
     };
 }
 
@@ -6521,280 +6424,7 @@ function get_each_context_2(ctx, list, i) {
 	return child_ctx;
 }
 
-// (180:2) {#if parent_nav}
-function create_if_block_1$1(ctx) {
-	let div;
-	let a;
-	let svg;
-	let g;
-	let path0;
-	let path1;
-	let path2;
-	let path3;
-	let path4;
-	let path5;
-	let path6;
-	let path7;
-	let path8;
-	let defs;
-	let linearGradient;
-	let stop0;
-	let stop1;
-	let stop2;
-	let stop3;
-	let stop4;
-	let stop5;
-	let clipPath;
-	let rect;
-	let t;
-	let nav_1;
-	let div_intro;
-	let each_value_2 = /*parent_nav*/ ctx[2];
-	let each_blocks = [];
-
-	for (let i = 0; i < each_value_2.length; i += 1) {
-		each_blocks[i] = create_each_block_2(get_each_context_2(ctx, each_value_2, i));
-	}
-
-	return {
-		c() {
-			div = element("div");
-			a = element("a");
-			svg = svg_element("svg");
-			g = svg_element("g");
-			path0 = svg_element("path");
-			path1 = svg_element("path");
-			path2 = svg_element("path");
-			path3 = svg_element("path");
-			path4 = svg_element("path");
-			path5 = svg_element("path");
-			path6 = svg_element("path");
-			path7 = svg_element("path");
-			path8 = svg_element("path");
-			defs = svg_element("defs");
-			linearGradient = svg_element("linearGradient");
-			stop0 = svg_element("stop");
-			stop1 = svg_element("stop");
-			stop2 = svg_element("stop");
-			stop3 = svg_element("stop");
-			stop4 = svg_element("stop");
-			stop5 = svg_element("stop");
-			clipPath = svg_element("clipPath");
-			rect = svg_element("rect");
-			t = space();
-			nav_1 = element("nav");
-
-			for (let i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-
-			this.h();
-		},
-		l(nodes) {
-			div = claim_element(nodes, "DIV", { class: true });
-			var div_nodes = children(div);
-			a = claim_element(div_nodes, "A", { href: true, class: true });
-			var a_nodes = children(a);
-
-			svg = claim_svg_element(a_nodes, "svg", {
-				viewBox: true,
-				fill: true,
-				xmlns: true,
-				class: true
-			});
-
-			var svg_nodes = children(svg);
-			g = claim_svg_element(svg_nodes, "g", { "clip-path": true });
-			var g_nodes = children(g);
-			path0 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
-			children(path0).forEach(detach);
-			path1 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
-			children(path1).forEach(detach);
-			path2 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
-			children(path2).forEach(detach);
-			path3 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
-			children(path3).forEach(detach);
-			path4 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
-			children(path4).forEach(detach);
-			path5 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
-			children(path5).forEach(detach);
-			path6 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
-			children(path6).forEach(detach);
-			path7 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
-			children(path7).forEach(detach);
-			path8 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
-			children(path8).forEach(detach);
-			g_nodes.forEach(detach);
-			defs = claim_svg_element(svg_nodes, "defs", {});
-			var defs_nodes = children(defs);
-
-			linearGradient = claim_svg_element(defs_nodes, "linearGradient", {
-				id: true,
-				x1: true,
-				y1: true,
-				x2: true,
-				y2: true,
-				gradientUnits: true
-			});
-
-			var linearGradient_nodes = children(linearGradient);
-			stop0 = claim_svg_element(linearGradient_nodes, "stop", { "stop-color": true });
-			children(stop0).forEach(detach);
-			stop1 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
-			children(stop1).forEach(detach);
-			stop2 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
-			children(stop2).forEach(detach);
-			stop3 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
-			children(stop3).forEach(detach);
-			stop4 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
-			children(stop4).forEach(detach);
-			stop5 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
-			children(stop5).forEach(detach);
-			linearGradient_nodes.forEach(detach);
-			clipPath = claim_svg_element(defs_nodes, "clipPath", { id: true });
-			var clipPath_nodes = children(clipPath);
-			rect = claim_svg_element(clipPath_nodes, "rect", { width: true, height: true, fill: true });
-			children(rect).forEach(detach);
-			clipPath_nodes.forEach(detach);
-			defs_nodes.forEach(detach);
-			svg_nodes.forEach(detach);
-			a_nodes.forEach(detach);
-			t = claim_space(div_nodes);
-			nav_1 = claim_element(div_nodes, "NAV", { class: true });
-			var nav_1_nodes = children(nav_1);
-
-			for (let i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].l(nav_1_nodes);
-			}
-
-			nav_1_nodes.forEach(detach);
-			div_nodes.forEach(detach);
-			this.h();
-		},
-		h() {
-			attr(path0, "d", "M814.062 159.924C782.686 159.924 757.171 134.408 757.171 103.032C757.171 71.6567 782.686 46.1408 814.062 46.1408C845.438 46.1408 870.954 71.6567 870.954 103.032C870.954 134.408 845.438 159.924 814.062 159.924ZM814.062 70.3186C796.021 70.3186 781.395 84.9914 781.395 102.986C781.395 120.981 796.067 135.654 814.062 135.654C832.057 135.654 846.73 120.981 846.73 102.986C846.73 84.9914 832.057 70.3186 814.062 70.3186V70.3186Z");
-			attr(path0, "fill", "#FDFDFD");
-			attr(path1, "d", "M700.925 46.0947C689.897 46.0947 679.931 50.5242 672.641 57.676C665.35 50.5242 655.384 46.0947 644.356 46.0947C622.07 46.0947 603.983 64.228 603.983 86.4679V147.789C603.983 154.479 609.382 159.878 616.072 159.878C622.763 159.878 628.161 154.479 628.161 147.789V86.4679C628.161 77.5627 635.405 70.3186 644.31 70.3186C653.215 70.3186 660.46 77.5627 660.46 86.4679V147.789C660.46 154.479 665.858 159.878 672.548 159.878C679.239 159.878 684.637 154.479 684.637 147.789V86.4679C684.637 77.5627 691.881 70.3186 700.787 70.3186C709.692 70.3186 716.936 77.5627 716.936 86.4679V147.789C716.936 154.479 722.334 159.878 729.025 159.878C735.715 159.878 741.114 154.479 741.114 147.789V86.4679C741.114 64.1819 722.98 46.0947 700.74 46.0947H700.925Z");
-			attr(path1, "fill", "#FDFDFD");
-			attr(path2, "d", "M571.039 159.786C564.348 159.786 558.95 154.387 558.95 147.697V58.0913C558.95 51.4009 564.348 46.0024 571.039 46.0024C577.729 46.0024 583.128 51.4009 583.128 58.0913V147.697C583.128 154.387 577.729 159.786 571.039 159.786Z");
-			attr(path2, "fill", "#FDFDFD");
-			attr(path3, "d", "M571.039 26.4848C578.352 26.4848 584.281 20.556 584.281 13.2424C584.281 5.92883 578.352 0 571.039 0C563.725 0 557.796 5.92883 557.796 13.2424C557.796 20.556 563.725 26.4848 571.039 26.4848Z");
-			attr(path3, "fill", "#FDFDFD");
-			attr(path4, "d", "M482.356 159.785C475.666 159.785 470.267 154.387 470.267 147.697V102.894C470.267 71.5181 495.783 46.0023 527.159 46.0023C533.849 46.0023 539.248 51.4007 539.248 58.0911C539.248 64.7816 533.849 70.18 527.159 70.18C509.118 70.18 494.491 84.8528 494.491 102.848V147.65C494.491 154.341 489.093 159.739 482.402 159.739L482.356 159.785Z");
-			attr(path4, "fill", "#FDFDFD");
-			attr(path5, "d", "M349.701 197.99C343.011 197.99 337.612 192.592 337.612 185.901V102.894C337.612 71.5182 363.128 46.0024 394.504 46.0024C425.88 46.0024 451.396 71.5182 451.396 102.894C451.396 134.27 425.88 159.786 394.504 159.786C387.814 159.786 382.415 154.387 382.415 147.697C382.415 141.006 387.814 135.608 394.504 135.608C412.545 135.608 427.172 120.935 427.172 102.94C427.172 84.9452 412.499 70.2724 394.504 70.2724C376.509 70.2724 361.836 84.9452 361.836 102.94V185.947C361.836 192.638 356.438 198.036 349.747 198.036L349.701 197.99Z");
-			attr(path5, "fill", "#FDFDFD");
-			attr(path6, "d", "M222.814 159.371C219.723 159.371 216.631 158.171 214.232 155.818C209.526 151.065 209.526 143.406 214.232 138.699L249.668 103.263L214.232 67.8271C209.526 63.0746 209.526 55.4153 214.232 50.7089C218.984 45.9564 226.644 45.9564 231.35 50.7089L275.369 94.7272C280.075 99.4797 280.075 107.139 275.369 111.845L231.35 155.864C228.997 158.217 225.906 159.417 222.768 159.417L222.814 159.371Z");
-			attr(path6, "fill", "#35D994");
-			attr(path7, "d", "M94.7272 197.99C91.6358 197.99 88.5443 196.791 86.145 194.437L3.55296 111.799C-1.1534 107.047 -1.1534 99.3874 3.55296 94.681L47.5713 50.6627C52.3238 45.9102 59.9832 45.9102 64.6895 50.6627C69.3959 55.4152 69.3959 63.0746 64.6895 67.7809L29.2073 103.217L103.263 177.273C107.97 182.026 107.97 189.685 103.263 194.391C100.91 196.744 97.8186 197.944 94.6811 197.944L94.7272 197.99Z");
-			attr(path7, "fill", "url(#paint0_linear_250_527)");
-			attr(path8, "d", "M94.7273 197.99C88.0369 197.99 82.6384 192.592 82.6384 185.901V102.894C82.6384 71.5181 108.154 46.0023 139.53 46.0023C170.906 46.0023 196.422 71.5181 196.422 102.894C196.422 134.27 170.906 159.785 139.53 159.785C132.84 159.785 127.441 154.387 127.441 147.697C127.441 141.006 132.84 135.608 139.53 135.608C157.571 135.608 172.198 120.935 172.198 102.94C172.198 84.9451 157.525 70.2723 139.53 70.2723C121.535 70.2723 106.862 84.9451 106.862 102.94V185.947C106.862 192.638 101.464 198.036 94.7735 198.036L94.7273 197.99Z");
-			attr(path8, "fill", "#35D994");
-			attr(g, "clip-path", "url(#clip0_250_527)");
-			attr(stop0, "stop-color", "#35D994");
-			attr(stop1, "offset", "0.16");
-			attr(stop1, "stop-color", "#32D28E");
-			attr(stop2, "offset", "0.38");
-			attr(stop2, "stop-color", "#29BF80");
-			attr(stop3, "offset", "0.64");
-			attr(stop3, "stop-color", "#1CA169");
-			attr(stop4, "offset", "0.93");
-			attr(stop4, "stop-color", "#097649");
-			attr(stop5, "offset", "0.95");
-			attr(stop5, "stop-color", "#097548");
-			attr(linearGradient, "id", "paint0_linear_250_527");
-			attr(linearGradient, "x1", "25.5621");
-			attr(linearGradient, "y1", "72.6719");
-			attr(linearGradient, "x2", "125.319");
-			attr(linearGradient, "y2", "172.428");
-			attr(linearGradient, "gradientUnits", "userSpaceOnUse");
-			attr(rect, "width", "871");
-			attr(rect, "height", "197.99");
-			attr(rect, "fill", "white");
-			attr(clipPath, "id", "clip0_250_527");
-			attr(svg, "viewBox", "0 0 871 198");
-			attr(svg, "fill", "none");
-			attr(svg, "xmlns", "http://www.w3.org/2000/svg");
-			attr(svg, "class", "svelte-1xzcmyc");
-			attr(a, "href", "https://primocms.org");
-			attr(a, "class", "is-primo svelte-1xzcmyc");
-			attr(nav_1, "class", "svelte-1xzcmyc");
-			attr(div, "class", "parent-nav section-container svelte-1xzcmyc");
-		},
-		m(target, anchor) {
-			insert_hydration(target, div, anchor);
-			append_hydration(div, a);
-			append_hydration(a, svg);
-			append_hydration(svg, g);
-			append_hydration(g, path0);
-			append_hydration(g, path1);
-			append_hydration(g, path2);
-			append_hydration(g, path3);
-			append_hydration(g, path4);
-			append_hydration(g, path5);
-			append_hydration(g, path6);
-			append_hydration(g, path7);
-			append_hydration(g, path8);
-			append_hydration(svg, defs);
-			append_hydration(defs, linearGradient);
-			append_hydration(linearGradient, stop0);
-			append_hydration(linearGradient, stop1);
-			append_hydration(linearGradient, stop2);
-			append_hydration(linearGradient, stop3);
-			append_hydration(linearGradient, stop4);
-			append_hydration(linearGradient, stop5);
-			append_hydration(defs, clipPath);
-			append_hydration(clipPath, rect);
-			append_hydration(div, t);
-			append_hydration(div, nav_1);
-
-			for (let i = 0; i < each_blocks.length; i += 1) {
-				if (each_blocks[i]) {
-					each_blocks[i].m(nav_1, null);
-				}
-			}
-		},
-		p(ctx, dirty) {
-			if (dirty & /*parent_nav*/ 4) {
-				each_value_2 = /*parent_nav*/ ctx[2];
-				let i;
-
-				for (i = 0; i < each_value_2.length; i += 1) {
-					const child_ctx = get_each_context_2(ctx, each_value_2, i);
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(child_ctx, dirty);
-					} else {
-						each_blocks[i] = create_each_block_2(child_ctx);
-						each_blocks[i].c();
-						each_blocks[i].m(nav_1, null);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].d(1);
-				}
-
-				each_blocks.length = each_value_2.length;
-			}
-		},
-		i(local) {
-			if (!div_intro) {
-				add_render_callback(() => {
-					div_intro = create_in_transition(div, slide, {});
-					div_intro.start();
-				});
-			}
-		},
-		o: noop,
-		d(detaching) {
-			if (detaching) detach(div);
-			destroy_each(each_blocks, detaching);
-		}
-	};
-}
-
-// (235:6) {#each parent_nav as { link }}
+// (240:6) {#each parent_nav as { link }}
 function create_each_block_2(ctx) {
 	let a;
 	let t_value = /*link*/ ctx[7].label + "";
@@ -6816,7 +6446,7 @@ function create_each_block_2(ctx) {
 		},
 		h() {
 			attr(a, "href", a_href_value = /*link*/ ctx[7].url);
-			attr(a, "class", "svelte-1xzcmyc");
+			attr(a, "class", "svelte-1vi00bf");
 		},
 		m(target, anchor) {
 			insert_hydration(target, a, anchor);
@@ -6835,7 +6465,7 @@ function create_each_block_2(ctx) {
 	};
 }
 
-// (248:6) {#each nav as { link }}
+// (252:6) {#each nav as { link }}
 function create_each_block_1(ctx) {
 	let a;
 	let t_value = /*link*/ ctx[7].label + "";
@@ -6857,7 +6487,7 @@ function create_each_block_1(ctx) {
 		},
 		h() {
 			attr(a, "href", a_href_value = /*link*/ ctx[7].url);
-			attr(a, "class", "link svelte-1xzcmyc");
+			attr(a, "class", "link svelte-1vi00bf");
 			toggle_class(a, "active", window.location.pathname === /*link*/ ctx[7].url);
 		},
 		m(target, anchor) {
@@ -6881,7 +6511,7 @@ function create_each_block_1(ctx) {
 	};
 }
 
-// (269:4) {#if mobileNavOpen}
+// (273:4) {#if mobileNavOpen}
 function create_if_block$1(ctx) {
 	let nav_1;
 	let t;
@@ -6961,12 +6591,12 @@ function create_if_block$1(ctx) {
 			attr(svg, "xmlns", "http://www.w3.org/2000/svg");
 			attr(svg, "viewBox", "0 0 20 20");
 			attr(svg, "fill", "currentColor");
-			attr(svg, "class", "svelte-1xzcmyc");
+			attr(svg, "class", "svelte-1vi00bf");
 			attr(button, "id", "close");
 			attr(button, "aria-label", "Close Navigation");
-			attr(button, "class", "svelte-1xzcmyc");
+			attr(button, "class", "svelte-1vi00bf");
 			attr(nav_1, "id", "mobile-nav");
-			attr(nav_1, "class", "svelte-1xzcmyc");
+			attr(nav_1, "class", "svelte-1vi00bf");
 		},
 		m(target, anchor) {
 			insert_hydration(target, nav_1, anchor);
@@ -7038,7 +6668,7 @@ function create_if_block$1(ctx) {
 	};
 }
 
-// (271:8) {#each nav as { link }}
+// (275:8) {#each nav as { link }}
 function create_each_block(ctx) {
 	let a;
 	let t_value = /*link*/ ctx[7].label + "";
@@ -7060,7 +6690,7 @@ function create_each_block(ctx) {
 		},
 		h() {
 			attr(a, "href", a_href_value = /*link*/ ctx[7].url);
-			attr(a, "class", "link svelte-1xzcmyc");
+			attr(a, "class", "link svelte-1vi00bf");
 		},
 		m(target, anchor) {
 			insert_hydration(target, a, anchor);
@@ -7080,27 +6710,58 @@ function create_each_block(ctx) {
 }
 
 function create_fragment$2(ctx) {
+	let div5;
 	let div4;
-	let div3;
 	let header;
-	let t0;
-	let div2;
 	let div0;
-	let a;
+	let a0;
+	let svg0;
+	let g;
+	let path0;
+	let path1;
+	let path2;
+	let path3;
+	let path4;
+	let path5;
+	let path6;
+	let path7;
+	let path8;
+	let defs;
+	let linearGradient;
+	let stop0;
+	let stop1;
+	let stop2;
+	let stop3;
+	let stop4;
+	let stop5;
+	let clipPath;
+	let rect;
+	let t0;
+	let nav0;
 	let t1;
-	let a_href_value;
-	let t2;
-	let nav_1;
-	let t3;
+	let div3;
 	let div1;
-	let button;
-	let svg;
-	let path;
+	let a1;
+	let t2;
+	let a1_href_value;
+	let t3;
+	let nav1;
 	let t4;
+	let div2;
+	let button;
+	let svg1;
+	let path9;
+	let t5;
 	let current;
 	let mounted;
 	let dispose;
-	let if_block0 = /*parent_nav*/ ctx[2] && create_if_block_1$1(ctx);
+	let each_value_2 = /*parent_nav*/ ctx[2];
+	let each_blocks_1 = [];
+
+	for (let i = 0; i < each_value_2.length; i += 1) {
+		each_blocks_1[i] = create_each_block_2(get_each_context_2(ctx, each_value_2, i));
+	}
+
 	let each_value_1 = /*nav*/ ctx[1];
 	let each_blocks = [];
 
@@ -7108,69 +6769,175 @@ function create_fragment$2(ctx) {
 		each_blocks[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
 	}
 
-	let if_block1 = /*mobileNavOpen*/ ctx[3] && create_if_block$1(ctx);
+	let if_block = /*mobileNavOpen*/ ctx[3] && create_if_block$1(ctx);
 
 	return {
 		c() {
+			div5 = element("div");
 			div4 = element("div");
-			div3 = element("div");
 			header = element("header");
-			if (if_block0) if_block0.c();
-			t0 = space();
-			div2 = element("div");
 			div0 = element("div");
-			a = element("a");
-			t1 = text("Primo Docs");
-			t2 = space();
-			nav_1 = element("nav");
+			a0 = element("a");
+			svg0 = svg_element("svg");
+			g = svg_element("g");
+			path0 = svg_element("path");
+			path1 = svg_element("path");
+			path2 = svg_element("path");
+			path3 = svg_element("path");
+			path4 = svg_element("path");
+			path5 = svg_element("path");
+			path6 = svg_element("path");
+			path7 = svg_element("path");
+			path8 = svg_element("path");
+			defs = svg_element("defs");
+			linearGradient = svg_element("linearGradient");
+			stop0 = svg_element("stop");
+			stop1 = svg_element("stop");
+			stop2 = svg_element("stop");
+			stop3 = svg_element("stop");
+			stop4 = svg_element("stop");
+			stop5 = svg_element("stop");
+			clipPath = svg_element("clipPath");
+			rect = svg_element("rect");
+			t0 = space();
+			nav0 = element("nav");
+
+			for (let i = 0; i < each_blocks_1.length; i += 1) {
+				each_blocks_1[i].c();
+			}
+
+			t1 = space();
+			div3 = element("div");
+			div1 = element("div");
+			a1 = element("a");
+			t2 = text("Primo Docs");
+			t3 = space();
+			nav1 = element("nav");
 
 			for (let i = 0; i < each_blocks.length; i += 1) {
 				each_blocks[i].c();
 			}
 
-			t3 = space();
-			div1 = element("div");
-			button = element("button");
-			svg = svg_element("svg");
-			path = svg_element("path");
 			t4 = space();
-			if (if_block1) if_block1.c();
+			div2 = element("div");
+			button = element("button");
+			svg1 = svg_element("svg");
+			path9 = svg_element("path");
+			t5 = space();
+			if (if_block) if_block.c();
 			this.h();
 		},
 		l(nodes) {
-			div4 = claim_element(nodes, "DIV", { class: true, id: true });
+			div5 = claim_element(nodes, "DIV", { class: true, id: true });
+			var div5_nodes = children(div5);
+			div4 = claim_element(div5_nodes, "DIV", { class: true });
 			var div4_nodes = children(div4);
-			div3 = claim_element(div4_nodes, "DIV", { class: true });
-			var div3_nodes = children(div3);
-			header = claim_element(div3_nodes, "HEADER", { class: true });
+			header = claim_element(div4_nodes, "HEADER", { class: true });
 			var header_nodes = children(header);
-			if (if_block0) if_block0.l(header_nodes);
-			t0 = claim_space(header_nodes);
-			div2 = claim_element(header_nodes, "DIV", { class: true });
-			var div2_nodes = children(div2);
-			div0 = claim_element(div2_nodes, "DIV", { class: true });
+			div0 = claim_element(header_nodes, "DIV", { class: true });
 			var div0_nodes = children(div0);
-			a = claim_element(div0_nodes, "A", { href: true, class: true });
-			var a_nodes = children(a);
-			t1 = claim_text(a_nodes, "Primo Docs");
-			a_nodes.forEach(detach);
-			div0_nodes.forEach(detach);
-			t2 = claim_space(div2_nodes);
-			nav_1 = claim_element(div2_nodes, "NAV", { class: true });
-			var nav_1_nodes = children(nav_1);
+			a0 = claim_element(div0_nodes, "A", { href: true, class: true });
+			var a0_nodes = children(a0);
 
-			for (let i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].l(nav_1_nodes);
+			svg0 = claim_svg_element(a0_nodes, "svg", {
+				viewBox: true,
+				fill: true,
+				xmlns: true,
+				class: true
+			});
+
+			var svg0_nodes = children(svg0);
+			g = claim_svg_element(svg0_nodes, "g", { "clip-path": true });
+			var g_nodes = children(g);
+			path0 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
+			children(path0).forEach(detach);
+			path1 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
+			children(path1).forEach(detach);
+			path2 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
+			children(path2).forEach(detach);
+			path3 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
+			children(path3).forEach(detach);
+			path4 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
+			children(path4).forEach(detach);
+			path5 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
+			children(path5).forEach(detach);
+			path6 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
+			children(path6).forEach(detach);
+			path7 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
+			children(path7).forEach(detach);
+			path8 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
+			children(path8).forEach(detach);
+			g_nodes.forEach(detach);
+			defs = claim_svg_element(svg0_nodes, "defs", {});
+			var defs_nodes = children(defs);
+
+			linearGradient = claim_svg_element(defs_nodes, "linearGradient", {
+				id: true,
+				x1: true,
+				y1: true,
+				x2: true,
+				y2: true,
+				gradientUnits: true
+			});
+
+			var linearGradient_nodes = children(linearGradient);
+			stop0 = claim_svg_element(linearGradient_nodes, "stop", { "stop-color": true });
+			children(stop0).forEach(detach);
+			stop1 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
+			children(stop1).forEach(detach);
+			stop2 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
+			children(stop2).forEach(detach);
+			stop3 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
+			children(stop3).forEach(detach);
+			stop4 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
+			children(stop4).forEach(detach);
+			stop5 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
+			children(stop5).forEach(detach);
+			linearGradient_nodes.forEach(detach);
+			clipPath = claim_svg_element(defs_nodes, "clipPath", { id: true });
+			var clipPath_nodes = children(clipPath);
+			rect = claim_svg_element(clipPath_nodes, "rect", { width: true, height: true, fill: true });
+			children(rect).forEach(detach);
+			clipPath_nodes.forEach(detach);
+			defs_nodes.forEach(detach);
+			svg0_nodes.forEach(detach);
+			a0_nodes.forEach(detach);
+			t0 = claim_space(div0_nodes);
+			nav0 = claim_element(div0_nodes, "NAV", { class: true });
+			var nav0_nodes = children(nav0);
+
+			for (let i = 0; i < each_blocks_1.length; i += 1) {
+				each_blocks_1[i].l(nav0_nodes);
 			}
 
-			nav_1_nodes.forEach(detach);
-			t3 = claim_space(div2_nodes);
-			div1 = claim_element(div2_nodes, "DIV", { class: true });
+			nav0_nodes.forEach(detach);
+			div0_nodes.forEach(detach);
+			t1 = claim_space(header_nodes);
+			div3 = claim_element(header_nodes, "DIV", { class: true });
+			var div3_nodes = children(div3);
+			div1 = claim_element(div3_nodes, "DIV", { class: true });
 			var div1_nodes = children(div1);
-			button = claim_element(div1_nodes, "BUTTON", { id: true, class: true });
+			a1 = claim_element(div1_nodes, "A", { href: true, class: true });
+			var a1_nodes = children(a1);
+			t2 = claim_text(a1_nodes, "Primo Docs");
+			a1_nodes.forEach(detach);
+			div1_nodes.forEach(detach);
+			t3 = claim_space(div3_nodes);
+			nav1 = claim_element(div3_nodes, "NAV", { class: true });
+			var nav1_nodes = children(nav1);
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].l(nav1_nodes);
+			}
+
+			nav1_nodes.forEach(detach);
+			t4 = claim_space(div3_nodes);
+			div2 = claim_element(div3_nodes, "DIV", { class: true });
+			var div2_nodes = children(div2);
+			button = claim_element(div2_nodes, "BUTTON", { id: true, class: true });
 			var button_nodes = children(button);
 
-			svg = claim_svg_element(button_nodes, "svg", {
+			svg1 = claim_svg_element(button_nodes, "svg", {
 				width: true,
 				height: true,
 				viewBox: true,
@@ -7179,68 +6946,148 @@ function create_fragment$2(ctx) {
 				class: true
 			});
 
-			var svg_nodes = children(svg);
-			path = claim_svg_element(svg_nodes, "path", { d: true, fill: true });
-			children(path).forEach(detach);
-			svg_nodes.forEach(detach);
+			var svg1_nodes = children(svg1);
+			path9 = claim_svg_element(svg1_nodes, "path", { d: true, fill: true });
+			children(path9).forEach(detach);
+			svg1_nodes.forEach(detach);
 			button_nodes.forEach(detach);
-			div1_nodes.forEach(detach);
-			t4 = claim_space(div2_nodes);
-			if (if_block1) if_block1.l(div2_nodes);
 			div2_nodes.forEach(detach);
-			header_nodes.forEach(detach);
+			t5 = claim_space(div3_nodes);
+			if (if_block) if_block.l(div3_nodes);
 			div3_nodes.forEach(detach);
+			header_nodes.forEach(detach);
 			div4_nodes.forEach(detach);
+			div5_nodes.forEach(detach);
 			this.h();
 		},
 		h() {
-			attr(a, "href", a_href_value = /*secondary_logo*/ ctx[0].url);
-			attr(a, "class", "link svelte-1xzcmyc");
-			attr(div0, "class", "logos svelte-1xzcmyc");
-			attr(nav_1, "class", "svelte-1xzcmyc");
-			attr(path, "d", "M19.4643 17.0213H0.535714C0.239866 17.0213 0 17.3071 0 17.6596V19.3617C0 19.7142 0.239866 20 0.535714 20H19.4643C19.7601 20 20 19.7142 20 19.3617V17.6596C20 17.3071 19.7601 17.0213 19.4643 17.0213ZM19.4643 8.51064H0.535714C0.239866 8.51064 0 8.79644 0 9.14894V10.8511C0 11.2036 0.239866 11.4894 0.535714 11.4894H19.4643C19.7601 11.4894 20 11.2036 20 10.8511V9.14894C20 8.79644 19.7601 8.51064 19.4643 8.51064ZM19.4643 0H0.535714C0.239866 0 0 0.285797 0 0.638296V2.34042C0 2.69292 0.239866 2.97872 0.535714 2.97872H19.4643C19.7601 2.97872 20 2.69292 20 2.34042V0.638296C20 0.285797 19.7601 0 19.4643 0Z");
-			attr(path, "fill", "currentColor");
-			attr(svg, "width", "20");
-			attr(svg, "height", "20");
-			attr(svg, "viewBox", "0 0 20 20");
-			attr(svg, "fill", "none");
-			attr(svg, "xmlns", "http://www.w3.org/2000/svg");
-			attr(svg, "class", "svelte-1xzcmyc");
+			attr(path0, "d", "M814.062 159.924C782.686 159.924 757.171 134.408 757.171 103.032C757.171 71.6567 782.686 46.1408 814.062 46.1408C845.438 46.1408 870.954 71.6567 870.954 103.032C870.954 134.408 845.438 159.924 814.062 159.924ZM814.062 70.3186C796.021 70.3186 781.395 84.9914 781.395 102.986C781.395 120.981 796.067 135.654 814.062 135.654C832.057 135.654 846.73 120.981 846.73 102.986C846.73 84.9914 832.057 70.3186 814.062 70.3186V70.3186Z");
+			attr(path0, "fill", "#FDFDFD");
+			attr(path1, "d", "M700.925 46.0947C689.897 46.0947 679.931 50.5242 672.641 57.676C665.35 50.5242 655.384 46.0947 644.356 46.0947C622.07 46.0947 603.983 64.228 603.983 86.4679V147.789C603.983 154.479 609.382 159.878 616.072 159.878C622.763 159.878 628.161 154.479 628.161 147.789V86.4679C628.161 77.5627 635.405 70.3186 644.31 70.3186C653.215 70.3186 660.46 77.5627 660.46 86.4679V147.789C660.46 154.479 665.858 159.878 672.548 159.878C679.239 159.878 684.637 154.479 684.637 147.789V86.4679C684.637 77.5627 691.881 70.3186 700.787 70.3186C709.692 70.3186 716.936 77.5627 716.936 86.4679V147.789C716.936 154.479 722.334 159.878 729.025 159.878C735.715 159.878 741.114 154.479 741.114 147.789V86.4679C741.114 64.1819 722.98 46.0947 700.74 46.0947H700.925Z");
+			attr(path1, "fill", "#FDFDFD");
+			attr(path2, "d", "M571.039 159.786C564.348 159.786 558.95 154.387 558.95 147.697V58.0913C558.95 51.4009 564.348 46.0024 571.039 46.0024C577.729 46.0024 583.128 51.4009 583.128 58.0913V147.697C583.128 154.387 577.729 159.786 571.039 159.786Z");
+			attr(path2, "fill", "#FDFDFD");
+			attr(path3, "d", "M571.039 26.4848C578.352 26.4848 584.281 20.556 584.281 13.2424C584.281 5.92883 578.352 0 571.039 0C563.725 0 557.796 5.92883 557.796 13.2424C557.796 20.556 563.725 26.4848 571.039 26.4848Z");
+			attr(path3, "fill", "#FDFDFD");
+			attr(path4, "d", "M482.356 159.785C475.666 159.785 470.267 154.387 470.267 147.697V102.894C470.267 71.5181 495.783 46.0023 527.159 46.0023C533.849 46.0023 539.248 51.4007 539.248 58.0911C539.248 64.7816 533.849 70.18 527.159 70.18C509.118 70.18 494.491 84.8528 494.491 102.848V147.65C494.491 154.341 489.093 159.739 482.402 159.739L482.356 159.785Z");
+			attr(path4, "fill", "#FDFDFD");
+			attr(path5, "d", "M349.701 197.99C343.011 197.99 337.612 192.592 337.612 185.901V102.894C337.612 71.5182 363.128 46.0024 394.504 46.0024C425.88 46.0024 451.396 71.5182 451.396 102.894C451.396 134.27 425.88 159.786 394.504 159.786C387.814 159.786 382.415 154.387 382.415 147.697C382.415 141.006 387.814 135.608 394.504 135.608C412.545 135.608 427.172 120.935 427.172 102.94C427.172 84.9452 412.499 70.2724 394.504 70.2724C376.509 70.2724 361.836 84.9452 361.836 102.94V185.947C361.836 192.638 356.438 198.036 349.747 198.036L349.701 197.99Z");
+			attr(path5, "fill", "#FDFDFD");
+			attr(path6, "d", "M222.814 159.371C219.723 159.371 216.631 158.171 214.232 155.818C209.526 151.065 209.526 143.406 214.232 138.699L249.668 103.263L214.232 67.8271C209.526 63.0746 209.526 55.4153 214.232 50.7089C218.984 45.9564 226.644 45.9564 231.35 50.7089L275.369 94.7272C280.075 99.4797 280.075 107.139 275.369 111.845L231.35 155.864C228.997 158.217 225.906 159.417 222.768 159.417L222.814 159.371Z");
+			attr(path6, "fill", "#35D994");
+			attr(path7, "d", "M94.7272 197.99C91.6358 197.99 88.5443 196.791 86.145 194.437L3.55296 111.799C-1.1534 107.047 -1.1534 99.3874 3.55296 94.681L47.5713 50.6627C52.3238 45.9102 59.9832 45.9102 64.6895 50.6627C69.3959 55.4152 69.3959 63.0746 64.6895 67.7809L29.2073 103.217L103.263 177.273C107.97 182.026 107.97 189.685 103.263 194.391C100.91 196.744 97.8186 197.944 94.6811 197.944L94.7272 197.99Z");
+			attr(path7, "fill", "url(#paint0_linear_250_527)");
+			attr(path8, "d", "M94.7273 197.99C88.0369 197.99 82.6384 192.592 82.6384 185.901V102.894C82.6384 71.5181 108.154 46.0023 139.53 46.0023C170.906 46.0023 196.422 71.5181 196.422 102.894C196.422 134.27 170.906 159.785 139.53 159.785C132.84 159.785 127.441 154.387 127.441 147.697C127.441 141.006 132.84 135.608 139.53 135.608C157.571 135.608 172.198 120.935 172.198 102.94C172.198 84.9451 157.525 70.2723 139.53 70.2723C121.535 70.2723 106.862 84.9451 106.862 102.94V185.947C106.862 192.638 101.464 198.036 94.7735 198.036L94.7273 197.99Z");
+			attr(path8, "fill", "#35D994");
+			attr(g, "clip-path", "url(#clip0_250_527)");
+			attr(stop0, "stop-color", "#35D994");
+			attr(stop1, "offset", "0.16");
+			attr(stop1, "stop-color", "#32D28E");
+			attr(stop2, "offset", "0.38");
+			attr(stop2, "stop-color", "#29BF80");
+			attr(stop3, "offset", "0.64");
+			attr(stop3, "stop-color", "#1CA169");
+			attr(stop4, "offset", "0.93");
+			attr(stop4, "stop-color", "#097649");
+			attr(stop5, "offset", "0.95");
+			attr(stop5, "stop-color", "#097548");
+			attr(linearGradient, "id", "paint0_linear_250_527");
+			attr(linearGradient, "x1", "25.5621");
+			attr(linearGradient, "y1", "72.6719");
+			attr(linearGradient, "x2", "125.319");
+			attr(linearGradient, "y2", "172.428");
+			attr(linearGradient, "gradientUnits", "userSpaceOnUse");
+			attr(rect, "width", "871");
+			attr(rect, "height", "197.99");
+			attr(rect, "fill", "white");
+			attr(clipPath, "id", "clip0_250_527");
+			attr(svg0, "viewBox", "0 0 871 198");
+			attr(svg0, "fill", "none");
+			attr(svg0, "xmlns", "http://www.w3.org/2000/svg");
+			attr(svg0, "class", "svelte-1vi00bf");
+			attr(a0, "href", "https://primocms.org");
+			attr(a0, "class", "is-primo svelte-1vi00bf");
+			attr(nav0, "class", "svelte-1vi00bf");
+			attr(div0, "class", "parent-nav section-container svelte-1vi00bf");
+			toggle_class(div0, "loaded", /*parent_nav*/ ctx[2].length > 0);
+			attr(a1, "href", a1_href_value = /*secondary_logo*/ ctx[0].url);
+			attr(a1, "class", "link svelte-1vi00bf");
+			attr(div1, "class", "logos svelte-1vi00bf");
+			attr(nav1, "class", "svelte-1vi00bf");
+			attr(path9, "d", "M19.4643 17.0213H0.535714C0.239866 17.0213 0 17.3071 0 17.6596V19.3617C0 19.7142 0.239866 20 0.535714 20H19.4643C19.7601 20 20 19.7142 20 19.3617V17.6596C20 17.3071 19.7601 17.0213 19.4643 17.0213ZM19.4643 8.51064H0.535714C0.239866 8.51064 0 8.79644 0 9.14894V10.8511C0 11.2036 0.239866 11.4894 0.535714 11.4894H19.4643C19.7601 11.4894 20 11.2036 20 10.8511V9.14894C20 8.79644 19.7601 8.51064 19.4643 8.51064ZM19.4643 0H0.535714C0.239866 0 0 0.285797 0 0.638296V2.34042C0 2.69292 0.239866 2.97872 0.535714 2.97872H19.4643C19.7601 2.97872 20 2.69292 20 2.34042V0.638296C20 0.285797 19.7601 0 19.4643 0Z");
+			attr(path9, "fill", "currentColor");
+			attr(svg1, "width", "20");
+			attr(svg1, "height", "20");
+			attr(svg1, "viewBox", "0 0 20 20");
+			attr(svg1, "fill", "none");
+			attr(svg1, "xmlns", "http://www.w3.org/2000/svg");
+			attr(svg1, "class", "svelte-1vi00bf");
 			attr(button, "id", "open");
-			attr(button, "class", "svelte-1xzcmyc");
-			attr(div1, "class", "call-to-action svelte-1xzcmyc");
-			attr(div2, "class", "section-container svelte-1xzcmyc");
-			attr(header, "class", "svelte-1xzcmyc");
-			attr(div3, "class", "component");
-			attr(div4, "class", "section");
-			attr(div4, "id", "section-f182a935-36b0-4010-9657-e9d885c5cd70");
+			attr(button, "class", "svelte-1vi00bf");
+			attr(div2, "class", "call-to-action svelte-1vi00bf");
+			attr(div3, "class", "section-container svelte-1vi00bf");
+			attr(header, "class", "svelte-1vi00bf");
+			attr(div4, "class", "component");
+			attr(div5, "class", "section");
+			attr(div5, "id", "section-f182a935-36b0-4010-9657-e9d885c5cd70");
 		},
 		m(target, anchor) {
-			insert_hydration(target, div4, anchor);
-			append_hydration(div4, div3);
-			append_hydration(div3, header);
-			if (if_block0) if_block0.m(header, null);
-			append_hydration(header, t0);
-			append_hydration(header, div2);
-			append_hydration(div2, div0);
-			append_hydration(div0, a);
-			append_hydration(a, t1);
-			append_hydration(div2, t2);
-			append_hydration(div2, nav_1);
+			insert_hydration(target, div5, anchor);
+			append_hydration(div5, div4);
+			append_hydration(div4, header);
+			append_hydration(header, div0);
+			append_hydration(div0, a0);
+			append_hydration(a0, svg0);
+			append_hydration(svg0, g);
+			append_hydration(g, path0);
+			append_hydration(g, path1);
+			append_hydration(g, path2);
+			append_hydration(g, path3);
+			append_hydration(g, path4);
+			append_hydration(g, path5);
+			append_hydration(g, path6);
+			append_hydration(g, path7);
+			append_hydration(g, path8);
+			append_hydration(svg0, defs);
+			append_hydration(defs, linearGradient);
+			append_hydration(linearGradient, stop0);
+			append_hydration(linearGradient, stop1);
+			append_hydration(linearGradient, stop2);
+			append_hydration(linearGradient, stop3);
+			append_hydration(linearGradient, stop4);
+			append_hydration(linearGradient, stop5);
+			append_hydration(defs, clipPath);
+			append_hydration(clipPath, rect);
+			append_hydration(div0, t0);
+			append_hydration(div0, nav0);
 
-			for (let i = 0; i < each_blocks.length; i += 1) {
-				if (each_blocks[i]) {
-					each_blocks[i].m(nav_1, null);
+			for (let i = 0; i < each_blocks_1.length; i += 1) {
+				if (each_blocks_1[i]) {
+					each_blocks_1[i].m(nav0, null);
 				}
 			}
 
-			append_hydration(div2, t3);
-			append_hydration(div2, div1);
-			append_hydration(div1, button);
-			append_hydration(button, svg);
-			append_hydration(svg, path);
-			append_hydration(div2, t4);
-			if (if_block1) if_block1.m(div2, null);
+			append_hydration(header, t1);
+			append_hydration(header, div3);
+			append_hydration(div3, div1);
+			append_hydration(div1, a1);
+			append_hydration(a1, t2);
+			append_hydration(div3, t3);
+			append_hydration(div3, nav1);
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				if (each_blocks[i]) {
+					each_blocks[i].m(nav1, null);
+				}
+			}
+
+			append_hydration(div3, t4);
+			append_hydration(div3, div2);
+			append_hydration(div2, button);
+			append_hydration(button, svg1);
+			append_hydration(svg1, path9);
+			append_hydration(div3, t5);
+			if (if_block) if_block.m(div3, null);
 			current = true;
 
 			if (!mounted) {
@@ -7249,26 +7096,35 @@ function create_fragment$2(ctx) {
 			}
 		},
 		p(ctx, [dirty]) {
-			if (/*parent_nav*/ ctx[2]) {
-				if (if_block0) {
-					if_block0.p(ctx, dirty);
+			if (dirty & /*parent_nav*/ 4) {
+				each_value_2 = /*parent_nav*/ ctx[2];
+				let i;
 
-					if (dirty & /*parent_nav*/ 4) {
-						transition_in(if_block0, 1);
+				for (i = 0; i < each_value_2.length; i += 1) {
+					const child_ctx = get_each_context_2(ctx, each_value_2, i);
+
+					if (each_blocks_1[i]) {
+						each_blocks_1[i].p(child_ctx, dirty);
+					} else {
+						each_blocks_1[i] = create_each_block_2(child_ctx);
+						each_blocks_1[i].c();
+						each_blocks_1[i].m(nav0, null);
 					}
-				} else {
-					if_block0 = create_if_block_1$1(ctx);
-					if_block0.c();
-					transition_in(if_block0, 1);
-					if_block0.m(header, t0);
 				}
-			} else if (if_block0) {
-				if_block0.d(1);
-				if_block0 = null;
+
+				for (; i < each_blocks_1.length; i += 1) {
+					each_blocks_1[i].d(1);
+				}
+
+				each_blocks_1.length = each_value_2.length;
 			}
 
-			if (!current || dirty & /*secondary_logo*/ 1 && a_href_value !== (a_href_value = /*secondary_logo*/ ctx[0].url)) {
-				attr(a, "href", a_href_value);
+			if (!current || dirty & /*parent_nav*/ 4) {
+				toggle_class(div0, "loaded", /*parent_nav*/ ctx[2].length > 0);
+			}
+
+			if (!current || dirty & /*secondary_logo*/ 1 && a1_href_value !== (a1_href_value = /*secondary_logo*/ ctx[0].url)) {
+				attr(a1, "href", a1_href_value);
 			}
 
 			if (dirty & /*nav, window*/ 2) {
@@ -7283,7 +7139,7 @@ function create_fragment$2(ctx) {
 					} else {
 						each_blocks[i] = create_each_block_1(child_ctx);
 						each_blocks[i].c();
-						each_blocks[i].m(nav_1, null);
+						each_blocks[i].m(nav1, null);
 					}
 				}
 
@@ -7295,23 +7151,23 @@ function create_fragment$2(ctx) {
 			}
 
 			if (/*mobileNavOpen*/ ctx[3]) {
-				if (if_block1) {
-					if_block1.p(ctx, dirty);
+				if (if_block) {
+					if_block.p(ctx, dirty);
 
 					if (dirty & /*mobileNavOpen*/ 8) {
-						transition_in(if_block1, 1);
+						transition_in(if_block, 1);
 					}
 				} else {
-					if_block1 = create_if_block$1(ctx);
-					if_block1.c();
-					transition_in(if_block1, 1);
-					if_block1.m(div2, null);
+					if_block = create_if_block$1(ctx);
+					if_block.c();
+					transition_in(if_block, 1);
+					if_block.m(div3, null);
 				}
-			} else if (if_block1) {
+			} else if (if_block) {
 				group_outros();
 
-				transition_out(if_block1, 1, 1, () => {
-					if_block1 = null;
+				transition_out(if_block, 1, 1, () => {
+					if_block = null;
 				});
 
 				check_outros();
@@ -7319,19 +7175,18 @@ function create_fragment$2(ctx) {
 		},
 		i(local) {
 			if (current) return;
-			transition_in(if_block0);
-			transition_in(if_block1);
+			transition_in(if_block);
 			current = true;
 		},
 		o(local) {
-			transition_out(if_block1);
+			transition_out(if_block);
 			current = false;
 		},
 		d(detaching) {
-			if (detaching) detach(div4);
-			if (if_block0) if_block0.d();
+			if (detaching) detach(div5);
+			destroy_each(each_blocks_1, detaching);
 			destroy_each(each_blocks, detaching);
-			if (if_block1) if_block1.d();
+			if (if_block) if_block.d();
 			mounted = false;
 			dispose();
 		}
@@ -7349,7 +7204,7 @@ function instance$2($$self, $$props, $$invalidate) {
 		$$invalidate(3, mobileNavOpen = !mobileNavOpen);
 	}
 
-	let parent_nav;
+	let parent_nav = [];
 
 	axios.get('https://primocms.org/primo.json').then(res => {
 		const header_symbol = res.data.symbols.find(s => s.name === 'Site Navigation');
@@ -7402,7 +7257,7 @@ function get_each_context$1(ctx, list, i) {
 }
 
 // (175:8) {#if link.active}
-function create_if_block_1$2(ctx) {
+function create_if_block_1$1(ctx) {
 	let icon;
 	let current;
 	icon = new Component$1({ props: { icon: "bx:chevron-right" } });
@@ -7444,7 +7299,7 @@ function create_each_block$1(ctx) {
 	let a_href_value;
 	let a_class_value;
 	let current;
-	let if_block = /*link*/ ctx[9].active && create_if_block_1$2();
+	let if_block = /*link*/ ctx[9].active && create_if_block_1$1();
 
 	return {
 		c() {
@@ -7493,7 +7348,7 @@ function create_each_block$1(ctx) {
 						transition_in(if_block, 1);
 					}
 				} else {
-					if_block = create_if_block_1$2();
+					if_block = create_if_block_1$1();
 					if_block.c();
 					transition_in(if_block, 1);
 					if_block.m(a, t2);
