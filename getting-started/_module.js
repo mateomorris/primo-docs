@@ -3691,11 +3691,11 @@ class Component$2 extends SvelteComponent {
 
 function get_each_context$1(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[8] = list[i];
+	child_ctx[9] = list[i];
 	return child_ctx;
 }
 
-// (173:8) {#if link.active}
+// (175:8) {#if link.active}
 function create_if_block_1$1(ctx) {
 	let icon;
 	let current;
@@ -3727,18 +3727,18 @@ function create_if_block_1$1(ctx) {
 	};
 }
 
-// (170:4) {#each links as link}
+// (172:4) {#each links as link}
 function create_each_block$1(ctx) {
 	let a;
 	let span;
-	let t0_value = /*link*/ ctx[8].text + "";
+	let t0_value = /*link*/ ctx[9].text + "";
 	let t0;
 	let t1;
 	let t2;
 	let a_href_value;
 	let a_class_value;
 	let current;
-	let if_block = /*link*/ ctx[8].active && create_if_block_1$1();
+	let if_block = /*link*/ ctx[9].active && create_if_block_1$1();
 
 	return {
 		c() {
@@ -3765,9 +3765,9 @@ function create_each_block$1(ctx) {
 		},
 		h() {
 			attr(span, "class", "svelte-1rlhl5p");
-			attr(a, "href", a_href_value = "#" + /*link*/ ctx[8].id);
-			attr(a, "class", a_class_value = "" + (null_to_empty(/*link*/ ctx[8].level) + " svelte-1rlhl5p"));
-			toggle_class(a, "passed", /*link*/ ctx[8].passed);
+			attr(a, "href", a_href_value = "#" + /*link*/ ctx[9].id);
+			attr(a, "class", a_class_value = "" + (null_to_empty(/*link*/ ctx[9].level) + " svelte-1rlhl5p"));
+			toggle_class(a, "passed", /*link*/ ctx[9].passed);
 		},
 		m(target, anchor) {
 			insert_hydration(target, a, anchor);
@@ -3779,9 +3779,9 @@ function create_each_block$1(ctx) {
 			current = true;
 		},
 		p(ctx, dirty) {
-			if ((!current || dirty & /*links*/ 4) && t0_value !== (t0_value = /*link*/ ctx[8].text + "")) set_data(t0, t0_value);
+			if ((!current || dirty & /*links*/ 4) && t0_value !== (t0_value = /*link*/ ctx[9].text + "")) set_data(t0, t0_value);
 
-			if (/*link*/ ctx[8].active) {
+			if (/*link*/ ctx[9].active) {
 				if (if_block) {
 					if (dirty & /*links*/ 4) {
 						transition_in(if_block, 1);
@@ -3802,16 +3802,16 @@ function create_each_block$1(ctx) {
 				check_outros();
 			}
 
-			if (!current || dirty & /*links*/ 4 && a_href_value !== (a_href_value = "#" + /*link*/ ctx[8].id)) {
+			if (!current || dirty & /*links*/ 4 && a_href_value !== (a_href_value = "#" + /*link*/ ctx[9].id)) {
 				attr(a, "href", a_href_value);
 			}
 
-			if (!current || dirty & /*links*/ 4 && a_class_value !== (a_class_value = "" + (null_to_empty(/*link*/ ctx[8].level) + " svelte-1rlhl5p"))) {
+			if (!current || dirty & /*links*/ 4 && a_class_value !== (a_class_value = "" + (null_to_empty(/*link*/ ctx[9].level) + " svelte-1rlhl5p"))) {
 				attr(a, "class", a_class_value);
 			}
 
 			if (!current || dirty & /*links, links*/ 4) {
-				toggle_class(a, "passed", /*link*/ ctx[8].passed);
+				toggle_class(a, "passed", /*link*/ ctx[9].passed);
 			}
 		},
 		i(local) {
@@ -3830,7 +3830,7 @@ function create_each_block$1(ctx) {
 	};
 }
 
-// (180:4) {#if video_id}
+// (182:4) {#if video_id}
 function create_if_block$2(ctx) {
 	let div;
 	let iframe;
@@ -4068,9 +4068,9 @@ function instance$3($$self, $$props, $$invalidate) {
 	let { content } = $$props;
 	let links = [];
 
-	function createHeaderLinks(content) {
+	function createHeaderLinks({ html }) {
 		var parser = new DOMParser();
-		var htmlDoc = parser.parseFromString(content, 'text/html');
+		var htmlDoc = parser.parseFromString(html, 'text/html');
 		const body = htmlDoc.querySelector('body');
 
 		$$invalidate(2, links = Array.from(body.children).filter(n => ['H1', 'H2', 'H3', 'H4'].includes(n.tagName)).map(n => {
@@ -4112,7 +4112,7 @@ function instance$3($$self, $$props, $$invalidate) {
 
 	$$self.$$.update = () => {
 		if ($$self.$$.dirty & /*content*/ 2) {
-			 createHeaderLinks(content.html);
+			 createHeaderLinks(content);
 		}
 	};
 

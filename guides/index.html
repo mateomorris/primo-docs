@@ -3,7 +3,7 @@
 
 <head>
     <meta name="generator" content="Primo" />
-    <title>Primo Docs: Development</title><!-- HEAD_svelte-1uhv2s6_START -->
+    <title>Primo Docs: Publishing</title><!-- HEAD_svelte-1uhv2s6_START -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <link rel="shortcut icon" type="image/png" href="https://res.cloudinary.com/primoaf/image/upload/v1659676914/favicon_roaxv0.png">
@@ -425,7 +425,7 @@
 
 <body id="page">
 
-    <div class="section" id="section-5a6b74d9-f46c-4cca-bb66-1403ebb62576">
+    <div class="section" id="section-dddd7d2d-41fb-4ebf-8d9f-69cc4b90d1e8">
         <div class="component">
             <header class="svelte-1qa91hg">
                 <div class="section-container svelte-1qa91hg">
@@ -468,127 +468,18 @@
             </header>
         </div>
     </div>
-    <div class="section" id="section-40e8c7af-66bc-4eb1-980d-e56ff98159e9">
+    <div class="section" id="section-796d63dd-cf21-4854-9ddc-20a23200d07a">
         <div class="component">
             <section class="section-container svelte-1rlhl5p">
-                <nav class="svelte-1rlhl5p"><a href="#" class="H1 svelte-1rlhl5p"><span class="svelte-1rlhl5p">Development</span>
-
-                    </a><a href="#" class="H2 svelte-1rlhl5p"><span class="svelte-1rlhl5p">Blocks</span>
-
-                    </a><a href="#" class="H3 svelte-1rlhl5p"><span class="svelte-1rlhl5p">Code</span>
-
-                    </a><a href="#" class="H4 svelte-1rlhl5p"><span class="svelte-1rlhl5p">HTML</span>
-
-                    </a><a href="#" class="H4 svelte-1rlhl5p"><span class="svelte-1rlhl5p">CSS</span>
-
-                    </a><a href="#" class="H4 svelte-1rlhl5p"><span class="svelte-1rlhl5p">JavaScript</span>
-
-                    </a><a href="#" class="H2 svelte-1rlhl5p"><span class="svelte-1rlhl5p">Page &amp; Site</span>
-
-                    </a><a href="#" class="H3 svelte-1rlhl5p"><span class="svelte-1rlhl5p">HTML</span>
-
-                    </a><a href="#" class="H4 svelte-1rlhl5p"><span class="svelte-1rlhl5p">Head tag</span>
-
-                    </a><a href="#" class="H3 svelte-1rlhl5p"><span class="svelte-1rlhl5p">CSS</span>
-
-                    </a><a href="#" class="H4 svelte-1rlhl5p"><span class="svelte-1rlhl5p">Reset</span>
-
-                    </a><a href="#" class="H4 svelte-1rlhl5p"><span class="svelte-1rlhl5p">Theme Values</span>
-
-                    </a><a href="#" class="H4 svelte-1rlhl5p"><span class="svelte-1rlhl5p">Primo Classes</span>
-
-                    </a><a href="#" class="H4 svelte-1rlhl5p"><span class="svelte-1rlhl5p">Elements</span>
-
-                    </a><a href="#" class="H3 svelte-1rlhl5p"><span class="svelte-1rlhl5p">Fields</span>
+                <nav class="svelte-1rlhl5p"><a href="#" class="H1 svelte-1rlhl5p"><span class="svelte-1rlhl5p">Publishing</span>
 
                     </a></nav>
                 <main class="svelte-1rlhl5p">
                     <div class="content svelte-1rlhl5p"><!-- HTML_TAG_START -->
-                        <h1>Development</h1>
-                        <p>In Primo, instead of editing text files in a file directory, you edit code within a focused context - be that a site, a page, or a component. The goal of this strategy is that developers only ever see the code which they're actively working on and can give content editors the ability to build entire pages using pre-coded blocks.</p>
-                        <h2>Blocks</h2>
-                        <p>Components allow you to write complex UI elements which you can use across any and all of your Primo sites. Since Primo blocks are written in <a target="_blank" rel="noopener noreferrer nofollow" class="link link link link link link link link link link link link link link link" href="https://svelte.dev">Svelte</a>, they're capable of powerful interactivity and functionality (Primo itself is built with Svelte).</p>
-                        <h3>Code</h3>
-                        <h4>HTML</h4>
-                        <p>From the HTML tab, you can integrate the fields created under the Fields tab with the component so that content entered in the CMS can be compiled into static HTML.</p>
-                        <p>To integrate a field, reference its Field key as a variable from your HTML and JS and use <a target="_blank" rel="noopener noreferrer nofollow" class="link link link" href="https://svelte.dev/docs#template-syntax">Svelte's templating syntax</a> to connect it (see Templating to learn how to use Svelte's templating syntax to template blocks).</p>
-                        <ul>
-                            <li>
-                                <p>Templating</p>
-                            </li>
-                            <li>
-                                <p>Events</p>
-                            </li>
-                            <li>
-                                <p>Reactivity</p>
-                            </li>
-                        </ul>
-                        <h4>CSS</h4>
-                        <p>Your component's encapsulated CSS is fed through PostCSS before making it to Svelte, which enables support for nesting and auto prefixing. Note that any styles in your Site CSS &amp; Page CSS are respectively added above your component's CSS, so that your component looks in the preview as it will on the page.</p>
-                        <ul>
-                            <li>
-                                <p>Encapsulation</p>
-                            </li>
-                            <li>
-                                <p>Nesting</p>
-                            </li>
-                            <li>
-                                <p>Autoprefixing</p>
-                            </li>
-                        </ul>
-                        <h4>JavaScript</h4>
-                        <p>Just like in your component's HTML, you can access and modify field values as variables from your JS based on their Field ID. To import JS libraries, write absolute import statements like you would in a bundler (i.e. import lodash from 'lodash') - primo imports them in the background from skypack.dev. All of Svelte's superpowers are available from your JS - including transitions, stores, reactive statements, and more.</p>
-                        <ul>
-                            <li>
-                                <p>Libraries</p>
-                            </li>
-                            <li>
-                                <p>Transitions</p>
-                            </li>
-                            <li>
-                                <p>Reactivity</p>
-                            </li>
-                        </ul>
-                        <h2>Page &amp; Site</h2>
-                        <h3>HTML</h3>
-                        <h4>Head tag</h4>
-                        <p>HTML added to the Page will be added below any HTML added to the Site. HTML added to the Site will appear on every page on the site.</p>
-                        <p>Code placed here will appear within the head tag of the page. This is typically where you'd put meta and link tags. You can also use variables which correspond to the page/site Fields.</p>
-                        <h3>CSS</h3>
-                        <p>Templates in Primo come with pre-written CSS written at the site level which makes it easier to get started with building sites. CSS is included for standardizing styles, setting theme values (for themeing components), elements like <code>heading</code> and <code>button</code>, and for styling Content Sections. Any styles added in Site CSS can be overwritten by Page CSS and Component CSS in a natural cascading order from general to specific.</p>
-                        <h4>Reset</h4>
-                        <p>These are styles to standardize how components look across different browsers and devices.</p>
-                        <h4>Theme Values</h4>
-                        <p>Theme values are CSS <a target="_blank" rel="noopener noreferrer nofollow" class="link link link link link link link link link link link link link link link" href="https://developer.mozilla.org/en-US/docs/Web/CSS/--*">Custom Properties</a> (or variables) that correspond to particular style declarations within Primo Library components, enabling them to be added to any site and automatically conforming to its design. They do this by using these values for particular properties like color, border-radius, box-shadow, etc. which should remain consistent within a site but are variable across different sites (e.g. rounded corners across one site, sharp corners across another).</p>
-                        <h4>Primo Classes</h4>
-                        <p>Primo adds certain classes to your page, sections, and components that make it easier to style your site within Primo and prevents styles from affecting the app's UI (e.g. overwriting the toolbar's font family).</p>
-                        <ul>
-                            <li>
-                                <p><code>.primo-page</code> is added to every page's <code>body</code> tag, and should be used in place of <code>body</code> or <code>html</code> when possible</p>
-                            </li>
-                            <li>
-                                <p><code>.primo-section</code> is added to the root element of every section. It can be used in conjunction with <code>.has-content</code> and <code>.has-component</code> to target sections containing Content or a Component, respectively.</p>
-                            </li>
-                        </ul>
-                        <h4>Elements</h4>
-                        <p>These are classes used across most Primo Library components and Content Sections which keep their design consistent. They're listed here in order from most to least frequently used.</p>
-                        <ul>
-                            <li>
-                                <p><code>.heading</code> applies to all component headings except for those within Hero components.</p>
-                            </li>
-                            <li>
-                                <p><code>.section-container</code> maintains a fixed max-width and padding for most components, while allowing others to maintain a full page width. It gets added automatically to each Content Section as well, enabling you to keep them consistent with the Component Sections.</p>
-                            </li>
-                            <li>
-                                <p><code>.link</code> is for links and is automatically added to links created in Content Sections to keep them consistent with links created in Components.</p>
-                            </li>
-                            <li>
-                                <p><code>.button</code> styles buttons.</p>
-                            </li>
-                        </ul>
-                        <h3>Fields</h3>
-                        <p>Fields added to the Page are accessible from the Page HTML and any components on the page. Fields added to the Site are accessible from the Page &amp; Site HTML, as well as any components on the site.</p>
-                        <p>Site fields can be overwritten by Page fields by using the same field ID, and Component fields can overwrite Page fields by using the same ID.</p><!-- HTML_TAG_END -->
+                        <h1>Publishing</h1>
+                        <p>To publish, you need to either download your site &amp; host it manually, or enter your Github Token to publish to Github - this is the recommended option. </p>
+                        <p></p>
+                        <p></p><!-- HTML_TAG_END -->
                     </div>
                 </main>
             </section>
