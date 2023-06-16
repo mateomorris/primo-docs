@@ -6475,7 +6475,7 @@ function create_each_block_2(ctx) {
 		},
 		h() {
 			attr(a, "href", a_href_value = /*link*/ ctx[8].url.startsWith('/')
-			? `https://primocms/org${/*link*/ ctx[8].url}`
+			? `https://primocms.org${/*link*/ ctx[8].url}`
 			: /*link*/ ctx[8].url);
 
 			attr(a, "class", "svelte-100lh4u");
@@ -6488,7 +6488,7 @@ function create_each_block_2(ctx) {
 			if (dirty & /*parent_nav*/ 4 && t_value !== (t_value = /*link*/ ctx[8].label + "")) set_data(t, t_value);
 
 			if (dirty & /*parent_nav*/ 4 && a_href_value !== (a_href_value = /*link*/ ctx[8].url.startsWith('/')
-			? `https://primocms/org${/*link*/ ctx[8].url}`
+			? `https://primocms.org${/*link*/ ctx[8].url}`
 			: /*link*/ ctx[8].url)) {
 				attr(a, "href", a_href_value);
 			}
