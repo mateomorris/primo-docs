@@ -6453,7 +6453,7 @@ function get_each_context_2(ctx, list, i) {
 	return child_ctx;
 }
 
-// (265:6) {#each parent_nav as { link }}
+// (257:6) {#each parent_nav as { link }}
 function create_each_block_2(ctx) {
 	let a;
 	let t_value = /*link*/ ctx[8].label + "";
@@ -6475,7 +6475,7 @@ function create_each_block_2(ctx) {
 		},
 		h() {
 			attr(a, "href", a_href_value = /*link*/ ctx[8].url);
-			attr(a, "class", "svelte-1yh90gm");
+			attr(a, "class", "svelte-znr8t4");
 		},
 		m(target, anchor) {
 			insert_hydration(target, a, anchor);
@@ -6494,7 +6494,7 @@ function create_each_block_2(ctx) {
 	};
 }
 
-// (277:6) {#each nav as { link }}
+// (269:6) {#each nav as { link }}
 function create_each_block_1(ctx) {
 	let a;
 	let t_value = /*link*/ ctx[8].label + "";
@@ -6516,7 +6516,7 @@ function create_each_block_1(ctx) {
 		},
 		h() {
 			attr(a, "href", a_href_value = /*link*/ ctx[8].url);
-			attr(a, "class", "link svelte-1yh90gm");
+			attr(a, "class", "link svelte-znr8t4");
 			toggle_class(a, "active", window.location.pathname === /*link*/ ctx[8].url);
 		},
 		m(target, anchor) {
@@ -6540,7 +6540,7 @@ function create_each_block_1(ctx) {
 	};
 }
 
-// (298:4) {#if mobileNavOpen}
+// (290:4) {#if mobileNavOpen}
 function create_if_block$1(ctx) {
 	let nav_1;
 	let t;
@@ -6620,12 +6620,12 @@ function create_if_block$1(ctx) {
 			attr(svg, "xmlns", "http://www.w3.org/2000/svg");
 			attr(svg, "viewBox", "0 0 20 20");
 			attr(svg, "fill", "currentColor");
-			attr(svg, "class", "svelte-1yh90gm");
+			attr(svg, "class", "svelte-znr8t4");
 			attr(button, "id", "close");
 			attr(button, "aria-label", "Close Navigation");
-			attr(button, "class", "svelte-1yh90gm");
+			attr(button, "class", "svelte-znr8t4");
 			attr(nav_1, "id", "mobile-nav");
-			attr(nav_1, "class", "svelte-1yh90gm");
+			attr(nav_1, "class", "svelte-znr8t4");
 		},
 		m(target, anchor) {
 			insert_hydration(target, nav_1, anchor);
@@ -6697,7 +6697,7 @@ function create_if_block$1(ctx) {
 	};
 }
 
-// (300:8) {#each nav as { link }}
+// (292:8) {#each nav as { link }}
 function create_each_block(ctx) {
 	let a;
 	let t_value = /*link*/ ctx[8].label + "";
@@ -6719,7 +6719,7 @@ function create_each_block(ctx) {
 		},
 		h() {
 			attr(a, "href", a_href_value = /*link*/ ctx[8].url);
-			attr(a, "class", "link svelte-1yh90gm");
+			attr(a, "class", "link svelte-znr8t4");
 		},
 		m(target, anchor) {
 			insert_hydration(target, a, anchor);
@@ -7033,16 +7033,16 @@ function create_fragment$2(ctx) {
 			attr(svg0, "viewBox", "0 0 871 198");
 			attr(svg0, "fill", "none");
 			attr(svg0, "xmlns", "http://www.w3.org/2000/svg");
-			attr(svg0, "class", "svelte-1yh90gm");
+			attr(svg0, "class", "svelte-znr8t4");
 			attr(a0, "href", "https://primocms.org");
-			attr(a0, "class", "is-primo svelte-1yh90gm");
-			attr(nav0, "class", "svelte-1yh90gm");
-			attr(div0, "class", "parent-nav section-container svelte-1yh90gm");
+			attr(a0, "class", "is-primo svelte-znr8t4");
+			attr(nav0, "class", "svelte-znr8t4");
+			attr(div0, "class", "parent-nav section-container svelte-znr8t4");
 			toggle_class(div0, "loaded", /*parent_nav*/ ctx[3].length > 0);
 			attr(a1, "href", a1_href_value = /*secondary_logo*/ ctx[0].url);
-			attr(a1, "class", "link svelte-1yh90gm");
-			attr(div1, "class", "logos svelte-1yh90gm");
-			attr(nav1, "class", "svelte-1yh90gm");
+			attr(a1, "class", "link svelte-znr8t4");
+			attr(div1, "class", "logos svelte-znr8t4");
+			attr(nav1, "class", "svelte-znr8t4");
 			attr(path9, "d", "M19.4643 17.0213H0.535714C0.239866 17.0213 0 17.3071 0 17.6596V19.3617C0 19.7142 0.239866 20 0.535714 20H19.4643C19.7601 20 20 19.7142 20 19.3617V17.6596C20 17.3071 19.7601 17.0213 19.4643 17.0213ZM19.4643 8.51064H0.535714C0.239866 8.51064 0 8.79644 0 9.14894V10.8511C0 11.2036 0.239866 11.4894 0.535714 11.4894H19.4643C19.7601 11.4894 20 11.2036 20 10.8511V9.14894C20 8.79644 19.7601 8.51064 19.4643 8.51064ZM19.4643 0H0.535714C0.239866 0 0 0.285797 0 0.638296V2.34042C0 2.69292 0.239866 2.97872 0.535714 2.97872H19.4643C19.7601 2.97872 20 2.69292 20 2.34042V0.638296C20 0.285797 19.7601 0 19.4643 0Z");
 			attr(path9, "fill", "currentColor");
 			attr(svg1, "width", "20");
@@ -7050,12 +7050,12 @@ function create_fragment$2(ctx) {
 			attr(svg1, "viewBox", "0 0 20 20");
 			attr(svg1, "fill", "none");
 			attr(svg1, "xmlns", "http://www.w3.org/2000/svg");
-			attr(svg1, "class", "svelte-1yh90gm");
+			attr(svg1, "class", "svelte-znr8t4");
 			attr(button, "id", "open");
-			attr(button, "class", "svelte-1yh90gm");
-			attr(div2, "class", "call-to-action svelte-1yh90gm");
-			attr(div3, "class", "section-container svelte-1yh90gm");
-			attr(header, "class", "svelte-1yh90gm");
+			attr(button, "class", "svelte-znr8t4");
+			attr(div2, "class", "call-to-action svelte-znr8t4");
+			attr(div3, "class", "section-container svelte-znr8t4");
+			attr(header, "class", "svelte-znr8t4");
 			attr(div4, "class", "component");
 			attr(div5, "class", "section");
 			attr(div5, "id", "section-aa069f0f-9c54-4115-8be3-599f652080f6");
@@ -7235,15 +7235,6 @@ function instance$2($$self, $$props, $$invalidate) {
 
 	localStorage.removeItem("parent_nav");
 	let parent_nav = [];
-
-	// $: console.log(parent_nav)
-	// if (parent_nav.length === 0) {
-	//   axios.get('https://primocms.org/primo.json').then(res => {
-	//     const header_symbol = res.data.symbols.find(s => s.name === 'Site Navigation')
-	//     parent_nav = header_symbol.content.en.nav
-	//     localStorage.setItem('parent_nav', JSON.stringify(parent_nav))
-	//   })
-	// }
 	get_parent_nav();
 
 	async function get_parent_nav() {
