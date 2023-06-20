@@ -3684,11 +3684,11 @@ class Component$2 extends SvelteComponent {
 
 function get_each_context$1(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[9] = list[i];
+	child_ctx[11] = list[i];
 	return child_ctx;
 }
 
-// (174:8) {#if link.active}
+// (185:8) {#if link.active}
 function create_if_block_1$1(ctx) {
 	let icon;
 	let current;
@@ -3720,18 +3720,19 @@ function create_if_block_1$1(ctx) {
 	};
 }
 
-// (171:4) {#each links as link}
+// (182:4) {#each header_links as link}
 function create_each_block$1(ctx) {
 	let a;
 	let span;
-	let t0_value = /*link*/ ctx[9].text + "";
+	let t0_value = /*link*/ ctx[11].text + "";
 	let t0;
 	let t1;
 	let t2;
 	let a_href_value;
+	let a_id_value;
 	let a_class_value;
 	let current;
-	let if_block = /*link*/ ctx[9].active && create_if_block_1$1();
+	let if_block = /*link*/ ctx[11].active && create_if_block_1$1();
 
 	return {
 		c() {
@@ -3744,7 +3745,7 @@ function create_each_block$1(ctx) {
 			this.h();
 		},
 		l(nodes) {
-			a = claim_element(nodes, "A", { href: true, class: true });
+			a = claim_element(nodes, "A", { href: true, id: true, class: true });
 			var a_nodes = children(a);
 			span = claim_element(a_nodes, "SPAN", { class: true });
 			var span_nodes = children(span);
@@ -3758,9 +3759,10 @@ function create_each_block$1(ctx) {
 		},
 		h() {
 			attr(span, "class", "svelte-1rlhl5p");
-			attr(a, "href", a_href_value = "#" + /*link*/ ctx[9].id);
-			attr(a, "class", a_class_value = "" + (null_to_empty(/*link*/ ctx[9].level) + " svelte-1rlhl5p"));
-			toggle_class(a, "passed", /*link*/ ctx[9].passed);
+			attr(a, "href", a_href_value = "#" + /*link*/ ctx[11].id);
+			attr(a, "id", a_id_value = /*link*/ ctx[11].id);
+			attr(a, "class", a_class_value = "" + (null_to_empty(/*link*/ ctx[11].level) + " svelte-1rlhl5p"));
+			toggle_class(a, "passed", /*link*/ ctx[11].passed);
 		},
 		m(target, anchor) {
 			insert_hydration(target, a, anchor);
@@ -3772,11 +3774,11 @@ function create_each_block$1(ctx) {
 			current = true;
 		},
 		p(ctx, dirty) {
-			if ((!current || dirty & /*links*/ 4) && t0_value !== (t0_value = /*link*/ ctx[9].text + "")) set_data(t0, t0_value);
+			if ((!current || dirty & /*header_links*/ 8) && t0_value !== (t0_value = /*link*/ ctx[11].text + "")) set_data(t0, t0_value);
 
-			if (/*link*/ ctx[9].active) {
+			if (/*link*/ ctx[11].active) {
 				if (if_block) {
-					if (dirty & /*links*/ 4) {
+					if (dirty & /*header_links*/ 8) {
 						transition_in(if_block, 1);
 					}
 				} else {
@@ -3795,16 +3797,20 @@ function create_each_block$1(ctx) {
 				check_outros();
 			}
 
-			if (!current || dirty & /*links*/ 4 && a_href_value !== (a_href_value = "#" + /*link*/ ctx[9].id)) {
+			if (!current || dirty & /*header_links*/ 8 && a_href_value !== (a_href_value = "#" + /*link*/ ctx[11].id)) {
 				attr(a, "href", a_href_value);
 			}
 
-			if (!current || dirty & /*links*/ 4 && a_class_value !== (a_class_value = "" + (null_to_empty(/*link*/ ctx[9].level) + " svelte-1rlhl5p"))) {
+			if (!current || dirty & /*header_links*/ 8 && a_id_value !== (a_id_value = /*link*/ ctx[11].id)) {
+				attr(a, "id", a_id_value);
+			}
+
+			if (!current || dirty & /*header_links*/ 8 && a_class_value !== (a_class_value = "" + (null_to_empty(/*link*/ ctx[11].level) + " svelte-1rlhl5p"))) {
 				attr(a, "class", a_class_value);
 			}
 
-			if (!current || dirty & /*links, links*/ 4) {
-				toggle_class(a, "passed", /*link*/ ctx[9].passed);
+			if (!current || dirty & /*header_links, header_links*/ 8) {
+				toggle_class(a, "passed", /*link*/ ctx[11].passed);
 			}
 		},
 		i(local) {
@@ -3823,7 +3829,7 @@ function create_each_block$1(ctx) {
 	};
 }
 
-// (181:4) {#if video_id}
+// (192:4) {#if video_id}
 function create_if_block$2(ctx) {
 	let div;
 	let iframe;
@@ -3877,6 +3883,13 @@ function create_if_block$2(ctx) {
 }
 
 function create_fragment$3(ctx) {
+	let scrolling = false;
+
+	let clear_scrolling = () => {
+		scrolling = false;
+	};
+
+	let scrolling_timeout;
 	let div1;
 	let section;
 	let nav;
@@ -3888,7 +3901,10 @@ function create_fragment$3(ctx) {
 	let t2;
 	let link;
 	let current;
-	let each_value = /*links*/ ctx[2];
+	let mounted;
+	let dispose;
+	add_render_callback(/*onwindowscroll*/ ctx[7]);
+	let each_value = /*header_links*/ ctx[3];
 	let each_blocks = [];
 
 	for (let i = 0; i < each_value.length; i += 1) {
@@ -3975,13 +3991,32 @@ function create_fragment$3(ctx) {
 			append_hydration(main, t1);
 			append_hydration(main, div0);
 			div0.innerHTML = raw_value;
+			/*div0_binding*/ ctx[8](div0);
 			append_hydration(div1, t2);
 			append_hydration(div1, link);
 			current = true;
+
+			if (!mounted) {
+				dispose = listen(window, "scroll", () => {
+					scrolling = true;
+					clearTimeout(scrolling_timeout);
+					scrolling_timeout = setTimeout(clear_scrolling, 100);
+					/*onwindowscroll*/ ctx[7]();
+				});
+
+				mounted = true;
+			}
 		},
 		p(ctx, [dirty]) {
-			if (dirty & /*links*/ 4) {
-				each_value = /*links*/ ctx[2];
+			if (dirty & /*scrollY*/ 16 && !scrolling) {
+				scrolling = true;
+				clearTimeout(scrolling_timeout);
+				scrollTo(window.pageXOffset, /*scrollY*/ ctx[4]);
+				scrolling_timeout = setTimeout(clear_scrolling, 100);
+			}
+
+			if (dirty & /*header_links*/ 8) {
+				each_value = /*header_links*/ ctx[3];
 				let i;
 
 				for (i = 0; i < each_value.length; i += 1) {
@@ -4043,6 +4078,9 @@ function create_fragment$3(ctx) {
 			if (detaching) detach(div1);
 			destroy_each(each_blocks, detaching);
 			if (if_block) if_block.d();
+			/*div0_binding*/ ctx[8](null);
+			mounted = false;
+			dispose();
 		}
 	};
 }
@@ -4052,20 +4090,25 @@ function instance$3($$self, $$props, $$invalidate) {
 	let { description } = $$props;
 	let { video_id } = $$props;
 	let { content } = $$props;
-	let links = [];
+	let content_node;
+	let header_links = [];
 
-	function createHeaderLinks({ html }) {
-		var parser = new DOMParser();
-		var htmlDoc = parser.parseFromString(html, 'text/html');
-		const body = htmlDoc.querySelector('body');
+	function createHeaderLinks(content_node) {
+		console.log({ content_node });
 
-		$$invalidate(2, links = Array.from(body.children).filter(n => ['H1', 'H2', 'H3', 'H4'].includes(n.tagName)).map(n => {
+		// // Create a dom element and place the HTML into it to get the headlines
+		// var parser = new DOMParser();
+		// var htmlDoc = parser.parseFromString(html, 'text/html');
+		// const body = htmlDoc.querySelector('body')
+		console.log(Array.from(content_node.children));
+
+		$$invalidate(3, header_links = Array.from(content_node.children).filter(n => ["H1", "H2", "H3", "H4"].includes(n.tagName)).map(n => {
 			return {
 				level: n.tagName,
 				text: n.textContent,
 				id: n.id,
 				node: n,
-				top: 0
+				top: n.offsetTop
 			};
 		}));
 	}
@@ -4073,13 +4116,13 @@ function instance$3($$self, $$props, $$invalidate) {
 	let scrollY;
 
 	function setActiveLink(scrollY) {
-		$$invalidate(2, links = links.map((link, i) => {
-			const element = link.id ? document.querySelector(`#${link.id}`) : null;
+		$$invalidate(3, header_links = header_links.map((link, i) => {
+			const element = link.node;
 			const top = element ? element.offsetTop : null;
 			const passed = scrollY >= top;
 			return { ...link, top, passed };
 		}).map((link, i) => {
-			const nextLink = links[i + 1];
+			const nextLink = header_links[i + 1];
 
 			const active = nextLink
 			? link.top < scrollY && scrollY < nextLink.top
@@ -4089,21 +4132,46 @@ function instance$3($$self, $$props, $$invalidate) {
 		}));
 	}
 
+	function onwindowscroll() {
+		$$invalidate(4, scrollY = window.pageYOffset);
+	}
+
+	function div0_binding($$value) {
+		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
+			content_node = $$value;
+			$$invalidate(2, content_node);
+		});
+	}
+
 	$$self.$$set = $$props => {
-		if ('title' in $$props) $$invalidate(3, title = $$props.title);
-		if ('description' in $$props) $$invalidate(4, description = $$props.description);
+		if ('title' in $$props) $$invalidate(5, title = $$props.title);
+		if ('description' in $$props) $$invalidate(6, description = $$props.description);
 		if ('video_id' in $$props) $$invalidate(0, video_id = $$props.video_id);
 		if ('content' in $$props) $$invalidate(1, content = $$props.content);
 	};
 
 	$$self.$$.update = () => {
-		if ($$self.$$.dirty & /*content*/ 2) {
-			 createHeaderLinks(content);
+		if ($$self.$$.dirty & /*content_node*/ 4) {
+			 content_node && createHeaderLinks(content_node);
+		}
+
+		if ($$self.$$.dirty & /*header_links, scrollY*/ 24) {
+			// $: console.log({scrollY})
+			 header_links.length > 0 && setActiveLink(scrollY);
 		}
 	};
 
-	 setActiveLink(scrollY);
-	return [video_id, content, links, title, description];
+	return [
+		video_id,
+		content,
+		content_node,
+		header_links,
+		scrollY,
+		title,
+		description,
+		onwindowscroll,
+		div0_binding
+	];
 }
 
 class Component$3 extends SvelteComponent {
@@ -4111,8 +4179,8 @@ class Component$3 extends SvelteComponent {
 		super();
 
 		init(this, options, instance$3, create_fragment$3, safe_not_equal, {
-			title: 3,
-			description: 4,
+			title: 5,
+			description: 6,
 			video_id: 0,
 			content: 1
 		});

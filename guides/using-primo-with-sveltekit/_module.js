@@ -1022,7 +1022,7 @@ function create_fragment(ctx) {
 			this.h();
 		},
 		l(nodes) {
-			const head_nodes = head_selector('svelte-1ed3n20', document.head);
+			const head_nodes = head_selector('svelte-1uhv2s6', document.head);
 			meta0 = claim_element(head_nodes, "META", { name: true, content: true });
 			meta1 = claim_element(head_nodes, "META", { charset: true });
 			link = claim_element(head_nodes, "LINK", { rel: true, type: true, href: true });
@@ -7086,7 +7086,7 @@ function create_fragment$2(ctx) {
 			attr(div3, "class", "section-container svelte-1aukel9");
 			attr(header, "class", "svelte-1aukel9");
 			attr(div4, "class", "section");
-			attr(div4, "id", "section-3c334e57");
+			attr(div4, "id", "section-93cec0e3");
 		},
 		m(target, anchor) {
 			insert_hydration(target, div4, anchor);
@@ -7610,7 +7610,7 @@ function create_fragment$3(ctx) {
 			attr(link, "rel", "stylesheet");
 			attr(link, "href", "https://unpkg.com/highlightjs@9.16.2/styles/solarized-dark.css");
 			attr(div1, "class", "section");
-			attr(div1, "id", "section-092ada91");
+			attr(div1, "id", "section-a669c5b7");
 		},
 		m(target, anchor) {
 			insert_hydration(target, div1, anchor);
@@ -7860,15 +7860,15 @@ function create_fragment$4(ctx) {
 
 	component_0 = new Component({
 			props: {
-				title: "Primo Docs: Getting Started",
-				description: "You can download Primo as a desktop application or host it from any static host. "
+				title: "Primo Docs: Publishing",
+				description: ""
 			}
 		});
 
 	component_1 = new Component$2({
 			props: {
-				title: "Primo Docs: Getting Started",
-				description: "You can download Primo as a desktop application or host it from any static host. ",
+				title: "Primo Docs: Publishing",
+				description: "",
 				secondary_logo: {
 					"url": "http://localhost:5173/primo-docs",
 					"label": "docs"
@@ -7901,20 +7901,20 @@ function create_fragment$4(ctx) {
 
 	component_2 = new Component$3({
 			props: {
-				title: "Primo Docs: Getting Started",
-				description: "You can download Primo as a desktop application or host it from any static host. ",
-				video_id: "LEcKmhJsUzo",
+				title: "Primo Docs: Publishing",
+				description: "",
+				video_id: "",
 				content: {
-					"html": "<h1 id=\"gettingstarted\">Getting Started</h1>\n<p>Primo depends on several [freemium] third-party services for easy hosting, authentication, database and storage, etc. Running your own Primo server is as easy as forking the <a href=\"https://github.com/primocms/primo\"><strong>Primo repo</strong></a> and deploying it on a static host like Vercel or Netlify, which should only take a few minutes.</p>\n<p>Third-party services (all can be signed into with Github):</p>\n<ul>\n<li><p>A modern web host like <a href=\"https://vercel.com/\"><strong>Vercel</strong></a> or <a href=\"https://netlify.com\"><strong>Netlify</strong></a> to host the Primo application &amp; published sites.</p></li>\n<li><p>A <a href=\"https://supabase.com\"><strong>Supabase</strong></a> account to manage your server's authentication, database, and file storage.</p></li>\n<li><p>A <a href=\"https://github.com\"><strong>Github</strong></a> account to deploy your sites to (unless you plan on downloading the site and connecting to a host).</p></li>\n</ul>\n<!-- -->\n<h2 id=\"installation\">Installation</h2>\n<ol>\n<li><p>Ensure you have an account with all the services listed above.</p></li>\n<li><p>Create a new Supabase project, go to the SQL editor, add a new query and provision your project by copying the <a href=\"https://raw.githubusercontent.com/mateomorris/primo/master/primo_schema.sql\"><strong>schema</strong></a> and pasting it into the editor.</p></li>\n<li><p>Fork the <a href=\"https://github.com/primocms/primo\"><strong>Primo repository</strong></a>.</p></li>\n<li><p>Go to your web host and create a new project from your new repository, inputting your Supabase details (go to the API settings) as environment variables.</p>\n<ul>\n<li><p>PUBLIC_SUPABASE_URL</p></li>\n<li><p>PUBLIC_SUPABASE_PUBLIC_KEY</p></li>\n<li><p>PRIVATE_SUPABASE_PRIVATE_KEY</p></li></ul></li>\n</ol>\n<p><img src=\"https://dbfnrqvkgwkjkzqgnfrd.supabase.co/storage/v1/object/public/images/Screenshot%202023-05-06%20at%206.45.43%20PM.png\" alt=\"Environment Variables\" /></p>\n<ol start=\"5\">\n<li><p>Publish the project and navigate to the Primo authentication screen.</p></li>\n<li><p>The user account you create will be the server owner. You can manage the project's entire data from the Supabase project dashboard.</p></li>\n</ol>",
-					"markdown": "# Getting Started\n\nPrimo depends on several [freemium] third-party services for easy hosting, authentication, database and storage, etc. Running your own Primo server is as easy as forking the [**Primo repo**](<https://github.com/primocms/primo>) and deploying it on a static host like Vercel or Netlify, which should only take a few minutes.\n\nThird-party services (all can be signed into with Github):\n\n- A modern web host like [**Vercel**](<https://vercel.com/>) or [**Netlify**](<https://netlify.com>) to host the Primo application & published sites.\n\n- A [**Supabase**](<https://supabase.com>) account to manage your server's authentication, database, and file storage.\n\n- A [**Github**](<https://github.com>) account to deploy your sites to (unless you plan on downloading the site and connecting to a host).\n\n\n<!-- -->\n\n## Installation\n\n1. Ensure you have an account with all the services listed above.\n\n2. Create a new Supabase project, go to the SQL editor, add a new query and provision your project by copying the [**schema**](<https://raw.githubusercontent.com/mateomorris/primo/master/primo_schema.sql>) and pasting it into the editor.\n\n3. Fork the [**Primo repository**](<https://github.com/primocms/primo>).\n\n4. Go to your web host and create a new project from your new repository, inputting your Supabase details (go to the API settings) as environment variables.\n\n    - PUBLIC\\_SUPABASE\\_URL\n\n    - PUBLIC\\_SUPABASE\\_PUBLIC\\_KEY\n\n    - PRIVATE\\_SUPABASE\\_PRIVATE\\_KEY\n\n![Environment Variables](https://dbfnrqvkgwkjkzqgnfrd.supabase.co/storage/v1/object/public/images/Screenshot%202023-05-06%20at%206.45.43%20PM.png)\n\n\n5. Publish the project and navigate to the Primo authentication screen.\n\n6. The user account you create will be the server owner. You can manage the project's entire data from the Supabase project dashboard.\n\n"
+					"html": "<h1>Publishing</h1><p>To publish, you need to either download your site &amp; host it manually, or enter your Github Token to publish to Github - this is the recommended option. </p><p></p><p></p>",
+					"markdown": "# Publishing\n\nTo publish, you need to either download your site & host it manually, or enter your Github Token to publish to Github - this is the recommended option.\n\n\n\n\n\n"
 				}
 			}
 		});
 
 	component_3 = new Component$4({
 			props: {
-				title: "Primo Docs: Getting Started",
-				description: "You can download Primo as a desktop application or host it from any static host. "
+				title: "Primo Docs: Publishing",
+				description: ""
 			}
 		});
 
