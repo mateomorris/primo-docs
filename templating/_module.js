@@ -3688,7 +3688,7 @@ function get_each_context$1(ctx, list, i) {
 	return child_ctx;
 }
 
-// (185:8) {#if link.active}
+// (188:8) {#if link.active}
 function create_if_block_1$1(ctx) {
 	let icon;
 	let current;
@@ -3720,7 +3720,7 @@ function create_if_block_1$1(ctx) {
 	};
 }
 
-// (182:4) {#each header_links as link}
+// (185:4) {#each header_links as link}
 function create_each_block$1(ctx) {
 	let a;
 	let span;
@@ -3829,7 +3829,7 @@ function create_each_block$1(ctx) {
 	};
 }
 
-// (192:4) {#if video_id}
+// (195:4) {#if video_id}
 function create_if_block$2(ctx) {
 	let div;
 	let iframe;
@@ -4094,19 +4094,21 @@ function instance$3($$self, $$props, $$invalidate) {
 	let header_links = [];
 
 	function createHeaderLinks(content_node) {
-		console.log({ content_node });
-
 		// // Create a dom element and place the HTML into it to get the headlines
 		// var parser = new DOMParser();
 		// var htmlDoc = parser.parseFromString(html, 'text/html');
 		// const body = htmlDoc.querySelector('body')
 		console.log(Array.from(content_node.children));
 
-		$$invalidate(3, header_links = Array.from(content_node.children).filter(n => ["H1", "H2", "H3", "H4"].includes(n.tagName)).map(n => {
+		$$invalidate(3, header_links = Array.from(content_node.children).filter(n => ["H1", "H2", "H3", "H4"].includes(n.tagName)).map((n, i) => {
+			console.log({ n });
+			const id = n.textContent.replace(/\s/g, '-').toLowerCase() + '-' + i;
+			n.id = id;
+
 			return {
 				level: n.tagName,
 				text: n.textContent,
-				id: n.id,
+				id,
 				node: n,
 				top: n.offsetTop
 			};
@@ -4151,6 +4153,10 @@ function instance$3($$self, $$props, $$invalidate) {
 	};
 
 	$$self.$$.update = () => {
+		if ($$self.$$.dirty & /*header_links*/ 8) {
+			 console.log({ header_links });
+		}
+
 		if ($$self.$$.dirty & /*content_node*/ 4) {
 			 content_node && createHeaderLinks(content_node);
 		}
