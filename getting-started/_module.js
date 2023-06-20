@@ -7875,6 +7875,9 @@ function create_fragment$4(ctx) {
 				},
 				nav: [
 					{
+						"link": { "url": "/", "label": "Introduction" }
+					},
+					{
 						"link": {
 							"url": "/getting-started",
 							"label": "Getting Started"
@@ -7888,12 +7891,9 @@ function create_fragment$4(ctx) {
 					},
 					{
 						"link": {
-							"url": "/",
-							"label": "Content Management"
+							"url": "/publishing",
+							"label": "Publishing"
 						}
-					},
-					{
-						"link": { "url": "/guides", "label": "Guides" }
 					}
 				]
 			}
