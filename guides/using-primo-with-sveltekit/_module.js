@@ -7619,7 +7619,7 @@ function instance$3($$self, $$props, $$invalidate) {
 
 		$$invalidate(3, header_links = Array.from(content_node.children).filter(n => ["H1", "H2", "H3", "H4"].includes(n.tagName)).map((n, i) => {
 			console.log({ n });
-			const id = n.textContent.replace(/\s/g, '-').toLowerCase() + '-' + i;
+			const id = n.textContent.replace(/\s/g, '-').toLowerCase();
 			n.id = id;
 
 			return {
