@@ -7638,8 +7638,8 @@ function create_fragment$4(ctx) {
 					},
 					{
 						"link": {
-							"url": "/",
-							"label": "Content Management"
+							"url": "/publishing",
+							"label": "Publishing"
 						}
 					}
 				]
