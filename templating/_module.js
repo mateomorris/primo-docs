@@ -10757,7 +10757,7 @@ function get_each_context$1(ctx, list, i) {
 	return child_ctx;
 }
 
-// (217:8) {#if link.active}
+// (221:8) {#if link.active}
 function create_if_block_3(ctx) {
 	let icon;
 	let current;
@@ -10789,7 +10789,7 @@ function create_if_block_3(ctx) {
 	};
 }
 
-// (210:4) {#each header_links as link}
+// (214:4) {#each header_links as link}
 function create_each_block$1(ctx) {
 	let a;
 	let span;
@@ -10827,10 +10827,10 @@ function create_each_block$1(ctx) {
 			this.h();
 		},
 		h() {
-			attr(span, "class", "svelte-bm7ymx");
+			attr(span, "class", "svelte-13ywoz4");
 			attr(a, "href", a_href_value = "#" + /*link*/ ctx[15].id);
 			attr(a, "id", a_id_value = /*link*/ ctx[15].id);
-			attr(a, "class", a_class_value = "" + (null_to_empty(/*link*/ ctx[15].level) + " svelte-bm7ymx"));
+			attr(a, "class", a_class_value = "" + (null_to_empty(/*link*/ ctx[15].level) + " svelte-13ywoz4"));
 			toggle_class(a, "passed", /*link*/ ctx[15].passed);
 		},
 		m(target, anchor) {
@@ -10874,7 +10874,7 @@ function create_each_block$1(ctx) {
 				attr(a, "id", a_id_value);
 			}
 
-			if (!current || dirty & /*header_links*/ 16 && a_class_value !== (a_class_value = "" + (null_to_empty(/*link*/ ctx[15].level) + " svelte-bm7ymx"))) {
+			if (!current || dirty & /*header_links*/ 16 && a_class_value !== (a_class_value = "" + (null_to_empty(/*link*/ ctx[15].level) + " svelte-13ywoz4"))) {
 				attr(a, "class", a_class_value);
 			}
 
@@ -10898,7 +10898,7 @@ function create_each_block$1(ctx) {
 	};
 }
 
-// (224:4) {#if github_markdown_file}
+// (228:4) {#if github_markdown_file}
 function create_if_block_2(ctx) {
 	let a;
 	let icon;
@@ -10930,8 +10930,8 @@ function create_if_block_2(ctx) {
 			this.h();
 		},
 		h() {
-			attr(span, "class", "svelte-bm7ymx");
-			attr(a, "class", "button pr svelte-bm7ymx");
+			attr(span, "class", "svelte-13ywoz4");
+			attr(a, "class", "button pr svelte-13ywoz4");
 			attr(a, "href", "https://github.com/primocms/docs");
 			attr(a, "target", "_blank");
 		},
@@ -10959,7 +10959,7 @@ function create_if_block_2(ctx) {
 	};
 }
 
-// (233:4) {#if video_id}
+// (237:4) {#if video_id}
 function create_if_block_1$1(ctx) {
 	let div;
 	let iframe;
@@ -10993,8 +10993,8 @@ function create_if_block_1$1(ctx) {
 			attr(iframe, "frameborder", "0");
 			attr(iframe, "allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
 			iframe.allowFullscreen = true;
-			attr(iframe, "class", "svelte-bm7ymx");
-			attr(div, "class", "video svelte-bm7ymx");
+			attr(iframe, "class", "svelte-13ywoz4");
+			attr(div, "class", "video svelte-13ywoz4");
 		},
 		m(target, anchor) {
 			insert_hydration(target, div, anchor);
@@ -11011,7 +11011,7 @@ function create_if_block_1$1(ctx) {
 	};
 }
 
-// (247:6) {:else}
+// (251:6) {:else}
 function create_else_block$1(ctx) {
 	let icon;
 	let current;
@@ -11047,7 +11047,7 @@ function create_else_block$1(ctx) {
 	};
 }
 
-// (245:6) {#if docs}
+// (249:6) {#if docs}
 function create_if_block$2(ctx) {
 	let html_tag;
 	let html_anchor;
@@ -11184,10 +11184,10 @@ function create_fragment$3(ctx) {
 			this.h();
 		},
 		h() {
-			attr(nav, "class", "svelte-bm7ymx");
-			attr(div0, "class", "content svelte-bm7ymx");
-			attr(main, "class", "svelte-bm7ymx");
-			attr(section, "class", "section-container svelte-bm7ymx");
+			attr(nav, "class", "svelte-13ywoz4");
+			attr(div0, "class", "content svelte-13ywoz4");
+			attr(main, "class", "svelte-13ywoz4");
+			attr(section, "class", "section-container svelte-13ywoz4");
 			attr(link, "rel", "stylesheet");
 			attr(link, "href", "https://unpkg.com/highlightjs@9.16.2/styles/solarized-dark.css");
 			attr(div1, "class", "section");
