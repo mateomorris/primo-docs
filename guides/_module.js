@@ -1094,18 +1094,18 @@ function create_fragment(ctx) {
 			link = element("link");
 			meta2 = element("meta");
 			style = element("style");
-			t = text("@import url(\"https://unpkg.com/@primo-app/primo@1.3.64/reset.css\");\n@import url(https://fonts.bunny.net/css?family=archivo:200,300,300i,400,400i,500,500i,600,600i,700,700i|inter:300,400,500,600,700,800);\n\nhtml {\n  /* Colors */\n  --color-accent: #35d994;\n\n  /* Default property values */\n  --background: #111;\n  --color: #C2C2C2;\n  --padding: 2rem;\n  --box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);\n  --border-radius: 8px;\n  --max-width: 1200px;\n  --border-color: #333;\n  --transition-time: 0.1s;\n  --transition: var(--transition-time) color,\n    var(--transition-time) background-color, var(--transition-time) border-color,\n    var(--transition-time) text-decoration-color,\n    var(--transition-time) box-shadow, var(--transtion-time) transform;\n}\n\n#page {\n  font-family: \"Inter\", sans-serif;\n  color: var(--color);\n  line-height: 1.6;\n  font-size: 1rem;\n  background: #111;\n  font-weight: 300;\n}\n\n.content {\n  max-width: var(--max-width);\n  margin: 0 auto;\n  padding: var(--padding);\n\n/*   pre {\n    padding: 2rem;\n    background: #222;\n    border-radius: 0.25rem;\n    margin-bottom: 2rem;\n    margin-top: 1em;\n  } */\n}\n\n.content img {\n    width: 100%;\n    margin: 2rem 0;\n    box-shadow: var(--box-shadow);\n    border-radius: var(--border-radius);\n  }\n\n.content p {\n    padding: 0.25rem 0;\n    line-height: 1.5;\n    color: var(--color);\n  }\n\n.content strong{\n    font-weight: 500;\n    color: white;\n  }\n\n.content a {\n    text-decoration: underline;\n  }\n\n.content h1 {\n    font-size: 2.25rem;\n    font-weight: 500;\n    margin-bottom:.5rem;\n    color: white;\n  }\n\n.content h2 {\n    font-size: 1.75rem;\n    font-weight: 500;\n    margin-bottom: 0.5rem;\n    margin-top: 2rem;\n    color: white;\n  }\n\n.content h3 {\n    font-size: 1.5rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content h4 {\n    font-size: 1.15rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content h5 {\n    font-size: 1rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content ul {\n    list-style: disc;\n    padding: 0.5rem 0;\n    padding-left: 1.25rem;\n  }\n\n.content ol {\n    list-style: decimal;\n    padding: 0.5rem 0;\n    padding-left: 1.25rem;\n  }\n\n.content blockquote {\n    padding: 2rem;\n    box-shadow: var(--box-shadow);\n    border-radius: var(--border-radius);\n  }\n\n.section-container {\n  max-width: var(--max-width, 1200px);\n  margin: 0 auto;\n  padding: 3rem var(--padding, 1rem);\n}\n\n.heading {\n  font-size: 3rem;\n  line-height: 1;\n  font-weight: 500;\n  margin: 0;\n}\n\n.button {\n  color: white;\n  background: var(--color-accent);\n  border-radius: 5px;\n  padding: 8px 20px;\n  transition: var(--transition);\n}\n\n.button:hover {\n    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);\n  }\n\n.button.inverted {\n    background: transparent;\n    color: var(--color-accent);\n    border: 2px solid var(--color-accent);\n  }");
+			t = text("@import url(\"https://unpkg.com/@primo-app/primo@1.3.64/reset.css\");\n@import url(https://fonts.bunny.net/css?family=archivo:200,300,300i,400,400i,500,500i,600,600i,700,700i|inter:300,400,500,600,700,800);\n\nhtml {\n  /* Colors */\n  --color-accent: #35d994;\n\n  /* Default property values */\n  --background: #111;\n  --color: #c2c2c2;\n  --padding: 2rem;\n  --box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);\n  --border-radius: 8px;\n  --max-width: 1200px;\n  --border-color: #333;\n  --transition-time: 0.1s;\n  --transition: var(--transition-time) color,\n    var(--transition-time) background-color, var(--transition-time) border-color,\n    var(--transition-time) text-decoration-color,\n    var(--transition-time) box-shadow, var(--transtion-time) transform;\n}\n\n#page {\n  font-family: \"Inter\", sans-serif;\n  color: var(--color);\n  line-height: 1.6;\n  font-size: 1rem;\n  background: #111;\n  font-weight: 300;\n}\n\n.content {\n  max-width: var(--max-width);\n  margin: 0 auto;\n  padding: var(--padding);\n\n  /*   pre {\n    padding: 2rem;\n    background: #222;\n    border-radius: 0.25rem;\n    margin-bottom: 2rem;\n    margin-top: 1em;\n  } */\n}\n\n.content img {\n    width: 100%;\n    margin: 2rem 0;\n    box-shadow: var(--box-shadow);\n    border-radius: var(--border-radius);\n  }\n\n.content p {\n    padding: 0.25rem 0;\n    line-height: 1.5;\n    color: var(--color);\n  }\n\n.content strong {\n    font-weight: 500;\n    color: white;\n  }\n\n.content a {\n    text-decoration: underline;\n  }\n\n.content h1 {\n    line-height: 1.2;\n    font-size: 2.25rem;\n    font-weight: 500;\n    margin-bottom: 0.5rem;\n    color: white;\n  }\n\n.content h2 {\n    font-size: 1.75rem;\n    font-weight: 500;\n    margin-bottom: 0.5rem;\n    margin-top: 2rem;\n    color: white;\n  }\n\n.content h3 {\n    font-size: 1.5rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content h4 {\n    font-size: 1.15rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content h5 {\n    font-size: 1rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content ul {\n    list-style: disc;\n    padding: 0.5rem 0;\n    padding-left: 1.25rem;\n  }\n\n.content ol {\n    list-style: decimal;\n    padding: 0.5rem 0;\n    padding-left: 1.25rem;\n  }\n\n.content blockquote {\n    border: 1px solid #222;\n    margin: 1rem 0;\n    padding: 2rem;\n    box-shadow: var(--box-shadow);\n    border-radius: var(--border-radius);\n  }\n\n.section-container {\n  max-width: var(--max-width, 1200px);\n  margin: 0 auto;\n  padding: 3rem var(--padding, 1rem);\n}\n\n.heading {\n  font-size: 3rem;\n  line-height: 1;\n  font-weight: 500;\n  margin: 0;\n}\n\n.button {\n  color: white;\n  background: var(--color-accent);\n  border-radius: 5px;\n  padding: 8px 20px;\n  transition: var(--transition);\n}\n\n.button:hover {\n    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);\n  }\n\n.button.inverted {\n    background: transparent;\n    color: var(--color-accent);\n    border: 2px solid var(--color-accent);\n  }");
 			this.h();
 		},
 		l(nodes) {
-			const head_nodes = head_selector('svelte-1uhv2s6', document.head);
+			const head_nodes = head_selector('svelte-tc9q34', document.head);
 			meta0 = claim_element(head_nodes, "META", { name: true, content: true });
 			meta1 = claim_element(head_nodes, "META", { charset: true });
 			link = claim_element(head_nodes, "LINK", { rel: true, type: true, href: true });
 			meta2 = claim_element(head_nodes, "META", { name: true, content: true });
 			style = claim_element(head_nodes, "STYLE", {});
 			var style_nodes = children(style);
-			t = claim_text(style_nodes, "@import url(\"https://unpkg.com/@primo-app/primo@1.3.64/reset.css\");\n@import url(https://fonts.bunny.net/css?family=archivo:200,300,300i,400,400i,500,500i,600,600i,700,700i|inter:300,400,500,600,700,800);\n\nhtml {\n  /* Colors */\n  --color-accent: #35d994;\n\n  /* Default property values */\n  --background: #111;\n  --color: #C2C2C2;\n  --padding: 2rem;\n  --box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);\n  --border-radius: 8px;\n  --max-width: 1200px;\n  --border-color: #333;\n  --transition-time: 0.1s;\n  --transition: var(--transition-time) color,\n    var(--transition-time) background-color, var(--transition-time) border-color,\n    var(--transition-time) text-decoration-color,\n    var(--transition-time) box-shadow, var(--transtion-time) transform;\n}\n\n#page {\n  font-family: \"Inter\", sans-serif;\n  color: var(--color);\n  line-height: 1.6;\n  font-size: 1rem;\n  background: #111;\n  font-weight: 300;\n}\n\n.content {\n  max-width: var(--max-width);\n  margin: 0 auto;\n  padding: var(--padding);\n\n/*   pre {\n    padding: 2rem;\n    background: #222;\n    border-radius: 0.25rem;\n    margin-bottom: 2rem;\n    margin-top: 1em;\n  } */\n}\n\n.content img {\n    width: 100%;\n    margin: 2rem 0;\n    box-shadow: var(--box-shadow);\n    border-radius: var(--border-radius);\n  }\n\n.content p {\n    padding: 0.25rem 0;\n    line-height: 1.5;\n    color: var(--color);\n  }\n\n.content strong{\n    font-weight: 500;\n    color: white;\n  }\n\n.content a {\n    text-decoration: underline;\n  }\n\n.content h1 {\n    font-size: 2.25rem;\n    font-weight: 500;\n    margin-bottom:.5rem;\n    color: white;\n  }\n\n.content h2 {\n    font-size: 1.75rem;\n    font-weight: 500;\n    margin-bottom: 0.5rem;\n    margin-top: 2rem;\n    color: white;\n  }\n\n.content h3 {\n    font-size: 1.5rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content h4 {\n    font-size: 1.15rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content h5 {\n    font-size: 1rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content ul {\n    list-style: disc;\n    padding: 0.5rem 0;\n    padding-left: 1.25rem;\n  }\n\n.content ol {\n    list-style: decimal;\n    padding: 0.5rem 0;\n    padding-left: 1.25rem;\n  }\n\n.content blockquote {\n    padding: 2rem;\n    box-shadow: var(--box-shadow);\n    border-radius: var(--border-radius);\n  }\n\n.section-container {\n  max-width: var(--max-width, 1200px);\n  margin: 0 auto;\n  padding: 3rem var(--padding, 1rem);\n}\n\n.heading {\n  font-size: 3rem;\n  line-height: 1;\n  font-weight: 500;\n  margin: 0;\n}\n\n.button {\n  color: white;\n  background: var(--color-accent);\n  border-radius: 5px;\n  padding: 8px 20px;\n  transition: var(--transition);\n}\n\n.button:hover {\n    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);\n  }\n\n.button.inverted {\n    background: transparent;\n    color: var(--color-accent);\n    border: 2px solid var(--color-accent);\n  }");
+			t = claim_text(style_nodes, "@import url(\"https://unpkg.com/@primo-app/primo@1.3.64/reset.css\");\n@import url(https://fonts.bunny.net/css?family=archivo:200,300,300i,400,400i,500,500i,600,600i,700,700i|inter:300,400,500,600,700,800);\n\nhtml {\n  /* Colors */\n  --color-accent: #35d994;\n\n  /* Default property values */\n  --background: #111;\n  --color: #c2c2c2;\n  --padding: 2rem;\n  --box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);\n  --border-radius: 8px;\n  --max-width: 1200px;\n  --border-color: #333;\n  --transition-time: 0.1s;\n  --transition: var(--transition-time) color,\n    var(--transition-time) background-color, var(--transition-time) border-color,\n    var(--transition-time) text-decoration-color,\n    var(--transition-time) box-shadow, var(--transtion-time) transform;\n}\n\n#page {\n  font-family: \"Inter\", sans-serif;\n  color: var(--color);\n  line-height: 1.6;\n  font-size: 1rem;\n  background: #111;\n  font-weight: 300;\n}\n\n.content {\n  max-width: var(--max-width);\n  margin: 0 auto;\n  padding: var(--padding);\n\n  /*   pre {\n    padding: 2rem;\n    background: #222;\n    border-radius: 0.25rem;\n    margin-bottom: 2rem;\n    margin-top: 1em;\n  } */\n}\n\n.content img {\n    width: 100%;\n    margin: 2rem 0;\n    box-shadow: var(--box-shadow);\n    border-radius: var(--border-radius);\n  }\n\n.content p {\n    padding: 0.25rem 0;\n    line-height: 1.5;\n    color: var(--color);\n  }\n\n.content strong {\n    font-weight: 500;\n    color: white;\n  }\n\n.content a {\n    text-decoration: underline;\n  }\n\n.content h1 {\n    line-height: 1.2;\n    font-size: 2.25rem;\n    font-weight: 500;\n    margin-bottom: 0.5rem;\n    color: white;\n  }\n\n.content h2 {\n    font-size: 1.75rem;\n    font-weight: 500;\n    margin-bottom: 0.5rem;\n    margin-top: 2rem;\n    color: white;\n  }\n\n.content h3 {\n    font-size: 1.5rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content h4 {\n    font-size: 1.15rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content h5 {\n    font-size: 1rem;\n    font-weight: 500;\n    margin-bottom: 0.25rem;\n    margin-top: 1rem;\n    color: white;\n  }\n\n.content ul {\n    list-style: disc;\n    padding: 0.5rem 0;\n    padding-left: 1.25rem;\n  }\n\n.content ol {\n    list-style: decimal;\n    padding: 0.5rem 0;\n    padding-left: 1.25rem;\n  }\n\n.content blockquote {\n    border: 1px solid #222;\n    margin: 1rem 0;\n    padding: 2rem;\n    box-shadow: var(--box-shadow);\n    border-radius: var(--border-radius);\n  }\n\n.section-container {\n  max-width: var(--max-width, 1200px);\n  margin: 0 auto;\n  padding: 3rem var(--padding, 1rem);\n}\n\n.heading {\n  font-size: 3rem;\n  line-height: 1;\n  font-weight: 500;\n  margin: 0;\n}\n\n.button {\n  color: white;\n  background: var(--color-accent);\n  border-radius: 5px;\n  padding: 8px 20px;\n  transition: var(--transition);\n}\n\n.button:hover {\n    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);\n  }\n\n.button.inverted {\n    background: transparent;\n    color: var(--color-accent);\n    border: 2px solid var(--color-accent);\n  }");
 			style_nodes.forEach(detach);
 			head_nodes.forEach(detach);
 			this.h();
@@ -6513,24 +6513,30 @@ function set(key, value, customStore = defaultGetStore()) {
 
 function get_each_context(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[9] = list[i].link;
+	child_ctx[10] = list[i].link;
 	return child_ctx;
 }
 
 function get_each_context_1(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[9] = list[i].link;
+	child_ctx[10] = list[i].link;
 	return child_ctx;
 }
 
 function get_each_context_2(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[14] = list[i].icon;
-	child_ctx[9] = list[i].link;
+	child_ctx[16] = list[i];
 	return child_ctx;
 }
 
-// (219:4) {#if logo}
+function get_each_context_3(ctx, list, i) {
+	const child_ctx = ctx.slice();
+	child_ctx[19] = list[i].icon;
+	child_ctx[10] = list[i].link;
+	return child_ctx;
+}
+
+// (257:4) {#if logo}
 function create_if_block_1$1(ctx) {
 	let a;
 	let raw_value = /*logo*/ ctx[2].svg + "";
@@ -6553,7 +6559,7 @@ function create_if_block_1$1(ctx) {
 		},
 		h() {
 			attr(a, "href", "https://primocms.org");
-			attr(a, "class", "logo svelte-6em6i0");
+			attr(a, "class", "logo svelte-su5eeh");
 			attr(a, "aria-label", "Primo main site");
 		},
 		m(target, anchor) {
@@ -6568,14 +6574,14 @@ function create_if_block_1$1(ctx) {
 	};
 }
 
-// (225:6) {#each parent_nav as { icon, link }}
-function create_each_block_2(ctx) {
+// (263:6) {#each parent_nav as { icon, link }}
+function create_each_block_3(ctx) {
 	let a;
 	let icon;
 	let t;
 	let a_href_value;
 	let current;
-	icon = new Component$1({ props: { icon: /*icon*/ ctx[14] } });
+	icon = new Component$1({ props: { icon: /*icon*/ ctx[19] } });
 
 	return {
 		c() {
@@ -6593,11 +6599,8 @@ function create_each_block_2(ctx) {
 			this.h();
 		},
 		h() {
-			attr(a, "href", a_href_value = /*link*/ ctx[9].url.startsWith("/")
-			? `https://primocms.org${/*link*/ ctx[9].url}`
-			: /*link*/ ctx[9].url);
-
-			attr(a, "class", "svelte-6em6i0");
+			attr(a, "href", a_href_value = parent_href(/*link*/ ctx[10]));
+			attr(a, "class", "svelte-su5eeh");
 		},
 		m(target, anchor) {
 			insert_hydration(target, a, anchor);
@@ -6607,12 +6610,10 @@ function create_each_block_2(ctx) {
 		},
 		p(ctx, dirty) {
 			const icon_changes = {};
-			if (dirty & /*parent_nav*/ 8) icon_changes.icon = /*icon*/ ctx[14];
+			if (dirty & /*parent_nav*/ 8) icon_changes.icon = /*icon*/ ctx[19];
 			icon.$set(icon_changes);
 
-			if (!current || dirty & /*parent_nav*/ 8 && a_href_value !== (a_href_value = /*link*/ ctx[9].url.startsWith("/")
-			? `https://primocms.org${/*link*/ ctx[9].url}`
-			: /*link*/ ctx[9].url)) {
+			if (!current || dirty & /*parent_nav*/ 8 && a_href_value !== (a_href_value = parent_href(/*link*/ ctx[10]))) {
 				attr(a, "href", a_href_value);
 			}
 		},
@@ -6632,10 +6633,151 @@ function create_each_block_2(ctx) {
 	};
 }
 
-// (240:6) {#each nav as { link }}
+// (1:0)            <script>                         export let title; export let description; export let secondary_logo; export let nav;               import axios from "axios"; import Icon from "@iconify/svelte/dist/Icon.svelte"; import { fade }
+function create_catch_block(ctx) {
+	return {
+		c: noop,
+		l: noop,
+		m: noop,
+		p: noop,
+		d: noop
+	};
+}
+
+// (281:43)              <ul>               {#each guides as guide}
+function create_then_block(ctx) {
+	let ul;
+	let each_value_2 = /*guides*/ ctx[15];
+	let each_blocks = [];
+
+	for (let i = 0; i < each_value_2.length; i += 1) {
+		each_blocks[i] = create_each_block_2(get_each_context_2(ctx, each_value_2, i));
+	}
+
+	return {
+		c() {
+			ul = element("ul");
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			this.h();
+		},
+		l(nodes) {
+			ul = claim_element(nodes, "UL", { class: true });
+			var ul_nodes = children(ul);
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].l(ul_nodes);
+			}
+
+			ul_nodes.forEach(detach);
+			this.h();
+		},
+		h() {
+			attr(ul, "class", "svelte-su5eeh");
+		},
+		m(target, anchor) {
+			insert_hydration(target, ul, anchor);
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				if (each_blocks[i]) {
+					each_blocks[i].m(ul, null);
+				}
+			}
+		},
+		p(ctx, dirty) {
+			if (dirty & /*get_guides*/ 32) {
+				each_value_2 = /*guides*/ ctx[15];
+				let i;
+
+				for (i = 0; i < each_value_2.length; i += 1) {
+					const child_ctx = get_each_context_2(ctx, each_value_2, i);
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(child_ctx, dirty);
+					} else {
+						each_blocks[i] = create_each_block_2(child_ctx);
+						each_blocks[i].c();
+						each_blocks[i].m(ul, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].d(1);
+				}
+
+				each_blocks.length = each_value_2.length;
+			}
+		},
+		d(detaching) {
+			if (detaching) detach(ul);
+			destroy_each(each_blocks, detaching);
+		}
+	};
+}
+
+// (283:14) {#each guides as guide}
+function create_each_block_2(ctx) {
+	let li;
+	let a;
+	let t0_value = /*guide*/ ctx[16].name + "";
+	let t0;
+	let a_href_value;
+	let t1;
+
+	return {
+		c() {
+			li = element("li");
+			a = element("a");
+			t0 = text(t0_value);
+			t1 = space();
+			this.h();
+		},
+		l(nodes) {
+			li = claim_element(nodes, "LI", {});
+			var li_nodes = children(li);
+			a = claim_element(li_nodes, "A", { href: true, class: true });
+			var a_nodes = children(a);
+			t0 = claim_text(a_nodes, t0_value);
+			a_nodes.forEach(detach);
+			t1 = claim_space(li_nodes);
+			li_nodes.forEach(detach);
+			this.h();
+		},
+		h() {
+			attr(a, "href", a_href_value = "/guides/" + /*guide*/ ctx[16].url);
+			attr(a, "class", "svelte-su5eeh");
+		},
+		m(target, anchor) {
+			insert_hydration(target, li, anchor);
+			append_hydration(li, a);
+			append_hydration(a, t0);
+			append_hydration(li, t1);
+		},
+		p: noop,
+		d(detaching) {
+			if (detaching) detach(li);
+		}
+	};
+}
+
+// (1:0)            <script>                         export let title; export let description; export let secondary_logo; export let nav;               import axios from "axios"; import Icon from "@iconify/svelte/dist/Icon.svelte"; import { fade }
+function create_pending_block(ctx) {
+	return {
+		c: noop,
+		l: noop,
+		m: noop,
+		p: noop,
+		d: noop
+	};
+}
+
+// (291:8) {#each nav as { link }}
 function create_each_block_1(ctx) {
 	let a;
-	let t_value = /*link*/ ctx[9].label + "";
+	let t_value = /*link*/ ctx[10].label + "";
 	let t;
 	let a_href_value;
 
@@ -6653,23 +6795,23 @@ function create_each_block_1(ctx) {
 			this.h();
 		},
 		h() {
-			attr(a, "href", a_href_value = /*link*/ ctx[9].url);
-			attr(a, "class", "link svelte-6em6i0");
-			toggle_class(a, "active", window.location.pathname === /*link*/ ctx[9].url);
+			attr(a, "href", a_href_value = /*link*/ ctx[10].url);
+			attr(a, "class", "link svelte-su5eeh");
+			toggle_class(a, "active", window.location.pathname === /*link*/ ctx[10].url);
 		},
 		m(target, anchor) {
 			insert_hydration(target, a, anchor);
 			append_hydration(a, t);
 		},
 		p(ctx, dirty) {
-			if (dirty & /*nav*/ 1 && t_value !== (t_value = /*link*/ ctx[9].label + "")) set_data(t, t_value);
+			if (dirty & /*nav*/ 1 && t_value !== (t_value = /*link*/ ctx[10].label + "")) set_data(t, t_value);
 
-			if (dirty & /*nav*/ 1 && a_href_value !== (a_href_value = /*link*/ ctx[9].url)) {
+			if (dirty & /*nav*/ 1 && a_href_value !== (a_href_value = /*link*/ ctx[10].url)) {
 				attr(a, "href", a_href_value);
 			}
 
 			if (dirty & /*window, nav*/ 1) {
-				toggle_class(a, "active", window.location.pathname === /*link*/ ctx[9].url);
+				toggle_class(a, "active", window.location.pathname === /*link*/ ctx[10].url);
 			}
 		},
 		d(detaching) {
@@ -6678,7 +6820,7 @@ function create_each_block_1(ctx) {
 	};
 }
 
-// (261:4) {#if mobileNavOpen}
+// (314:4) {#if mobileNavOpen}
 function create_if_block$1(ctx) {
 	let nav_1;
 	let t;
@@ -6758,12 +6900,12 @@ function create_if_block$1(ctx) {
 			attr(svg, "xmlns", "http://www.w3.org/2000/svg");
 			attr(svg, "viewBox", "0 0 20 20");
 			attr(svg, "fill", "currentColor");
-			attr(svg, "class", "svelte-6em6i0");
+			attr(svg, "class", "svelte-su5eeh");
 			attr(button, "id", "close");
 			attr(button, "aria-label", "Close Navigation");
-			attr(button, "class", "svelte-6em6i0");
+			attr(button, "class", "svelte-su5eeh");
 			attr(nav_1, "id", "mobile-nav");
-			attr(nav_1, "class", "svelte-6em6i0");
+			attr(nav_1, "class", "svelte-su5eeh");
 		},
 		m(target, anchor) {
 			insert_hydration(target, nav_1, anchor);
@@ -6835,10 +6977,10 @@ function create_if_block$1(ctx) {
 	};
 }
 
-// (263:8) {#each nav as { link }}
+// (316:8) {#each nav as { link }}
 function create_each_block(ctx) {
 	let a;
-	let t_value = /*link*/ ctx[9].label + "";
+	let t_value = /*link*/ ctx[10].label + "";
 	let t;
 	let a_href_value;
 
@@ -6856,17 +6998,17 @@ function create_each_block(ctx) {
 			this.h();
 		},
 		h() {
-			attr(a, "href", a_href_value = /*link*/ ctx[9].url);
-			attr(a, "class", "link svelte-6em6i0");
+			attr(a, "href", a_href_value = /*link*/ ctx[10].url);
+			attr(a, "class", "link svelte-su5eeh");
 		},
 		m(target, anchor) {
 			insert_hydration(target, a, anchor);
 			append_hydration(a, t);
 		},
 		p(ctx, dirty) {
-			if (dirty & /*nav*/ 1 && t_value !== (t_value = /*link*/ ctx[9].label + "")) set_data(t, t_value);
+			if (dirty & /*nav*/ 1 && t_value !== (t_value = /*link*/ ctx[10].label + "")) set_data(t, t_value);
 
-			if (dirty & /*nav*/ 1 && a_href_value !== (a_href_value = /*link*/ ctx[9].url)) {
+			if (dirty & /*nav*/ 1 && a_href_value !== (a_href_value = /*link*/ ctx[10].url)) {
 				attr(a, "href", a_href_value);
 			}
 		},
@@ -6877,39 +7019,63 @@ function create_each_block(ctx) {
 }
 
 function create_fragment$2(ctx) {
-	let div4;
+	let div6;
 	let header;
 	let div0;
 	let t0;
 	let nav0;
 	let t1;
-	let div3;
+	let div5;
 	let div1;
 	let a;
 	let t2;
 	let t3;
+	let div4;
 	let nav1;
-	let t4;
 	let div2;
+	let span1;
+	let span0;
+	let t4;
+	let t5;
+	let icon;
+	let t6;
+	let promise;
+	let t7;
+	let t8;
+	let div3;
 	let button;
 	let svg;
 	let path;
-	let t5;
+	let t9;
 	let current;
 	let mounted;
 	let dispose;
 	let if_block0 = /*logo*/ ctx[2] && create_if_block_1$1(ctx);
-	let each_value_2 = /*parent_nav*/ ctx[3];
+	let each_value_3 = /*parent_nav*/ ctx[3];
 	let each_blocks_1 = [];
 
-	for (let i = 0; i < each_value_2.length; i += 1) {
-		each_blocks_1[i] = create_each_block_2(get_each_context_2(ctx, each_value_2, i));
+	for (let i = 0; i < each_value_3.length; i += 1) {
+		each_blocks_1[i] = create_each_block_3(get_each_context_3(ctx, each_value_3, i));
 	}
 
 	const out = i => transition_out(each_blocks_1[i], 1, 1, () => {
 		each_blocks_1[i] = null;
 	});
 
+	icon = new Component$1({ props: { icon: "tabler:chevron-down" } });
+
+	let info = {
+		ctx,
+		current: null,
+		token: null,
+		hasCatch: false,
+		pending: create_pending_block,
+		then: create_then_block,
+		catch: create_catch_block,
+		value: 15
+	};
+
+	handle_promise(promise = /*get_guides*/ ctx[5](), info);
 	let each_value_1 = /*nav*/ ctx[0];
 	let each_blocks = [];
 
@@ -6921,7 +7087,7 @@ function create_fragment$2(ctx) {
 
 	return {
 		c() {
-			div4 = element("div");
+			div6 = element("div");
 			header = element("header");
 			div0 = element("div");
 			if (if_block0) if_block0.c();
@@ -6933,30 +7099,40 @@ function create_fragment$2(ctx) {
 			}
 
 			t1 = space();
-			div3 = element("div");
+			div5 = element("div");
 			div1 = element("div");
 			a = element("a");
 			t2 = text("Primo Docs");
 			t3 = space();
+			div4 = element("div");
 			nav1 = element("nav");
+			div2 = element("div");
+			span1 = element("span");
+			span0 = element("span");
+			t4 = text("Guides");
+			t5 = space();
+			create_component(icon.$$.fragment);
+			t6 = space();
+			info.block.c();
+			t7 = space();
 
 			for (let i = 0; i < each_blocks.length; i += 1) {
 				each_blocks[i].c();
 			}
 
-			t4 = space();
-			div2 = element("div");
+			t8 = space();
+			div3 = element("div");
 			button = element("button");
 			svg = svg_element("svg");
 			path = svg_element("path");
-			t5 = space();
+			t9 = space();
 			if (if_block1) if_block1.c();
 			this.h();
 		},
 		l(nodes) {
-			div4 = claim_element(nodes, "DIV", { class: true, id: true });
-			var div4_nodes = children(div4);
-			header = claim_element(div4_nodes, "HEADER", { class: true });
+			div6 = claim_element(nodes, "DIV", { class: true, id: true });
+			var div6_nodes = children(div6);
+			header = claim_element(div6_nodes, "HEADER", { class: true });
 			var header_nodes = children(header);
 			div0 = claim_element(header_nodes, "DIV", { class: true });
 			var div0_nodes = children(div0);
@@ -6972,28 +7148,45 @@ function create_fragment$2(ctx) {
 			nav0_nodes.forEach(detach);
 			div0_nodes.forEach(detach);
 			t1 = claim_space(header_nodes);
-			div3 = claim_element(header_nodes, "DIV", { class: true });
-			var div3_nodes = children(div3);
-			div1 = claim_element(div3_nodes, "DIV", { class: true });
+			div5 = claim_element(header_nodes, "DIV", { class: true });
+			var div5_nodes = children(div5);
+			div1 = claim_element(div5_nodes, "DIV", { class: true });
 			var div1_nodes = children(div1);
 			a = claim_element(div1_nodes, "A", { href: true, class: true });
 			var a_nodes = children(a);
 			t2 = claim_text(a_nodes, "Primo Docs");
 			a_nodes.forEach(detach);
 			div1_nodes.forEach(detach);
-			t3 = claim_space(div3_nodes);
-			nav1 = claim_element(div3_nodes, "NAV", { class: true });
+			t3 = claim_space(div5_nodes);
+			div4 = claim_element(div5_nodes, "DIV", { class: true });
+			var div4_nodes = children(div4);
+			nav1 = claim_element(div4_nodes, "NAV", { class: true });
 			var nav1_nodes = children(nav1);
+			div2 = claim_element(nav1_nodes, "DIV", { class: true });
+			var div2_nodes = children(div2);
+			span1 = claim_element(div2_nodes, "SPAN", { class: true });
+			var span1_nodes = children(span1);
+			span0 = claim_element(span1_nodes, "SPAN", {});
+			var span0_nodes = children(span0);
+			t4 = claim_text(span0_nodes, "Guides");
+			span0_nodes.forEach(detach);
+			t5 = claim_space(span1_nodes);
+			claim_component(icon.$$.fragment, span1_nodes);
+			span1_nodes.forEach(detach);
+			t6 = claim_space(div2_nodes);
+			info.block.l(div2_nodes);
+			div2_nodes.forEach(detach);
+			t7 = claim_space(nav1_nodes);
 
 			for (let i = 0; i < each_blocks.length; i += 1) {
 				each_blocks[i].l(nav1_nodes);
 			}
 
 			nav1_nodes.forEach(detach);
-			t4 = claim_space(div3_nodes);
-			div2 = claim_element(div3_nodes, "DIV", { class: true });
-			var div2_nodes = children(div2);
-			button = claim_element(div2_nodes, "BUTTON", { id: true, class: true });
+			t8 = claim_space(div4_nodes);
+			div3 = claim_element(div4_nodes, "DIV", { class: true });
+			var div3_nodes = children(div3);
+			button = claim_element(div3_nodes, "BUTTON", { id: true, class: true });
 			var button_nodes = children(button);
 
 			svg = claim_svg_element(button_nodes, "svg", {
@@ -7010,22 +7203,25 @@ function create_fragment$2(ctx) {
 			children(path).forEach(detach);
 			svg_nodes.forEach(detach);
 			button_nodes.forEach(detach);
-			div2_nodes.forEach(detach);
-			t5 = claim_space(div3_nodes);
-			if (if_block1) if_block1.l(div3_nodes);
 			div3_nodes.forEach(detach);
-			header_nodes.forEach(detach);
 			div4_nodes.forEach(detach);
+			t9 = claim_space(div5_nodes);
+			if (if_block1) if_block1.l(div5_nodes);
+			div5_nodes.forEach(detach);
+			header_nodes.forEach(detach);
+			div6_nodes.forEach(detach);
 			this.h();
 		},
 		h() {
-			attr(nav0, "class", "svelte-6em6i0");
-			attr(div0, "class", "parent-nav section-container svelte-6em6i0");
+			attr(nav0, "class", "svelte-su5eeh");
+			attr(div0, "class", "parent-nav section-container svelte-su5eeh");
 			toggle_class(div0, "loaded", /*parent_nav*/ ctx[3].length > 0);
 			attr(a, "href", "/");
-			attr(a, "class", "link svelte-6em6i0");
-			attr(div1, "class", "logos svelte-6em6i0");
-			attr(nav1, "class", "svelte-6em6i0");
+			attr(a, "class", "link svelte-su5eeh");
+			attr(div1, "class", "logos svelte-su5eeh");
+			attr(span1, "class", "title svelte-su5eeh");
+			attr(div2, "class", "dropdown svelte-su5eeh");
+			attr(nav1, "class", "svelte-su5eeh");
 			attr(path, "d", "M19.4643 17.0213H0.535714C0.239866 17.0213 0 17.3071 0 17.6596V19.3617C0 19.7142 0.239866 20 0.535714 20H19.4643C19.7601 20 20 19.7142 20 19.3617V17.6596C20 17.3071 19.7601 17.0213 19.4643 17.0213ZM19.4643 8.51064H0.535714C0.239866 8.51064 0 8.79644 0 9.14894V10.8511C0 11.2036 0.239866 11.4894 0.535714 11.4894H19.4643C19.7601 11.4894 20 11.2036 20 10.8511V9.14894C20 8.79644 19.7601 8.51064 19.4643 8.51064ZM19.4643 0H0.535714C0.239866 0 0 0.285797 0 0.638296V2.34042C0 2.69292 0.239866 2.97872 0.535714 2.97872H19.4643C19.7601 2.97872 20 2.69292 20 2.34042V0.638296C20 0.285797 19.7601 0 19.4643 0Z");
 			attr(path, "fill", "currentColor");
 			attr(svg, "width", "20");
@@ -7033,18 +7229,19 @@ function create_fragment$2(ctx) {
 			attr(svg, "viewBox", "0 0 20 20");
 			attr(svg, "fill", "none");
 			attr(svg, "xmlns", "http://www.w3.org/2000/svg");
-			attr(svg, "class", "svelte-6em6i0");
+			attr(svg, "class", "svelte-su5eeh");
 			attr(button, "id", "open");
-			attr(button, "class", "svelte-6em6i0");
-			attr(div2, "class", "call-to-action svelte-6em6i0");
-			attr(div3, "class", "section-container svelte-6em6i0");
-			attr(header, "class", "svelte-6em6i0");
-			attr(div4, "class", "section");
-			attr(div4, "id", "section-aa069f0f");
+			attr(button, "class", "svelte-su5eeh");
+			attr(div3, "class", "call-to-action svelte-su5eeh");
+			attr(div4, "class", "navigation svelte-su5eeh");
+			attr(div5, "class", "section-container svelte-su5eeh");
+			attr(header, "class", "svelte-su5eeh");
+			attr(div6, "class", "section");
+			attr(div6, "id", "section-aa069f0f");
 		},
 		m(target, anchor) {
-			insert_hydration(target, div4, anchor);
-			append_hydration(div4, header);
+			insert_hydration(target, div6, anchor);
+			append_hydration(div6, header);
 			append_hydration(header, div0);
 			if (if_block0) if_block0.m(div0, null);
 			append_hydration(div0, t0);
@@ -7057,12 +7254,24 @@ function create_fragment$2(ctx) {
 			}
 
 			append_hydration(header, t1);
-			append_hydration(header, div3);
-			append_hydration(div3, div1);
+			append_hydration(header, div5);
+			append_hydration(div5, div1);
 			append_hydration(div1, a);
 			append_hydration(a, t2);
-			append_hydration(div3, t3);
-			append_hydration(div3, nav1);
+			append_hydration(div5, t3);
+			append_hydration(div5, div4);
+			append_hydration(div4, nav1);
+			append_hydration(nav1, div2);
+			append_hydration(div2, span1);
+			append_hydration(span1, span0);
+			append_hydration(span0, t4);
+			append_hydration(span1, t5);
+			mount_component(icon, span1, null);
+			append_hydration(div2, t6);
+			info.block.m(div2, info.anchor = null);
+			info.mount = () => div2;
+			info.anchor = null;
+			append_hydration(nav1, t7);
 
 			for (let i = 0; i < each_blocks.length; i += 1) {
 				if (each_blocks[i]) {
@@ -7070,13 +7279,13 @@ function create_fragment$2(ctx) {
 				}
 			}
 
-			append_hydration(div3, t4);
-			append_hydration(div3, div2);
-			append_hydration(div2, button);
+			append_hydration(div4, t8);
+			append_hydration(div4, div3);
+			append_hydration(div3, button);
 			append_hydration(button, svg);
 			append_hydration(svg, path);
-			append_hydration(div3, t5);
-			if (if_block1) if_block1.m(div3, null);
+			append_hydration(div5, t9);
+			if (if_block1) if_block1.m(div5, null);
 			current = true;
 
 			if (!mounted) {
@@ -7084,7 +7293,9 @@ function create_fragment$2(ctx) {
 				mounted = true;
 			}
 		},
-		p(ctx, [dirty]) {
+		p(new_ctx, [dirty]) {
+			ctx = new_ctx;
+
 			if (/*logo*/ ctx[2]) {
 				if (if_block0) {
 					if_block0.p(ctx, dirty);
@@ -7098,18 +7309,18 @@ function create_fragment$2(ctx) {
 				if_block0 = null;
 			}
 
-			if (dirty & /*parent_nav*/ 8) {
-				each_value_2 = /*parent_nav*/ ctx[3];
+			if (dirty & /*parent_href, parent_nav*/ 8) {
+				each_value_3 = /*parent_nav*/ ctx[3];
 				let i;
 
-				for (i = 0; i < each_value_2.length; i += 1) {
-					const child_ctx = get_each_context_2(ctx, each_value_2, i);
+				for (i = 0; i < each_value_3.length; i += 1) {
+					const child_ctx = get_each_context_3(ctx, each_value_3, i);
 
 					if (each_blocks_1[i]) {
 						each_blocks_1[i].p(child_ctx, dirty);
 						transition_in(each_blocks_1[i], 1);
 					} else {
-						each_blocks_1[i] = create_each_block_2(child_ctx);
+						each_blocks_1[i] = create_each_block_3(child_ctx);
 						each_blocks_1[i].c();
 						transition_in(each_blocks_1[i], 1);
 						each_blocks_1[i].m(nav0, null);
@@ -7118,7 +7329,7 @@ function create_fragment$2(ctx) {
 
 				group_outros();
 
-				for (i = each_value_2.length; i < each_blocks_1.length; i += 1) {
+				for (i = each_value_3.length; i < each_blocks_1.length; i += 1) {
 					out(i);
 				}
 
@@ -7128,6 +7339,8 @@ function create_fragment$2(ctx) {
 			if (!current || dirty & /*parent_nav*/ 8) {
 				toggle_class(div0, "loaded", /*parent_nav*/ ctx[3].length > 0);
 			}
+
+			update_await_block_branch(info, ctx, dirty);
 
 			if (dirty & /*nav, window*/ 1) {
 				each_value_1 = /*nav*/ ctx[0];
@@ -7163,7 +7376,7 @@ function create_fragment$2(ctx) {
 					if_block1 = create_if_block$1(ctx);
 					if_block1.c();
 					transition_in(if_block1, 1);
-					if_block1.m(div3, null);
+					if_block1.m(div5, null);
 				}
 			} else if (if_block1) {
 				group_outros();
@@ -7178,10 +7391,11 @@ function create_fragment$2(ctx) {
 		i(local) {
 			if (current) return;
 
-			for (let i = 0; i < each_value_2.length; i += 1) {
+			for (let i = 0; i < each_value_3.length; i += 1) {
 				transition_in(each_blocks_1[i]);
 			}
 
+			transition_in(icon.$$.fragment, local);
 			transition_in(if_block1);
 			current = true;
 		},
@@ -7192,19 +7406,30 @@ function create_fragment$2(ctx) {
 				transition_out(each_blocks_1[i]);
 			}
 
+			transition_out(icon.$$.fragment, local);
 			transition_out(if_block1);
 			current = false;
 		},
 		d(detaching) {
-			if (detaching) detach(div4);
+			if (detaching) detach(div6);
 			if (if_block0) if_block0.d();
 			destroy_each(each_blocks_1, detaching);
+			destroy_component(icon);
+			info.block.d();
+			info.token = null;
+			info = null;
 			destroy_each(each_blocks, detaching);
 			if (if_block1) if_block1.d();
 			mounted = false;
 			dispose();
 		}
 	};
+}
+
+function parent_href(link) {
+	return link.url.startsWith("/")
+	? `https://primocms.org${link.url}`
+	: link.url;
 }
 
 function instance$2($$self, $$props, $$invalidate) {
@@ -7221,6 +7446,12 @@ function instance$2($$self, $$props, $$invalidate) {
 	let logo;
 	let parent_nav = [];
 	get_parent_nav();
+
+	async function get_guides() {
+		const { data } = await axios.get('/primo.json');
+		const guides = data.pages.filter(page => page.parent === "092114f6-8259-4f21-8c08-3e5dfcfe2e47");
+		return guides;
+	}
 
 	async function get_parent_nav() {
 		const stored_logo = await get("logo");
@@ -7242,9 +7473,9 @@ function instance$2($$self, $$props, $$invalidate) {
 	}
 
 	$$self.$$set = $$props => {
-		if ('title' in $$props) $$invalidate(5, title = $$props.title);
-		if ('description' in $$props) $$invalidate(6, description = $$props.description);
-		if ('secondary_logo' in $$props) $$invalidate(7, secondary_logo = $$props.secondary_logo);
+		if ('title' in $$props) $$invalidate(6, title = $$props.title);
+		if ('description' in $$props) $$invalidate(7, description = $$props.description);
+		if ('secondary_logo' in $$props) $$invalidate(8, secondary_logo = $$props.secondary_logo);
 		if ('nav' in $$props) $$invalidate(0, nav = $$props.nav);
 	};
 
@@ -7254,6 +7485,7 @@ function instance$2($$self, $$props, $$invalidate) {
 		logo,
 		parent_nav,
 		toggleMobileNav,
+		get_guides,
 		title,
 		description,
 		secondary_logo
@@ -7265,9 +7497,9 @@ class Component$2 extends SvelteComponent {
 		super();
 
 		init(this, options, instance$2, create_fragment$2, safe_not_equal, {
-			title: 5,
-			description: 6,
-			secondary_logo: 7,
+			title: 6,
+			description: 7,
+			secondary_logo: 8,
 			nav: 0
 		});
 	}
@@ -7317,7 +7549,7 @@ function create_if_block_2(ctx) {
 }
 
 // (120:4) {:catch error}
-function create_catch_block(ctx) {
+function create_catch_block$1(ctx) {
 	let span;
 	let t;
 
@@ -7346,7 +7578,7 @@ function create_catch_block(ctx) {
 }
 
 // (104:4) {:then pages}
-function create_then_block(ctx) {
+function create_then_block$1(ctx) {
 	let ul;
 	let each_value = /*pages*/ ctx[5];
 	let each_blocks = [];
@@ -7569,7 +7801,7 @@ function create_each_block$1(ctx) {
 }
 
 // (102:24)        <Icon width="50" icon="line-md:loading-twotone-loop" />     {:then pages}
-function create_pending_block(ctx) {
+function create_pending_block$1(ctx) {
 	let icon;
 	let current;
 
@@ -7618,9 +7850,9 @@ function create_key_block(ctx) {
 		current: null,
 		token: null,
 		hasCatch: true,
-		pending: create_pending_block,
-		then: create_then_block,
-		catch: create_catch_block,
+		pending: create_pending_block$1,
+		then: create_then_block$1,
+		catch: create_catch_block$1,
 		value: 5,
 		error: 9,
 		blocks: [,,,]
@@ -7874,8 +8106,8 @@ function create_fragment$4(ctx) {
 					},
 					{
 						"link": {
-							"url": "/publishing",
-							"label": "Publishing"
+							"url": "/",
+							"label": "Content Management"
 						}
 					}
 				]

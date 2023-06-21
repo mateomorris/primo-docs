@@ -3,7 +3,7 @@
 
 <head>
     <meta name="generator" content="Primo" />
-    <title>Primo Docs: Getting Started</title><!-- HEAD_svelte-1ed3n20_START -->
+    <title>Primo Docs: Getting Started</title><!-- HEAD_svelte-178vttq_START -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <link rel="shortcut icon" type="image/png" href="https://res.cloudinary.com/primoaf/image/upload/v1659676914/favicon_roaxv0.png">
@@ -18,7 +18,7 @@
 
             /* Default property values */
             --background: #111;
-            --color: #C2C2C2;
+            --color: #c2c2c2;
             --padding: 2rem;
             --box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
             --border-radius: 8px;
@@ -77,9 +77,10 @@
         }
 
         .content h1 {
+            line-height: 1.2;
             font-size: 2.25rem;
             font-weight: 500;
-            margin-bottom: .5rem;
+            margin-bottom: 0.5rem;
             color: white;
         }
 
@@ -128,6 +129,8 @@
         }
 
         .content blockquote {
+            border: 1px solid #222;
+            margin: 1rem 0;
             padding: 2rem;
             box-shadow: var(--box-shadow);
             border-radius: var(--border-radius);
@@ -163,7 +166,7 @@
             color: var(--color-accent);
             border: 2px solid var(--color-accent);
         }
-    </style><!-- HEAD_svelte-1ed3n20_END -->
+    </style><!-- HEAD_svelte-178vttq_END -->
     <style>
         header.svelte-1qa91hg.svelte-1qa91hg {
             background: var(--background, white);
@@ -305,14 +308,14 @@
             }
         }
 
-        section.svelte-1rlhl5p.svelte-1rlhl5p {
+        section.svelte-bm7ymx.svelte-bm7ymx {
             display: grid;
             place-items: flex-start;
             gap: 4rem;
             position: relative
         }
 
-        section.svelte-1rlhl5p nav.svelte-1rlhl5p {
+        section.svelte-bm7ymx nav.svelte-bm7ymx {
             display: none;
             place-content: flex-start;
             position: -webkit-sticky;
@@ -320,7 +323,7 @@
             top: 1rem
         }
 
-        section.svelte-1rlhl5p nav a.svelte-1rlhl5p {
+        section.svelte-bm7ymx nav a.svelte-bm7ymx {
             display: flex;
             align-items: center;
             padding: 0.25rem 0;
@@ -330,57 +333,55 @@
             offset: 30rem
         }
 
-        section.svelte-1rlhl5p nav a span.svelte-1rlhl5p {
+        section.svelte-bm7ymx nav a span.svelte-bm7ymx {
             margin-right: 0.25rem;
-            font-weight: 500;
             font-size: 1.125rem
         }
 
-        section.svelte-1rlhl5p nav a.svelte-1rlhl5p svg {
+        section.svelte-bm7ymx nav a.svelte-bm7ymx svg {
             color: var(--color-accent);
             position: absolute;
             right: 100%
         }
 
-        section.svelte-1rlhl5p nav .passed.svelte-1rlhl5p {
+        section.svelte-bm7ymx nav .passed.svelte-bm7ymx {
             border-color: var(--color-accent)
         }
 
-        section.svelte-1rlhl5p nav .H1.svelte-1rlhl5p {
-            font-size: 1.5rem;
-            font-weight: 600;
+        section.svelte-bm7ymx nav .H1.svelte-bm7ymx {
+            font-size: 1rem;
             line-height: 1.2
         }
 
-        section.svelte-1rlhl5p nav .H2.svelte-1rlhl5p {
-            padding-top: 0.5rem;
-            font-size: 1.25rem;
-            font-weight: 600
-        }
-
-        section.svelte-1rlhl5p nav .H3.svelte-1rlhl5p {
+        section.svelte-bm7ymx nav .H2.svelte-bm7ymx {
             font-size: 0.825rem;
-            font-weight: 600;
             padding-left: 0.5rem
         }
 
-        section.svelte-1rlhl5p nav .H4.svelte-1rlhl5p {
-            font-size: 0.75rem;
-            padding-left: 1rem
-        }
-
-        section.svelte-1rlhl5p main.svelte-1rlhl5p {
+        section.svelte-bm7ymx main.svelte-bm7ymx {
             max-width: 600px
         }
 
-        section.svelte-1rlhl5p main .video.svelte-1rlhl5p {
+        section.svelte-bm7ymx main .button.pr.svelte-bm7ymx {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #222;
+            color: #ddd;
+            font-size: 0.875rem;
+            position: absolute;
+            right: 1rem;
+            top: 1rem
+        }
+
+        section.svelte-bm7ymx main .video.svelte-bm7ymx {
             padding-top: 63%;
             height: 0;
             position: relative;
             margin-bottom: 3rem
         }
 
-        section.svelte-1rlhl5p main .video iframe.svelte-1rlhl5p {
+        section.svelte-bm7ymx main .video iframe.svelte-bm7ymx {
             border: 2px solid #393939;
             position: absolute;
             width: 100%;
@@ -388,35 +389,39 @@
             inset: 0
         }
 
-        section.svelte-1rlhl5p main .content.svelte-1rlhl5p {
+        section.svelte-bm7ymx main .content.svelte-bm7ymx {
             padding: 0;
             margin: initial
         }
 
-        section.svelte-1rlhl5p main .content.svelte-1rlhl5p h3 {
+        section.svelte-bm7ymx main .content.svelte-bm7ymx a[href$="#gh-light-mode-only"] {
+            display: none
+        }
+
+        section.svelte-bm7ymx main .content.svelte-bm7ymx h3 {
             margin-top: 1rem
         }
 
-        section.svelte-1rlhl5p main .content.svelte-1rlhl5p img {
+        section.svelte-bm7ymx main .content.svelte-bm7ymx img {
             width: 100%;
             margin: 1rem 0
         }
 
-        section.svelte-1rlhl5p main .content.svelte-1rlhl5p hr {
+        section.svelte-bm7ymx main .content.svelte-bm7ymx hr {
             margin: 4rem 0;
             border-color: var(--border-color)
         }
 
-        section.svelte-1rlhl5p main .content.svelte-1rlhl5p p {
+        section.svelte-bm7ymx main .content.svelte-bm7ymx p {
             font-family: "Inter", sans-serif
         }
 
         @media(min-width: 800px) {
-            section.svelte-1rlhl5p.svelte-1rlhl5p {
+            section.svelte-bm7ymx.svelte-bm7ymx {
                 grid-template-columns: minmax(auto, 15rem) auto
             }
 
-            section.svelte-1rlhl5p nav.svelte-1rlhl5p {
+            section.svelte-bm7ymx nav.svelte-bm7ymx {
                 display: grid
             }
         }
@@ -455,9 +460,9 @@
                             </defs>
                         </svg></a>
 
-                    <a href="http://localhost:5173/primo-docs" class="link svelte-1qa91hg"><span class="svelte-1qa91hg">docs</span></a>
+                    <a href="/" class="link svelte-1qa91hg"><span class="svelte-1qa91hg">Docs</span></a>
                 </div>
-                <nav class="svelte-1qa91hg"><a href="/" class="link svelte-1qa91hg">Introduction</a><a href="/getting-started" class="link svelte-1qa91hg">Getting Started</a><a href="/templating" class="link svelte-1qa91hg">Templating</a><a href="/development" class="link svelte-1qa91hg">Development</a></nav>
+                <nav class="svelte-1qa91hg"><a href="/" class="link svelte-1qa91hg">About</a><a href="/" class="link svelte-1qa91hg">Getting Started</a><a href="/" class="link svelte-1qa91hg">Development</a><a href="/publishing" class="link svelte-1qa91hg">Publishing</a></nav>
                 <div class="call-to-action svelte-1qa91hg"><button id="open" class="svelte-1qa91hg"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="svelte-1qa91hg">
                             <path d="M19.4643 17.0213H0.535714C0.239866 17.0213 0 17.3071 0 17.6596V19.3617C0 19.7142 0.239866 20 0.535714 20H19.4643C19.7601 20 20 19.7142 20 19.3617V17.6596C20 17.3071 19.7601 17.0213 19.4643 17.0213ZM19.4643 8.51064H0.535714C0.239866 8.51064 0 8.79644 0 9.14894V10.8511C0 11.2036 0.239866 11.4894 0.535714 11.4894H19.4643C19.7601 11.4894 20 11.2036 20 10.8511V9.14894C20 8.79644 19.7601 8.51064 19.4643 8.51064ZM19.4643 0H0.535714C0.239866 0 0 0.285797 0 0.638296V2.34042C0 2.69292 0.239866 2.97872 0.535714 2.97872H19.4643C19.7601 2.97872 20 2.69292 20 2.34042V0.638296C20 0.285797 19.7601 0 19.4643 0Z" fill="currentColor"></path>
                         </svg></button></div>
@@ -465,10 +470,12 @@
         </header>
     </div>
     <div class="section" id="section-e6d9ef29">
-        <section class="section-container svelte-1rlhl5p">
-            <nav class="svelte-1rlhl5p"></nav>
-            <main class="svelte-1rlhl5p">
-                <div class="content svelte-1rlhl5p"><!-- HTML_TAG_START -->
+        <section class="section-container svelte-bm7ymx">
+            <nav class="svelte-bm7ymx"></nav>
+            <main class="svelte-bm7ymx">
+
+                <div class="content svelte-bm7ymx">
+                    <!-- HTML_TAG_START -->
                     <h1 id="templating">Templating</h1>
                     <p>Primo utilizes <a href="https://svelte.dev/">Svelte</a> as a templating engine. Svelte is a popular next-generation web development framework used to build interactive web applications. Since Svelte is a superset of HTML and has much more powerful templating capabilities compared to more traditional templating engines like <a href="https://handlebarsjs.com/">Handlebars</a>, it's the perfect tool for creating simple, powerful components.</p>
                     <h2 id="fields">Fields</h2>
@@ -577,6 +584,7 @@
             </main>
         </section>
         <link rel="stylesheet" href="https://unpkg.com/highlightjs@9.16.2/styles/solarized-dark.css">
+
 
 
     </div>

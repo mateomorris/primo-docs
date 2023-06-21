@@ -3,7 +3,7 @@
 
 <head>
     <meta name="generator" content="Primo" />
-    <title>Primo Docs: Publishing</title><!-- HEAD_svelte-1uhv2s6_START -->
+    <title>Primo Docs: Publishing</title><!-- HEAD_svelte-tc9q34_START -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <link rel="shortcut icon" type="image/png" href="https://res.cloudinary.com/primoaf/image/upload/v1659676914/favicon_roaxv0.png">
@@ -18,7 +18,7 @@
 
             /* Default property values */
             --background: #111;
-            --color: #C2C2C2;
+            --color: #c2c2c2;
             --padding: 2rem;
             --box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
             --border-radius: 8px;
@@ -77,9 +77,10 @@
         }
 
         .content h1 {
+            line-height: 1.2;
             font-size: 2.25rem;
             font-weight: 500;
-            margin-bottom: .5rem;
+            margin-bottom: 0.5rem;
             color: white;
         }
 
@@ -128,6 +129,8 @@
         }
 
         .content blockquote {
+            border: 1px solid #222;
+            margin: 1rem 0;
             padding: 2rem;
             box-shadow: var(--box-shadow);
             border-radius: var(--border-radius);
@@ -163,14 +166,14 @@
             color: var(--color-accent);
             border: 2px solid var(--color-accent);
         }
-    </style><!-- HEAD_svelte-1uhv2s6_END -->
+    </style><!-- HEAD_svelte-tc9q34_END -->
     <style>
-        header.svelte-6em6i0.svelte-6em6i0.svelte-6em6i0 {
+        header.svelte-su5eeh.svelte-su5eeh.svelte-su5eeh {
             background: var(--background, white);
             border-bottom: 1px solid var(--border-color, #e5e5e7)
         }
 
-        .section-container.svelte-6em6i0.svelte-6em6i0.svelte-6em6i0 {
+        .section-container.svelte-su5eeh.svelte-su5eeh.svelte-su5eeh {
             padding-top: 1rem;
             padding-bottom: 1rem;
             display: flex;
@@ -178,7 +181,7 @@
             align-items: center
         }
 
-        .parent-nav.svelte-6em6i0.svelte-6em6i0.svelte-6em6i0 {
+        .parent-nav.svelte-su5eeh.svelte-su5eeh.svelte-su5eeh {
             font-size: 0.75rem;
             padding-block: 0.5rem;
             display: flex;
@@ -188,34 +191,34 @@
             transition: 0.2s opacity
         }
 
-        .parent-nav.svelte-6em6i0 .logo.svelte-6em6i0.svelte-6em6i0 {
+        .parent-nav.svelte-su5eeh .logo.svelte-su5eeh.svelte-su5eeh {
             display: flex;
             align-items: baseline
         }
 
-        .parent-nav.svelte-6em6i0 .logo.svelte-6em6i0 svg {
+        .parent-nav.svelte-su5eeh .logo.svelte-su5eeh svg {
             width: 5rem
         }
 
-        .parent-nav.svelte-6em6i0 nav.svelte-6em6i0.svelte-6em6i0 {
+        .parent-nav.svelte-su5eeh nav.svelte-su5eeh.svelte-su5eeh {
             gap: 1.5rem
         }
 
-        .parent-nav.svelte-6em6i0 nav.svelte-6em6i0 a.svelte-6em6i0:hover {
+        .parent-nav.svelte-su5eeh nav.svelte-su5eeh a.svelte-su5eeh:hover {
             color: var(--color-accent)
         }
 
-        .parent-nav.loaded.svelte-6em6i0.svelte-6em6i0.svelte-6em6i0 {
+        .parent-nav.loaded.svelte-su5eeh.svelte-su5eeh.svelte-su5eeh {
             opacity: 1
         }
 
-        .logos.svelte-6em6i0.svelte-6em6i0.svelte-6em6i0 {
+        .logos.svelte-su5eeh.svelte-su5eeh.svelte-su5eeh {
             display: flex;
             align-items: center;
             gap: 0.5rem
         }
 
-        .logos.svelte-6em6i0 a.link.svelte-6em6i0.svelte-6em6i0 {
+        .logos.svelte-su5eeh a.link.svelte-su5eeh.svelte-su5eeh {
             font-size: 1.25rem;
             font-weight: 600;
             color: white;
@@ -223,52 +226,81 @@
             transition: border-color 0.1s
         }
 
-        .logos.svelte-6em6i0 a.link.svelte-6em6i0.svelte-6em6i0:hover {
+        .logos.svelte-su5eeh a.link.svelte-su5eeh.svelte-su5eeh:hover {
             border-color: var(--color-accent);
             color: white
         }
 
-        nav.svelte-6em6i0.svelte-6em6i0.svelte-6em6i0 {
+        .navigation.svelte-su5eeh.svelte-su5eeh.svelte-su5eeh {
+            display: flex;
+            gap: 1.5rem
+        }
+
+        nav.svelte-su5eeh.svelte-su5eeh.svelte-su5eeh {
             display: flex;
             align-items: center;
             gap: 2rem
         }
 
-        nav.svelte-6em6i0 a.link.active.svelte-6em6i0.svelte-6em6i0 {
+        nav.svelte-su5eeh .dropdown.svelte-su5eeh.svelte-su5eeh {
+            position: relative
+        }
+
+        nav.svelte-su5eeh .dropdown .title.svelte-su5eeh.svelte-su5eeh {
+            display: flex;
+            gap: 0.25rem;
+            align-items: center
+        }
+
+        nav.svelte-su5eeh .dropdown ul.svelte-su5eeh.svelte-su5eeh {
+            position: absolute;
+            right: 0;
+            background: #222;
+            padding: 0.5rem 0.75rem;
+            text-wrap: nowrap;
+            display: none;
+            text-decoration: underline
+        }
+
+        nav.svelte-su5eeh .dropdown:hover ul.svelte-su5eeh.svelte-su5eeh {
+            display: grid
+        }
+
+        nav.svelte-su5eeh a.link.active.svelte-su5eeh.svelte-su5eeh {
             border-bottom: 2px solid var(--color-accent);
             transition: border-color 0.1s;
             font-size: 1rem
         }
 
-        nav.svelte-6em6i0 a.link.svelte-6em6i0.svelte-6em6i0 {
+        nav.svelte-su5eeh a.link.svelte-su5eeh.svelte-su5eeh {
             display: none
         }
 
-        nav.svelte-6em6i0 a.link.svelte-6em6i0.svelte-6em6i0:hover {
+        nav.svelte-su5eeh a.link.svelte-su5eeh.svelte-su5eeh:hover {
             color: white;
             transition: 0.3s
         }
 
-        nav.svelte-6em6i0 button#close.svelte-6em6i0.svelte-6em6i0 {
+        nav.svelte-su5eeh button#close.svelte-su5eeh.svelte-su5eeh {
             display: none
         }
 
-        .call-to-action.svelte-6em6i0.svelte-6em6i0.svelte-6em6i0 {
+        .call-to-action.svelte-su5eeh.svelte-su5eeh.svelte-su5eeh {
             display: flex;
             align-items: center;
             gap: 1.5rem
         }
 
-        .call-to-action.svelte-6em6i0 #theme svg.svelte-6em6i0.svelte-6em6i0 {
+        .call-to-action.svelte-su5eeh #theme svg.svelte-su5eeh.svelte-su5eeh {
             width: 1.25rem;
             height: 1.25rem
         }
 
-        .call-to-action.svelte-6em6i0 .locale-selector select {
+        .call-to-action.svelte-su5eeh .locale-selector select {
             background: transparent
         }
 
-        nav#mobile-nav.svelte-6em6i0.svelte-6em6i0.svelte-6em6i0 {
+        nav#mobile-nav.svelte-su5eeh.svelte-su5eeh.svelte-su5eeh {
             position: absolute;
             flex-direction: column;
             text-align: center;
@@ -282,52 +314,52 @@
             z-index: 9
         }
 
-        nav#mobile-nav.svelte-6em6i0 a.link.svelte-6em6i0.svelte-6em6i0 {
+        nav#mobile-nav.svelte-su5eeh a.link.svelte-su5eeh.svelte-su5eeh {
             display: block
         }
 
-        nav#mobile-nav.svelte-6em6i0 button#close.svelte-6em6i0.svelte-6em6i0 {
+        nav#mobile-nav.svelte-su5eeh button#close.svelte-su5eeh.svelte-su5eeh {
             display: block;
             position: absolute;
             right: 1rem;
             top: 1rem
         }
 
-        nav#mobile-nav.svelte-6em6i0 button#close svg.svelte-6em6i0.svelte-6em6i0 {
+        nav#mobile-nav.svelte-su5eeh button#close svg.svelte-su5eeh.svelte-su5eeh {
             color: var(--color-accent, #154bf4);
             width: 1.5rem;
             height: 1.5rem
         }
 
         @media(min-width: 900px) {
-            .call-to-action.svelte-6em6i0.svelte-6em6i0.svelte-6em6i0 {
+            .call-to-action.svelte-su5eeh.svelte-su5eeh.svelte-su5eeh {
                 display: none
             }
 
-            #open.svelte-6em6i0.svelte-6em6i0.svelte-6em6i0,
-            #mobile-nav.svelte-6em6i0.svelte-6em6i0.svelte-6em6i0 {
+            #open.svelte-su5eeh.svelte-su5eeh.svelte-su5eeh,
+            #mobile-nav.svelte-su5eeh.svelte-su5eeh.svelte-su5eeh {
                 display: none
             }
 
-            nav.svelte-6em6i0 a.link.svelte-6em6i0.svelte-6em6i0 {
+            nav.svelte-su5eeh a.link.svelte-su5eeh.svelte-su5eeh {
                 display: inline-block;
                 border-bottom: 2px solid transparent;
                 transition: border-color 0.1s
             }
 
-            nav.svelte-6em6i0 a.link.svelte-6em6i0.svelte-6em6i0:hover {
+            nav.svelte-su5eeh a.link.svelte-su5eeh.svelte-su5eeh:hover {
                 border-color: var(--color-accent)
             }
         }
 
-        section.svelte-1rlhl5p.svelte-1rlhl5p {
+        section.svelte-bm7ymx.svelte-bm7ymx {
             display: grid;
             place-items: flex-start;
             gap: 4rem;
             position: relative
         }
 
-        section.svelte-1rlhl5p nav.svelte-1rlhl5p {
+        section.svelte-bm7ymx nav.svelte-bm7ymx {
             display: none;
             place-content: flex-start;
             position: -webkit-sticky;
@@ -335,7 +367,7 @@
             top: 1rem
         }
 
-        section.svelte-1rlhl5p nav a.svelte-1rlhl5p {
+        section.svelte-bm7ymx nav a.svelte-bm7ymx {
             display: flex;
             align-items: center;
             padding: 0.25rem 0;
@@ -345,57 +377,55 @@
             offset: 30rem
         }
 
-        section.svelte-1rlhl5p nav a span.svelte-1rlhl5p {
+        section.svelte-bm7ymx nav a span.svelte-bm7ymx {
             margin-right: 0.25rem;
-            font-weight: 500;
             font-size: 1.125rem
         }
 
-        section.svelte-1rlhl5p nav a.svelte-1rlhl5p svg {
+        section.svelte-bm7ymx nav a.svelte-bm7ymx svg {
             color: var(--color-accent);
             position: absolute;
             right: 100%
         }
 
-        section.svelte-1rlhl5p nav .passed.svelte-1rlhl5p {
+        section.svelte-bm7ymx nav .passed.svelte-bm7ymx {
             border-color: var(--color-accent)
         }
 
-        section.svelte-1rlhl5p nav .H1.svelte-1rlhl5p {
-            font-size: 1.5rem;
-            font-weight: 600;
+        section.svelte-bm7ymx nav .H1.svelte-bm7ymx {
+            font-size: 1rem;
             line-height: 1.2
         }
 
-        section.svelte-1rlhl5p nav .H2.svelte-1rlhl5p {
-            padding-top: 0.5rem;
-            font-size: 1.25rem;
-            font-weight: 600
-        }
-
-        section.svelte-1rlhl5p nav .H3.svelte-1rlhl5p {
+        section.svelte-bm7ymx nav .H2.svelte-bm7ymx {
             font-size: 0.825rem;
-            font-weight: 600;
             padding-left: 0.5rem
         }
 
-        section.svelte-1rlhl5p nav .H4.svelte-1rlhl5p {
-            font-size: 0.75rem;
-            padding-left: 1rem
-        }
-
-        section.svelte-1rlhl5p main.svelte-1rlhl5p {
+        section.svelte-bm7ymx main.svelte-bm7ymx {
             max-width: 600px
         }
 
-        section.svelte-1rlhl5p main .video.svelte-1rlhl5p {
+        section.svelte-bm7ymx main .button.pr.svelte-bm7ymx {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #222;
+            color: #ddd;
+            font-size: 0.875rem;
+            position: absolute;
+            right: 1rem;
+            top: 1rem
+        }
+
+        section.svelte-bm7ymx main .video.svelte-bm7ymx {
             padding-top: 63%;
             height: 0;
             position: relative;
             margin-bottom: 3rem
         }
 
-        section.svelte-1rlhl5p main .video iframe.svelte-1rlhl5p {
+        section.svelte-bm7ymx main .video iframe.svelte-bm7ymx {
             border: 2px solid #393939;
             position: absolute;
             width: 100%;
@@ -403,35 +433,39 @@
             inset: 0
         }
 
-        section.svelte-1rlhl5p main .content.svelte-1rlhl5p {
+        section.svelte-bm7ymx main .content.svelte-bm7ymx {
             padding: 0;
             margin: initial
         }
 
-        section.svelte-1rlhl5p main .content.svelte-1rlhl5p h3 {
+        section.svelte-bm7ymx main .content.svelte-bm7ymx a[href$="#gh-light-mode-only"] {
+            display: none
+        }
+
+        section.svelte-bm7ymx main .content.svelte-bm7ymx h3 {
             margin-top: 1rem
         }
 
-        section.svelte-1rlhl5p main .content.svelte-1rlhl5p img {
+        section.svelte-bm7ymx main .content.svelte-bm7ymx img {
             width: 100%;
             margin: 1rem 0
         }
 
-        section.svelte-1rlhl5p main .content.svelte-1rlhl5p hr {
+        section.svelte-bm7ymx main .content.svelte-bm7ymx hr {
             margin: 4rem 0;
             border-color: var(--border-color)
         }
 
-        section.svelte-1rlhl5p main .content.svelte-1rlhl5p p {
+        section.svelte-bm7ymx main .content.svelte-bm7ymx p {
             font-family: "Inter", sans-serif
         }
 
         @media(min-width: 800px) {
-            section.svelte-1rlhl5p.svelte-1rlhl5p {
+            section.svelte-bm7ymx.svelte-bm7ymx {
                 grid-template-columns: minmax(auto, 15rem) auto
             }
 
-            section.svelte-1rlhl5p nav.svelte-1rlhl5p {
+            section.svelte-bm7ymx nav.svelte-bm7ymx {
                 display: grid
             }
         }
@@ -440,33 +474,52 @@
 
 <body id="page">
 
-    <div class="section" id="section-93cec0e3">
-        <header class="svelte-6em6i0">
-            <div class="parent-nav section-container svelte-6em6i0">
-                <nav class="svelte-6em6i0"></nav>
+    <div class="section" id="section-1cc78e2c">
+        <header class="svelte-su5eeh">
+            <div class="parent-nav section-container svelte-su5eeh">
+                <nav class="svelte-su5eeh"></nav>
             </div>
-            <div class="section-container svelte-6em6i0">
-                <div class="logos svelte-6em6i0"><a href="/" class="link svelte-6em6i0">Primo Docs </a></div>
-                <nav class="svelte-6em6i0"><a href="/getting-started" class="link svelte-6em6i0">Getting Started</a><a href="/development" class="link svelte-6em6i0">Development</a><a href="/publishing" class="link svelte-6em6i0">Publishing</a></nav>
-                <div class="call-to-action svelte-6em6i0"><button id="open" class="svelte-6em6i0"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="svelte-6em6i0">
-                            <path d="M19.4643 17.0213H0.535714C0.239866 17.0213 0 17.3071 0 17.6596V19.3617C0 19.7142 0.239866 20 0.535714 20H19.4643C19.7601 20 20 19.7142 20 19.3617V17.6596C20 17.3071 19.7601 17.0213 19.4643 17.0213ZM19.4643 8.51064H0.535714C0.239866 8.51064 0 8.79644 0 9.14894V10.8511C0 11.2036 0.239866 11.4894 0.535714 11.4894H19.4643C19.7601 11.4894 20 11.2036 20 10.8511V9.14894C20 8.79644 19.7601 8.51064 19.4643 8.51064ZM19.4643 0H0.535714C0.239866 0 0 0.285797 0 0.638296V2.34042C0 2.69292 0.239866 2.97872 0.535714 2.97872H19.4643C19.7601 2.97872 20 2.69292 20 2.34042V0.638296C20 0.285797 19.7601 0 19.4643 0Z" fill="currentColor"></path>
-                        </svg></button></div>
+            <div class="section-container svelte-su5eeh">
+                <div class="logos svelte-su5eeh"><a href="/" class="link svelte-su5eeh">Primo Docs</a></div>
+                <div class="navigation svelte-su5eeh">
+                    <nav class="svelte-su5eeh">
+                        <div class="dropdown svelte-su5eeh"><span class="title svelte-su5eeh"><span>Guides</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden role="img" width="1em" height="1em" viewBox="0 0 24 24" class="iconify iconify--tabler"><!-- HTML_TAG_START -->
+                                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6" /><!-- HTML_TAG_END -->
+                                </svg></span>
+                        </div>
+                        <a href="/getting-started" class="link svelte-su5eeh">Getting Started</a><a href="/development" class="link svelte-su5eeh">Development</a><a href="/" class="link svelte-su5eeh">Content Management</a>
+                    </nav>
+                    <div class="call-to-action svelte-su5eeh"><button id="open" class="svelte-su5eeh"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="svelte-su5eeh">
+                                <path d="M19.4643 17.0213H0.535714C0.239866 17.0213 0 17.3071 0 17.6596V19.3617C0 19.7142 0.239866 20 0.535714 20H19.4643C19.7601 20 20 19.7142 20 19.3617V17.6596C20 17.3071 19.7601 17.0213 19.4643 17.0213ZM19.4643 8.51064H0.535714C0.239866 8.51064 0 8.79644 0 9.14894V10.8511C0 11.2036 0.239866 11.4894 0.535714 11.4894H19.4643C19.7601 11.4894 20 11.2036 20 10.8511V9.14894C20 8.79644 19.7601 8.51064 19.4643 8.51064ZM19.4643 0H0.535714C0.239866 0 0 0.285797 0 0.638296V2.34042C0 2.69292 0.239866 2.97872 0.535714 2.97872H19.4643C19.7601 2.97872 20 2.69292 20 2.34042V0.638296C20 0.285797 19.7601 0 19.4643 0Z" fill="currentColor"></path>
+                            </svg></button></div>
+                </div>
             </div>
         </header>
     </div>
-    <div class="section" id="section-a669c5b7">
-        <section class="section-container svelte-1rlhl5p">
-            <nav class="svelte-1rlhl5p"></nav>
-            <main class="svelte-1rlhl5p">
-                <div class="content svelte-1rlhl5p"><!-- HTML_TAG_START -->
-                    <h1>Publishing</h1>
-                    <p>To publish, you need to either download your site &amp; host it manually, or enter your Github Token to publish to Github - this is the recommended option. </p>
+    <div class="section" id="section-b3aa097b">
+        <section class="section-container svelte-bm7ymx">
+            <nav class="svelte-bm7ymx"></nav>
+            <main class="svelte-bm7ymx">
+
+                <div class="content svelte-bm7ymx">
+                    <!-- HTML_TAG_START -->
+                    <h1>How to serve Primo pages from SvelteKit</h1>
+                    <p>You can use the serverside load hook to intercept requests based on a blocklist or allowlist and fetch/return a static Primo page from the site’s repository instead. </p>
+                    <p>This is useful when you have some content pages in your SvelteKit app that you want to have easily by yourself and other content editors, or when you have a full Primo site that you want to wrap in a SvelteKit application. </p>
+                    <h2>Example</h2>
+                    <p>Here’s a repo that demonstrates how to load Primo pages from a SvelteKit codebase. </p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
                     <p></p>
                     <p></p><!-- HTML_TAG_END -->
                 </div>
             </main>
         </section>
         <link rel="stylesheet" href="https://unpkg.com/highlightjs@9.16.2/styles/solarized-dark.css">
+
 
 
     </div>
