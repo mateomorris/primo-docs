@@ -10827,10 +10827,10 @@ function create_each_block$1(ctx) {
 			this.h();
 		},
 		h() {
-			attr(span, "class", "svelte-13ywoz4");
+			attr(span, "class", "svelte-v9kn9v");
 			attr(a, "href", a_href_value = "#" + /*link*/ ctx[15].id);
 			attr(a, "id", a_id_value = /*link*/ ctx[15].id);
-			attr(a, "class", a_class_value = "" + (null_to_empty(/*link*/ ctx[15].level) + " svelte-13ywoz4"));
+			attr(a, "class", a_class_value = "" + (null_to_empty(/*link*/ ctx[15].level) + " svelte-v9kn9v"));
 			toggle_class(a, "passed", /*link*/ ctx[15].passed);
 		},
 		m(target, anchor) {
@@ -10874,7 +10874,7 @@ function create_each_block$1(ctx) {
 				attr(a, "id", a_id_value);
 			}
 
-			if (!current || dirty & /*header_links*/ 16 && a_class_value !== (a_class_value = "" + (null_to_empty(/*link*/ ctx[15].level) + " svelte-13ywoz4"))) {
+			if (!current || dirty & /*header_links*/ 16 && a_class_value !== (a_class_value = "" + (null_to_empty(/*link*/ ctx[15].level) + " svelte-v9kn9v"))) {
 				attr(a, "class", a_class_value);
 			}
 
@@ -10930,8 +10930,8 @@ function create_if_block_2(ctx) {
 			this.h();
 		},
 		h() {
-			attr(span, "class", "svelte-13ywoz4");
-			attr(a, "class", "button pr svelte-13ywoz4");
+			attr(span, "class", "svelte-v9kn9v");
+			attr(a, "class", "button pr svelte-v9kn9v");
 			attr(a, "href", "https://github.com/primocms/docs");
 			attr(a, "target", "_blank");
 		},
@@ -10993,8 +10993,8 @@ function create_if_block_1$1(ctx) {
 			attr(iframe, "frameborder", "0");
 			attr(iframe, "allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
 			iframe.allowFullscreen = true;
-			attr(iframe, "class", "svelte-13ywoz4");
-			attr(div, "class", "video svelte-13ywoz4");
+			attr(iframe, "class", "svelte-v9kn9v");
+			attr(div, "class", "video svelte-v9kn9v");
 		},
 		m(target, anchor) {
 			insert_hydration(target, div, anchor);
@@ -11184,10 +11184,10 @@ function create_fragment$3(ctx) {
 			this.h();
 		},
 		h() {
-			attr(nav, "class", "svelte-13ywoz4");
-			attr(div0, "class", "content svelte-13ywoz4");
-			attr(main, "class", "svelte-13ywoz4");
-			attr(section, "class", "section-container svelte-13ywoz4");
+			attr(nav, "class", "svelte-v9kn9v");
+			attr(div0, "class", "content svelte-v9kn9v");
+			attr(main, "class", "svelte-v9kn9v");
+			attr(section, "class", "section-container svelte-v9kn9v");
 			attr(link, "rel", "stylesheet");
 			attr(link, "href", "https://unpkg.com/highlightjs@9.16.2/styles/solarized-dark.css");
 			attr(div1, "class", "section");
