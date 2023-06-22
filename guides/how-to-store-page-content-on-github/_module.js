@@ -6636,7 +6636,7 @@ function create_then_block_1(ctx) {
 		p(ctx, dirty) {
 			get_then_context_1(ctx);
 
-			if (dirty & /*parent_href, main_site*/ 16) {
+			if (dirty & /*parent_href, main_site*/ 32) {
 				each_value_3 = /*social*/ ctx[19];
 				let i;
 
@@ -6763,7 +6763,7 @@ function create_catch_block(ctx) {
 	};
 }
 
-// (321:119)              <ul>               {#each guides as guide}
+// (321:120)              <ul>               {#each guides as guide}
 function create_then_block(ctx) {
 	let ul;
 	let each_value_2 = /*guides*/ ctx[14];
@@ -6807,7 +6807,7 @@ function create_then_block(ctx) {
 			}
 		},
 		p(ctx, dirty) {
-			if (dirty & /*main_site*/ 16) {
+			if (dirty & /*Site*/ 16) {
 				each_value_2 = /*guides*/ ctx[14];
 				let i;
 
@@ -7163,7 +7163,7 @@ function create_fragment$2(ctx) {
 		value: 23
 	};
 
-	handle_promise(promise = /*main_site*/ ctx[4].symbols.match({ name: "Site Navigation" }), info);
+	handle_promise(promise = /*main_site*/ ctx[5].symbols.match({ name: "Site Navigation" }), info);
 
 	let info_1 = {
 		ctx,
@@ -7177,7 +7177,7 @@ function create_fragment$2(ctx) {
 		blocks: [,,,]
 	};
 
-	handle_promise(promise_1 = /*main_site*/ ctx[4].symbols.match({ name: "Footer" }), info_1);
+	handle_promise(promise_1 = /*main_site*/ ctx[5].symbols.match({ name: "Footer" }), info_1);
 	icon0 = new Component$1({ props: { icon: "tabler:chevron-down" } });
 
 	let info_2 = {
@@ -7191,7 +7191,7 @@ function create_fragment$2(ctx) {
 		value: 14
 	};
 
-	handle_promise(promise_2 = /*main_site*/ ctx[4].pages.filter(func), info_2);
+	handle_promise(promise_2 = new /*Site*/ ctx[4]().pages.filter(func), info_2);
 	let each_value_1 = /*nav*/ ctx[0];
 	let each_blocks = [];
 
@@ -7566,9 +7566,9 @@ function instance$2($$self, $$props, $$invalidate) {
 	});
 
 	$$self.$$set = $$props => {
-		if ('title' in $$props) $$invalidate(5, title = $$props.title);
-		if ('description' in $$props) $$invalidate(6, description = $$props.description);
-		if ('secondary_logo' in $$props) $$invalidate(7, secondary_logo = $$props.secondary_logo);
+		if ('title' in $$props) $$invalidate(6, title = $$props.title);
+		if ('description' in $$props) $$invalidate(7, description = $$props.description);
+		if ('secondary_logo' in $$props) $$invalidate(8, secondary_logo = $$props.secondary_logo);
 		if ('nav' in $$props) $$invalidate(0, nav = $$props.nav);
 	};
 
@@ -7577,6 +7577,7 @@ function instance$2($$self, $$props, $$invalidate) {
 		mobileNavOpen,
 		loaded,
 		toggleMobileNav,
+		Site,
 		main_site,
 		title,
 		description,
@@ -7589,9 +7590,9 @@ class Component$2 extends SvelteComponent {
 		super();
 
 		init(this, options, instance$2, create_fragment$2, safe_not_equal, {
-			title: 5,
-			description: 6,
-			secondary_logo: 7,
+			title: 6,
+			description: 7,
+			secondary_logo: 8,
 			nav: 0
 		});
 	}
