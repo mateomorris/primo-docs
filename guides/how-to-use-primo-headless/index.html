@@ -345,6 +345,29 @@
             }
         }
 
+        .section-container.svelte-d3qrpf {
+            padding-block: 1rem
+        }
+
+        ul.svelte-d3qrpf {
+            display: flex;
+            gap: 1rem
+        }
+
+        li.svelte-d3qrpf {
+            display: flex
+        }
+
+        li.svelte-d3qrpf:not(:last-child):after {
+            content: ">";
+            padding-left: 1rem;
+            font-weight: 700
+        }
+
+        a.svelte-d3qrpf {
+            text-decoration: underline
+        }
+
         .section-container.svelte-1eln4k7 {
             max-width: 700px
         }
@@ -375,6 +398,11 @@
             </div>
         </header>
     </div>
+    <div class="section" id="section-a5652620">
+        <div class="section-container svelte-d3qrpf">
+            <ul class="svelte-d3qrpf"></ul>
+        </div>
+    </div>
     <div class="section" id="section-cf17a964">
         <div class="section">
             <div class="section-container content svelte-1eln4k7"><!-- HTML_TAG_START -->
@@ -385,7 +413,7 @@
                 <p>You can access your site from any frontend framework by fetching its site file from its deployed repository.</p>
                 <p>A site file is a JSON file deployed with Primo sites which has the properties of “site, pages, sections, symbols”. It defines the entire site and is rarely larger than half a megabyte but can inflate if storing a lot of content or code.</p>
                 <h2>Example</h2>
-                <p>In <a target="_blank" rel="noopener noreferrer nofollow" class="link link" href="https://github.com/mateomorris/primo-headless">this SvelteKit repository</a>, we can see the site file being fetched directly from the site’s repository in order to hydrate some content in the application (in this case blog posts and social links). It selects the “Footer” block for the social links and gets the list of blog posts from the list of child pages of Blog. Since the content is fetched from the server, it loads fully rendered.</p>
+                <p>In <a target="_blank" rel="noopener noreferrer nofollow" class="link link" href="https://github.com/mateomorris/primo-headless">this SvelteKit repository</a>, we can see the site file being fetched directly from the site’s repository in order to hydrate some content in the application (in this case blog posts). It gets the list of blog posts from the list of child pages of Blog. Since the content is fetched from the server, it loads fully rendered.</p>
                 <p></p>
                 <p></p>
                 <p></p>
