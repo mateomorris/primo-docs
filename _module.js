@@ -6594,13 +6594,13 @@ function get_each_context(ctx, list, i) {
 
 function get_each_context_1(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[9] = list[i].link;
+	child_ctx[13] = list[i];
 	return child_ctx;
 }
 
 function get_each_context_2(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[15] = list[i];
+	child_ctx[9] = list[i].link;
 	return child_ctx;
 }
 
@@ -6632,7 +6632,7 @@ function create_catch_block_2(ctx) {
 	};
 }
 
-// (293:77)        {@const { logo }
+// (294:77)        {@const { logo }
 function create_then_block_2(ctx) {
 	get_then_context(ctx);
 	let a;
@@ -6656,7 +6656,7 @@ function create_then_block_2(ctx) {
 		},
 		h() {
 			attr(a, "href", "https://primocms.org");
-			attr(a, "class", "logo svelte-ta3wcl");
+			attr(a, "class", "logo svelte-ao8nxh");
 			attr(a, "aria-label", "Primo main site");
 		},
 		m(target, anchor) {
@@ -6696,7 +6696,7 @@ function create_catch_block_1(ctx) {
 	};
 }
 
-// (300:70)          {@const { social }
+// (301:70)          {@const { social }
 function create_then_block_1(ctx) {
 	get_then_context_1(ctx);
 	let each_1_anchor;
@@ -6792,7 +6792,7 @@ function create_then_block_1(ctx) {
 	};
 }
 
-// (302:8) {#each social as { icon, link }}
+// (303:8) {#each social as { icon, link }}
 function create_each_block_3(ctx) {
 	let a;
 	let icon;
@@ -6818,7 +6818,7 @@ function create_each_block_3(ctx) {
 		},
 		h() {
 			attr(a, "href", a_href_value = parent_href(/*link*/ ctx[9]));
-			attr(a, "class", "svelte-ta3wcl");
+			attr(a, "class", "svelte-ao8nxh");
 		},
 		m(target, anchor) {
 			insert_hydration(target, a, anchor);
@@ -6856,6 +6856,52 @@ function create_pending_block_1(ctx) {
 	};
 }
 
+// (317:8) {#each nav as { link }}
+function create_each_block_2(ctx) {
+	let a;
+	let t_value = /*link*/ ctx[9].label + "";
+	let t;
+	let a_href_value;
+
+	return {
+		c() {
+			a = element("a");
+			t = text(t_value);
+			this.h();
+		},
+		l(nodes) {
+			a = claim_element(nodes, "A", { href: true, class: true });
+			var a_nodes = children(a);
+			t = claim_text(a_nodes, t_value);
+			a_nodes.forEach(detach);
+			this.h();
+		},
+		h() {
+			attr(a, "href", a_href_value = /*link*/ ctx[9].url);
+			attr(a, "class", "link svelte-ao8nxh");
+			toggle_class(a, "active", window.location.pathname === /*link*/ ctx[9].url);
+		},
+		m(target, anchor) {
+			insert_hydration(target, a, anchor);
+			append_hydration(a, t);
+		},
+		p(ctx, dirty) {
+			if (dirty & /*nav*/ 1 && t_value !== (t_value = /*link*/ ctx[9].label + "")) set_data(t, t_value);
+
+			if (dirty & /*nav*/ 1 && a_href_value !== (a_href_value = /*link*/ ctx[9].url)) {
+				attr(a, "href", a_href_value);
+			}
+
+			if (dirty & /*window, nav*/ 1) {
+				toggle_class(a, "active", window.location.pathname === /*link*/ ctx[9].url);
+			}
+		},
+		d(detaching) {
+			if (detaching) detach(a);
+		}
+	};
+}
+
 // (1:0)            <script>                         export let title; export let description; export let secondary_logo; export let nav;               import axios from "axios"; import Icon from "@iconify/svelte/dist/Icon.svelte"; import { fade }
 function create_catch_block(ctx) {
 	return {
@@ -6867,14 +6913,14 @@ function create_catch_block(ctx) {
 	};
 }
 
-// (321:120)              <ul>               {#each guides as guide}
+// (329:120)              <ul>               {#each guides as guide}
 function create_then_block(ctx) {
 	let ul;
-	let each_value_2 = /*guides*/ ctx[14];
+	let each_value_1 = /*guides*/ ctx[12];
 	let each_blocks = [];
 
-	for (let i = 0; i < each_value_2.length; i += 1) {
-		each_blocks[i] = create_each_block_2(get_each_context_2(ctx, each_value_2, i));
+	for (let i = 0; i < each_value_1.length; i += 1) {
+		each_blocks[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
 	}
 
 	return {
@@ -6899,7 +6945,7 @@ function create_then_block(ctx) {
 			this.h();
 		},
 		h() {
-			attr(ul, "class", "svelte-ta3wcl");
+			attr(ul, "class", "svelte-ao8nxh");
 		},
 		m(target, anchor) {
 			insert_hydration(target, ul, anchor);
@@ -6912,16 +6958,16 @@ function create_then_block(ctx) {
 		},
 		p(ctx, dirty) {
 			if (dirty & /*Site*/ 16) {
-				each_value_2 = /*guides*/ ctx[14];
+				each_value_1 = /*guides*/ ctx[12];
 				let i;
 
-				for (i = 0; i < each_value_2.length; i += 1) {
-					const child_ctx = get_each_context_2(ctx, each_value_2, i);
+				for (i = 0; i < each_value_1.length; i += 1) {
+					const child_ctx = get_each_context_1(ctx, each_value_1, i);
 
 					if (each_blocks[i]) {
 						each_blocks[i].p(child_ctx, dirty);
 					} else {
-						each_blocks[i] = create_each_block_2(child_ctx);
+						each_blocks[i] = create_each_block_1(child_ctx);
 						each_blocks[i].c();
 						each_blocks[i].m(ul, null);
 					}
@@ -6931,7 +6977,7 @@ function create_then_block(ctx) {
 					each_blocks[i].d(1);
 				}
 
-				each_blocks.length = each_value_2.length;
+				each_blocks.length = each_value_1.length;
 			}
 		},
 		d(detaching) {
@@ -6941,11 +6987,11 @@ function create_then_block(ctx) {
 	};
 }
 
-// (323:14) {#each guides as guide}
-function create_each_block_2(ctx) {
+// (331:14) {#each guides as guide}
+function create_each_block_1(ctx) {
 	let li;
 	let a;
-	let t0_value = /*guide*/ ctx[15].name + "";
+	let t0_value = /*guide*/ ctx[13].name + "";
 	let t0;
 	let a_href_value;
 	let t1;
@@ -6970,8 +7016,8 @@ function create_each_block_2(ctx) {
 			this.h();
 		},
 		h() {
-			attr(a, "href", a_href_value = "/guides/" + /*guide*/ ctx[15].url);
-			attr(a, "class", "svelte-ta3wcl");
+			attr(a, "href", a_href_value = "/guides/" + /*guide*/ ctx[13].url);
+			attr(a, "class", "svelte-ao8nxh");
 		},
 		m(target, anchor) {
 			insert_hydration(target, li, anchor);
@@ -6997,53 +7043,7 @@ function create_pending_block(ctx) {
 	};
 }
 
-// (331:8) {#each nav as { link }}
-function create_each_block_1(ctx) {
-	let a;
-	let t_value = /*link*/ ctx[9].label + "";
-	let t;
-	let a_href_value;
-
-	return {
-		c() {
-			a = element("a");
-			t = text(t_value);
-			this.h();
-		},
-		l(nodes) {
-			a = claim_element(nodes, "A", { href: true, class: true });
-			var a_nodes = children(a);
-			t = claim_text(a_nodes, t_value);
-			a_nodes.forEach(detach);
-			this.h();
-		},
-		h() {
-			attr(a, "href", a_href_value = /*link*/ ctx[9].url);
-			attr(a, "class", "link svelte-ta3wcl");
-			toggle_class(a, "active", window.location.pathname === /*link*/ ctx[9].url);
-		},
-		m(target, anchor) {
-			insert_hydration(target, a, anchor);
-			append_hydration(a, t);
-		},
-		p(ctx, dirty) {
-			if (dirty & /*nav*/ 1 && t_value !== (t_value = /*link*/ ctx[9].label + "")) set_data(t, t_value);
-
-			if (dirty & /*nav*/ 1 && a_href_value !== (a_href_value = /*link*/ ctx[9].url)) {
-				attr(a, "href", a_href_value);
-			}
-
-			if (dirty & /*window, nav*/ 1) {
-				toggle_class(a, "active", window.location.pathname === /*link*/ ctx[9].url);
-			}
-		},
-		d(detaching) {
-			if (detaching) detach(a);
-		}
-	};
-}
-
-// (345:4) {#if mobileNavOpen}
+// (346:4) {#if mobileNavOpen}
 function create_if_block$1(ctx) {
 	let nav_1;
 	let t;
@@ -7105,9 +7105,9 @@ function create_if_block$1(ctx) {
 		h() {
 			attr(button, "id", "close");
 			attr(button, "aria-label", "Close Navigation");
-			attr(button, "class", "svelte-ta3wcl");
+			attr(button, "class", "svelte-ao8nxh");
 			attr(nav_1, "id", "mobile-nav");
-			attr(nav_1, "class", "svelte-ta3wcl");
+			attr(nav_1, "class", "svelte-ao8nxh");
 		},
 		m(target, anchor) {
 			insert_hydration(target, nav_1, anchor);
@@ -7181,7 +7181,7 @@ function create_if_block$1(ctx) {
 	};
 }
 
-// (347:8) {#each nav as { link }}
+// (348:8) {#each nav as { link }}
 function create_each_block(ctx) {
 	let a;
 	let t_value = /*link*/ ctx[9].label + "";
@@ -7203,7 +7203,7 @@ function create_each_block(ctx) {
 		},
 		h() {
 			attr(a, "href", a_href_value = /*link*/ ctx[9].url);
-			attr(a, "class", "link svelte-ta3wcl");
+			attr(a, "class", "link svelte-ao8nxh");
 		},
 		m(target, anchor) {
 			insert_hydration(target, a, anchor);
@@ -7238,15 +7238,15 @@ function create_fragment$2(ctx) {
 	let t3;
 	let div4;
 	let nav1;
+	let t4;
 	let div2;
 	let span1;
 	let span0;
-	let t4;
 	let t5;
-	let icon0;
 	let t6;
-	let promise_2;
+	let icon0;
 	let t7;
+	let promise_2;
 	let t8;
 	let div3;
 	let button;
@@ -7282,6 +7282,13 @@ function create_fragment$2(ctx) {
 	};
 
 	handle_promise(promise_1 = /*main_site*/ ctx[5].symbols.match({ name: "Footer" }), info_1);
+	let each_value_2 = /*nav*/ ctx[0];
+	let each_blocks = [];
+
+	for (let i = 0; i < each_value_2.length; i += 1) {
+		each_blocks[i] = create_each_block_2(get_each_context_2(ctx, each_value_2, i));
+	}
+
 	icon0 = new Component$1({ props: { icon: "tabler:chevron-down" } });
 
 	let info_2 = {
@@ -7292,16 +7299,10 @@ function create_fragment$2(ctx) {
 		pending: create_pending_block,
 		then: create_then_block,
 		catch: create_catch_block,
-		value: 14
+		value: 12
 	};
 
 	handle_promise(promise_2 = new /*Site*/ ctx[4]().pages.filter(func), info_2);
-	let each_value_1 = /*nav*/ ctx[0];
-	let each_blocks = [];
-
-	for (let i = 0; i < each_value_1.length; i += 1) {
-		each_blocks[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
-	}
 
 	icon1 = new Component$1({
 			props: {
@@ -7329,20 +7330,20 @@ function create_fragment$2(ctx) {
 			t3 = space();
 			div4 = element("div");
 			nav1 = element("nav");
-			div2 = element("div");
-			span1 = element("span");
-			span0 = element("span");
-			t4 = text("Guides");
-			t5 = space();
-			create_component(icon0.$$.fragment);
-			t6 = space();
-			info_2.block.c();
-			t7 = space();
 
 			for (let i = 0; i < each_blocks.length; i += 1) {
 				each_blocks[i].c();
 			}
 
+			t4 = space();
+			div2 = element("div");
+			span1 = element("span");
+			span0 = element("span");
+			t5 = text("Guides");
+			t6 = space();
+			create_component(icon0.$$.fragment);
+			t7 = space();
+			info_2.block.c();
 			t8 = space();
 			div3 = element("div");
 			button = element("button");
@@ -7380,26 +7381,26 @@ function create_fragment$2(ctx) {
 			var div4_nodes = children(div4);
 			nav1 = claim_element(div4_nodes, "NAV", { class: true });
 			var nav1_nodes = children(nav1);
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].l(nav1_nodes);
+			}
+
+			t4 = claim_space(nav1_nodes);
 			div2 = claim_element(nav1_nodes, "DIV", { class: true });
 			var div2_nodes = children(div2);
 			span1 = claim_element(div2_nodes, "SPAN", { class: true });
 			var span1_nodes = children(span1);
 			span0 = claim_element(span1_nodes, "SPAN", {});
 			var span0_nodes = children(span0);
-			t4 = claim_text(span0_nodes, "Guides");
+			t5 = claim_text(span0_nodes, "Guides");
 			span0_nodes.forEach(detach);
-			t5 = claim_space(span1_nodes);
+			t6 = claim_space(span1_nodes);
 			claim_component(icon0.$$.fragment, span1_nodes);
 			span1_nodes.forEach(detach);
-			t6 = claim_space(div2_nodes);
+			t7 = claim_space(div2_nodes);
 			info_2.block.l(div2_nodes);
 			div2_nodes.forEach(detach);
-			t7 = claim_space(nav1_nodes);
-
-			for (let i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].l(nav1_nodes);
-			}
-
 			nav1_nodes.forEach(detach);
 			t8 = claim_space(div4_nodes);
 			div3 = claim_element(div4_nodes, "DIV", { class: true });
@@ -7418,21 +7419,21 @@ function create_fragment$2(ctx) {
 			this.h();
 		},
 		h() {
-			attr(nav0, "class", "svelte-ta3wcl");
-			attr(div0, "class", "parent-nav section-container svelte-ta3wcl");
+			attr(nav0, "class", "svelte-ao8nxh");
+			attr(div0, "class", "parent-nav section-container svelte-ao8nxh");
 			toggle_class(div0, "loaded", /*loaded*/ ctx[2]);
 			attr(a, "href", "/");
-			attr(a, "class", "link svelte-ta3wcl");
-			attr(div1, "class", "logos svelte-ta3wcl");
-			attr(span1, "class", "title svelte-ta3wcl");
-			attr(div2, "class", "dropdown svelte-ta3wcl");
-			attr(nav1, "class", "svelte-ta3wcl");
+			attr(a, "class", "link svelte-ao8nxh");
+			attr(div1, "class", "logos svelte-ao8nxh");
+			attr(span1, "class", "title svelte-ao8nxh");
+			attr(div2, "class", "dropdown svelte-ao8nxh");
+			attr(nav1, "class", "svelte-ao8nxh");
 			attr(button, "id", "open");
-			attr(button, "class", "svelte-ta3wcl");
-			attr(div3, "class", "call-to-action svelte-ta3wcl");
-			attr(div4, "class", "navigation svelte-ta3wcl");
-			attr(div5, "class", "section-container svelte-ta3wcl");
-			attr(header, "class", "svelte-ta3wcl");
+			attr(button, "class", "svelte-ao8nxh");
+			attr(div3, "class", "call-to-action svelte-ao8nxh");
+			attr(div4, "class", "navigation svelte-ao8nxh");
+			attr(div5, "class", "section-container svelte-ao8nxh");
+			attr(header, "class", "svelte-ao8nxh");
 			attr(div6, "class", "section");
 			attr(div6, "id", "section-048949ec");
 		},
@@ -7456,17 +7457,6 @@ function create_fragment$2(ctx) {
 			append_hydration(div5, t3);
 			append_hydration(div5, div4);
 			append_hydration(div4, nav1);
-			append_hydration(nav1, div2);
-			append_hydration(div2, span1);
-			append_hydration(span1, span0);
-			append_hydration(span0, t4);
-			append_hydration(span1, t5);
-			mount_component(icon0, span1, null);
-			append_hydration(div2, t6);
-			info_2.block.m(div2, info_2.anchor = null);
-			info_2.mount = () => div2;
-			info_2.anchor = null;
-			append_hydration(nav1, t7);
 
 			for (let i = 0; i < each_blocks.length; i += 1) {
 				if (each_blocks[i]) {
@@ -7474,6 +7464,17 @@ function create_fragment$2(ctx) {
 				}
 			}
 
+			append_hydration(nav1, t4);
+			append_hydration(nav1, div2);
+			append_hydration(div2, span1);
+			append_hydration(span1, span0);
+			append_hydration(span0, t5);
+			append_hydration(span1, t6);
+			mount_component(icon0, span1, null);
+			append_hydration(div2, t7);
+			info_2.block.m(div2, info_2.anchor = null);
+			info_2.mount = () => div2;
+			info_2.anchor = null;
 			append_hydration(div4, t8);
 			append_hydration(div4, div3);
 			append_hydration(div3, button);
@@ -7496,21 +7497,19 @@ function create_fragment$2(ctx) {
 				toggle_class(div0, "loaded", /*loaded*/ ctx[2]);
 			}
 
-			update_await_block_branch(info_2, ctx, dirty);
-
 			if (dirty & /*nav, window*/ 1) {
-				each_value_1 = /*nav*/ ctx[0];
+				each_value_2 = /*nav*/ ctx[0];
 				let i;
 
-				for (i = 0; i < each_value_1.length; i += 1) {
-					const child_ctx = get_each_context_1(ctx, each_value_1, i);
+				for (i = 0; i < each_value_2.length; i += 1) {
+					const child_ctx = get_each_context_2(ctx, each_value_2, i);
 
 					if (each_blocks[i]) {
 						each_blocks[i].p(child_ctx, dirty);
 					} else {
-						each_blocks[i] = create_each_block_1(child_ctx);
+						each_blocks[i] = create_each_block_2(child_ctx);
 						each_blocks[i].c();
-						each_blocks[i].m(nav1, null);
+						each_blocks[i].m(nav1, t4);
 					}
 				}
 
@@ -7518,8 +7517,10 @@ function create_fragment$2(ctx) {
 					each_blocks[i].d(1);
 				}
 
-				each_blocks.length = each_value_1.length;
+				each_blocks.length = each_value_2.length;
 			}
+
+			update_await_block_branch(info_2, ctx, dirty);
 
 			if (/*mobileNavOpen*/ ctx[1]) {
 				if (if_block) {
@@ -7571,11 +7572,11 @@ function create_fragment$2(ctx) {
 			info_1.block.d();
 			info_1.token = null;
 			info_1 = null;
+			destroy_each(each_blocks, detaching);
 			destroy_component(icon0);
 			info_2.block.d();
 			info_2.token = null;
 			info_2 = null;
-			destroy_each(each_blocks, detaching);
 			destroy_component(icon1);
 			if (if_block) if_block.d();
 			mounted = false;
@@ -11235,7 +11236,7 @@ function get_each_context$1(ctx, list, i) {
 	return child_ctx;
 }
 
-// (221:8) {#if link.active}
+// (220:8) {#if link.active}
 function create_if_block_3(ctx) {
 	let icon;
 	let current;
@@ -11276,7 +11277,6 @@ function create_each_block$1(ctx) {
 	let t1;
 	let t2;
 	let a_href_value;
-	let a_id_value;
 	let a_class_value;
 	let current;
 	let if_block = /*link*/ ctx[15].active && create_if_block_3();
@@ -11292,7 +11292,7 @@ function create_each_block$1(ctx) {
 			this.h();
 		},
 		l(nodes) {
-			a = claim_element(nodes, "A", { href: true, id: true, class: true });
+			a = claim_element(nodes, "A", { href: true, class: true });
 			var a_nodes = children(a);
 			span = claim_element(a_nodes, "SPAN", { class: true });
 			var span_nodes = children(span);
@@ -11307,7 +11307,6 @@ function create_each_block$1(ctx) {
 		h() {
 			attr(span, "class", "svelte-v9kn9v");
 			attr(a, "href", a_href_value = "#" + /*link*/ ctx[15].id);
-			attr(a, "id", a_id_value = /*link*/ ctx[15].id);
 			attr(a, "class", a_class_value = "" + (null_to_empty(/*link*/ ctx[15].level) + " svelte-v9kn9v"));
 			toggle_class(a, "passed", /*link*/ ctx[15].passed);
 		},
@@ -11348,10 +11347,6 @@ function create_each_block$1(ctx) {
 				attr(a, "href", a_href_value);
 			}
 
-			if (!current || dirty & /*header_links*/ 16 && a_id_value !== (a_id_value = /*link*/ ctx[15].id)) {
-				attr(a, "id", a_id_value);
-			}
-
 			if (!current || dirty & /*header_links*/ 16 && a_class_value !== (a_class_value = "" + (null_to_empty(/*link*/ ctx[15].level) + " svelte-v9kn9v"))) {
 				attr(a, "class", a_class_value);
 			}
@@ -11376,7 +11371,7 @@ function create_each_block$1(ctx) {
 	};
 }
 
-// (228:4) {#if github_markdown_file}
+// (227:4) {#if github_markdown_file}
 function create_if_block_2(ctx) {
 	let a;
 	let icon;
@@ -11437,7 +11432,7 @@ function create_if_block_2(ctx) {
 	};
 }
 
-// (237:4) {#if video_id}
+// (236:4) {#if video_id}
 function create_if_block_1$1(ctx) {
 	let div;
 	let iframe;
@@ -11489,7 +11484,7 @@ function create_if_block_1$1(ctx) {
 	};
 }
 
-// (251:6) {:else}
+// (250:6) {:else}
 function create_else_block$1(ctx) {
 	let icon;
 	let current;
@@ -11525,7 +11520,7 @@ function create_else_block$1(ctx) {
 	};
 }
 
-// (249:6) {#if docs}
+// (248:6) {#if docs}
 function create_if_block$2(ctx) {
 	let html_tag;
 	let html_anchor;

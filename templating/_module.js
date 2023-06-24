@@ -10757,7 +10757,7 @@ function get_each_context$1(ctx, list, i) {
 	return child_ctx;
 }
 
-// (221:8) {#if link.active}
+// (220:8) {#if link.active}
 function create_if_block_3(ctx) {
 	let icon;
 	let current;
@@ -10798,7 +10798,6 @@ function create_each_block$1(ctx) {
 	let t1;
 	let t2;
 	let a_href_value;
-	let a_id_value;
 	let a_class_value;
 	let current;
 	let if_block = /*link*/ ctx[15].active && create_if_block_3();
@@ -10814,7 +10813,7 @@ function create_each_block$1(ctx) {
 			this.h();
 		},
 		l(nodes) {
-			a = claim_element(nodes, "A", { href: true, id: true, class: true });
+			a = claim_element(nodes, "A", { href: true, class: true });
 			var a_nodes = children(a);
 			span = claim_element(a_nodes, "SPAN", { class: true });
 			var span_nodes = children(span);
@@ -10829,7 +10828,6 @@ function create_each_block$1(ctx) {
 		h() {
 			attr(span, "class", "svelte-v9kn9v");
 			attr(a, "href", a_href_value = "#" + /*link*/ ctx[15].id);
-			attr(a, "id", a_id_value = /*link*/ ctx[15].id);
 			attr(a, "class", a_class_value = "" + (null_to_empty(/*link*/ ctx[15].level) + " svelte-v9kn9v"));
 			toggle_class(a, "passed", /*link*/ ctx[15].passed);
 		},
@@ -10870,10 +10868,6 @@ function create_each_block$1(ctx) {
 				attr(a, "href", a_href_value);
 			}
 
-			if (!current || dirty & /*header_links*/ 16 && a_id_value !== (a_id_value = /*link*/ ctx[15].id)) {
-				attr(a, "id", a_id_value);
-			}
-
 			if (!current || dirty & /*header_links*/ 16 && a_class_value !== (a_class_value = "" + (null_to_empty(/*link*/ ctx[15].level) + " svelte-v9kn9v"))) {
 				attr(a, "class", a_class_value);
 			}
@@ -10898,7 +10892,7 @@ function create_each_block$1(ctx) {
 	};
 }
 
-// (228:4) {#if github_markdown_file}
+// (227:4) {#if github_markdown_file}
 function create_if_block_2(ctx) {
 	let a;
 	let icon;
@@ -10959,7 +10953,7 @@ function create_if_block_2(ctx) {
 	};
 }
 
-// (237:4) {#if video_id}
+// (236:4) {#if video_id}
 function create_if_block_1$1(ctx) {
 	let div;
 	let iframe;
@@ -11011,7 +11005,7 @@ function create_if_block_1$1(ctx) {
 	};
 }
 
-// (251:6) {:else}
+// (250:6) {:else}
 function create_else_block$1(ctx) {
 	let icon;
 	let current;
@@ -11047,7 +11041,7 @@ function create_else_block$1(ctx) {
 	};
 }
 
-// (249:6) {#if docs}
+// (248:6) {#if docs}
 function create_if_block$2(ctx) {
 	let html_tag;
 	let html_anchor;
