@@ -11913,7 +11913,7 @@ function instance$3($$self, $$props, $$invalidate) {
 		}
 
 		if ($$self.$$.dirty & /*docs, content_node*/ 12) {
-			 docs && createHeaderLinks(content_node);
+			 docs && content_node && createHeaderLinks(content_node);
 		}
 
 		if ($$self.$$.dirty & /*header_links, scrollY*/ 48) {

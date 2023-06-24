@@ -3,14 +3,549 @@
 
 <head>
     <meta name="generator" content="Primo" />
-    undefined
+    <title>Primo Docs: Publishing</title><!-- HEAD_svelte-tc9q34_START -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="image/png" href="https://res.cloudinary.com/primoaf/image/upload/v1659676914/favicon_roaxv0.png">
+    <meta name="description" content="">
     <style>
-        undefined
+        @import url("https://unpkg.com/@primo-app/primo@1.3.64/reset.css");
+        @import url(https://fonts.bunny.net/css?family=archivo:200,300,300i,400,400i,500,500i,600,600i,700,700i|inter:300,400,500,600,700,800);
+
+        html {
+            /* Colors */
+            --color-accent: #35d994;
+
+            /* Default property values */
+            --background: #111;
+            --color: #c2c2c2;
+            --padding: 2rem;
+            --box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
+            --border-radius: 8px;
+            --max-width: 1200px;
+            --border-color: #333;
+            --transition-time: 0.1s;
+            --transition: var(--transition-time) color,
+                var(--transition-time) background-color, var(--transition-time) border-color,
+                var(--transition-time) text-decoration-color,
+                var(--transition-time) box-shadow, var(--transtion-time) transform;
+        }
+
+        #page {
+            font-family: "Inter", sans-serif;
+            color: var(--color);
+            line-height: 1.6;
+            font-size: 1rem;
+            background: #111;
+            font-weight: 300;
+        }
+
+        .content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: var(--padding);
+
+            /*   pre {
+    padding: 2rem;
+    background: #222;
+    border-radius: 0.25rem;
+    margin-bottom: 2rem;
+    margin-top: 1em;
+  } */
+        }
+
+        .content img {
+            width: 100%;
+            margin: 2rem 0;
+            box-shadow: var(--box-shadow);
+            border-radius: var(--border-radius);
+        }
+
+        .content p {
+            padding: 0.25rem 0;
+            line-height: 1.5;
+            color: var(--color);
+        }
+
+        .content strong {
+            font-weight: 500;
+            color: white;
+        }
+
+        .content a {
+            text-decoration: underline;
+        }
+
+        .content h1 {
+            line-height: 1.2;
+            font-size: 2.25rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .content h2 {
+            font-size: 1.75rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            margin-top: 2rem;
+            color: white;
+        }
+
+        .content h3 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            margin-top: 1rem;
+            color: white;
+        }
+
+        .content h4 {
+            font-size: 1.15rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            margin-top: 1rem;
+            color: white;
+        }
+
+        .content h5 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            margin-top: 1rem;
+            color: white;
+        }
+
+        .content ul {
+            list-style: disc;
+            padding: 0.5rem 0;
+            padding-left: 1.25rem;
+        }
+
+        .content ol {
+            list-style: decimal;
+            padding: 0.5rem 0;
+            padding-left: 1.25rem;
+        }
+
+        .content blockquote {
+            border: 1px solid #222;
+            margin: 1rem 0;
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            border-radius: var(--border-radius);
+        }
+
+        .section-container {
+            max-width: var(--max-width, 1200px);
+            margin: 0 auto;
+            padding: 3rem var(--padding, 1rem);
+        }
+
+        .heading {
+            font-size: 3rem;
+            line-height: 1;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .button {
+            color: white;
+            background: var(--color-accent);
+            border-radius: 5px;
+            padding: 8px 20px;
+            transition: var(--transition);
+        }
+
+        .button:hover {
+            box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .button.inverted {
+            background: transparent;
+            color: var(--color-accent);
+            border: 2px solid var(--color-accent);
+        }
+    </style><!-- HEAD_svelte-tc9q34_END -->
+    <style>
+        header.svelte-ao8nxh.svelte-ao8nxh.svelte-ao8nxh {
+            background: var(--background, white);
+            border-bottom: 1px solid var(--border-color, #e5e5e7);
+            padding-top: .75rem
+        }
+
+        .section-container.svelte-ao8nxh.svelte-ao8nxh.svelte-ao8nxh {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .parent-nav.svelte-ao8nxh.svelte-ao8nxh.svelte-ao8nxh {
+            font-size: 0.75rem;
+            padding-block: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            opacity: 0;
+            transition: 0.2s opacity
+        }
+
+        .parent-nav.svelte-ao8nxh .logo.svelte-ao8nxh.svelte-ao8nxh {
+            display: flex;
+            align-items: baseline
+        }
+
+        .parent-nav.svelte-ao8nxh .logo.svelte-ao8nxh svg {
+            width: 5rem
+        }
+
+        .parent-nav.svelte-ao8nxh nav.svelte-ao8nxh.svelte-ao8nxh {
+            gap: 1.5rem
+        }
+
+        .parent-nav.svelte-ao8nxh nav.svelte-ao8nxh a.svelte-ao8nxh:hover {
+            color: var(--color-accent)
+        }
+
+        .parent-nav.loaded.svelte-ao8nxh.svelte-ao8nxh.svelte-ao8nxh {
+            opacity: 1
+        }
+
+        .logos.svelte-ao8nxh.svelte-ao8nxh.svelte-ao8nxh {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem
+        }
+
+        .logos.svelte-ao8nxh a.link.svelte-ao8nxh.svelte-ao8nxh {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: white;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.1s
+        }
+
+        .logos.svelte-ao8nxh a.link.svelte-ao8nxh.svelte-ao8nxh:hover {
+            border-color: var(--color-accent);
+            color: white
+        }
+
+        .navigation.svelte-ao8nxh.svelte-ao8nxh.svelte-ao8nxh {
+            display: flex;
+            gap: 1.5rem
+        }
+
+        nav.svelte-ao8nxh.svelte-ao8nxh.svelte-ao8nxh {
+            display: flex;
+            align-items: center;
+            gap: 2rem
+        }
+
+        nav.svelte-ao8nxh .dropdown.svelte-ao8nxh.svelte-ao8nxh {
+            position: relative
+        }
+
+        nav.svelte-ao8nxh .dropdown .title.svelte-ao8nxh.svelte-ao8nxh {
+            display: flex;
+            gap: 0.25rem;
+            align-items: center
+        }
+
+        nav.svelte-ao8nxh .dropdown ul.svelte-ao8nxh.svelte-ao8nxh {
+            position: absolute;
+            right: 0;
+            gap: 0.25rem;
+            background: #222;
+            padding: 0.75rem;
+            text-wrap: nowrap;
+            display: none;
+            text-decoration: underline;
+            white-space: nowrap;
+            z-index: 9
+        }
+
+        nav.svelte-ao8nxh .dropdown:hover ul.svelte-ao8nxh.svelte-ao8nxh {
+            display: grid
+        }
+
+        nav.svelte-ao8nxh a.link.active.svelte-ao8nxh.svelte-ao8nxh {
+            border-bottom: 2px solid var(--color-accent);
+            transition: border-color 0.1s;
+            font-size: 1rem
+        }
+
+        nav.svelte-ao8nxh a.link.svelte-ao8nxh.svelte-ao8nxh {
+            display: none
+        }
+
+        nav.svelte-ao8nxh a.link.svelte-ao8nxh.svelte-ao8nxh:hover {
+            color: white;
+            transition: 0.3s
+        }
+
+        nav.svelte-ao8nxh button#close.svelte-ao8nxh.svelte-ao8nxh {
+            display: none
+        }
+
+        .call-to-action.svelte-ao8nxh.svelte-ao8nxh.svelte-ao8nxh {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem
+        }
+
+        .call-to-action.svelte-ao8nxh .locale-selector select {
+            background: transparent
+        }
+
+        nav#mobile-nav.svelte-ao8nxh.svelte-ao8nxh.svelte-ao8nxh {
+            position: absolute;
+            flex-direction: column;
+            text-align: center;
+            background: var(--background);
+            box-shadow: var(--box-shadow);
+            border-radius: var(--border-radius);
+            left: 0.5rem;
+            top: 0.5rem;
+            right: 0.5rem;
+            padding: 2rem;
+            z-index: 9
+        }
+
+        nav#mobile-nav.svelte-ao8nxh a.link.svelte-ao8nxh.svelte-ao8nxh {
+            display: block
+        }
+
+        nav#mobile-nav.svelte-ao8nxh button#close.svelte-ao8nxh.svelte-ao8nxh {
+            display: block;
+            position: absolute;
+            right: 1rem;
+            top: 1rem
+        }
+
+        @media(min-width: 900px) {
+            .call-to-action.svelte-ao8nxh.svelte-ao8nxh.svelte-ao8nxh {
+                display: none
+            }
+
+            #open.svelte-ao8nxh.svelte-ao8nxh.svelte-ao8nxh,
+            #mobile-nav.svelte-ao8nxh.svelte-ao8nxh.svelte-ao8nxh {
+                display: none
+            }
+
+            nav.svelte-ao8nxh a.link.svelte-ao8nxh.svelte-ao8nxh {
+                display: inline-block;
+                border-bottom: 2px solid transparent;
+                transition: border-color 0.1s
+            }
+
+            nav.svelte-ao8nxh a.link.svelte-ao8nxh.svelte-ao8nxh:hover {
+                border-color: var(--color-accent)
+            }
+        }
+
+        .section-container.svelte-d3qrpf {
+            padding-block: 1rem
+        }
+
+        ul.svelte-d3qrpf {
+            display: flex;
+            gap: 1rem
+        }
+
+        li.svelte-d3qrpf {
+            display: flex
+        }
+
+        li.svelte-d3qrpf:not(:last-child):after {
+            content: ">";
+            padding-left: 1rem;
+            font-weight: 700
+        }
+
+        a.svelte-d3qrpf {
+            text-decoration: underline
+        }
+
+        section.svelte-v9kn9v.svelte-v9kn9v {
+            display: grid;
+            place-items: flex-start;
+            gap: 4rem;
+            position: relative
+        }
+
+        section.svelte-v9kn9v nav.svelte-v9kn9v {
+            display: none;
+            place-content: flex-start;
+            position: -webkit-sticky;
+            position: sticky;
+            top: 1rem
+        }
+
+        section.svelte-v9kn9v nav a.svelte-v9kn9v {
+            display: flex;
+            align-items: center;
+            padding: 0.25rem 0;
+            padding-right: 3rem;
+            border-right: 1px solid var(--border-color);
+            transition: 0.1s border-color;
+            offset: 30rem
+        }
+
+        section.svelte-v9kn9v nav a span.svelte-v9kn9v {
+            margin-right: 0.25rem;
+            font-size: 1.125rem
+        }
+
+        section.svelte-v9kn9v nav a.svelte-v9kn9v svg {
+            color: var(--color-accent);
+            position: absolute;
+            right: 100%
+        }
+
+        section.svelte-v9kn9v nav .passed.svelte-v9kn9v {
+            border-color: var(--color-accent)
+        }
+
+        section.svelte-v9kn9v nav .H1.svelte-v9kn9v {
+            font-size: 1rem;
+            line-height: 1.2
+        }
+
+        section.svelte-v9kn9v nav .H2.svelte-v9kn9v {
+            font-size: 0.825rem;
+            padding-left: 0.5rem
+        }
+
+        section.svelte-v9kn9v main.svelte-v9kn9v {
+            max-width: 600px
+        }
+
+        section.svelte-v9kn9v main .button.pr.svelte-v9kn9v {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #222;
+            color: #ddd;
+            font-size: 0.875rem;
+            position: fixed;
+            right: 1rem;
+            bottom: 1rem
+        }
+
+        section.svelte-v9kn9v main .video.svelte-v9kn9v {
+            padding-top: 63%;
+            height: 0;
+            position: relative;
+            margin-bottom: 3rem
+        }
+
+        section.svelte-v9kn9v main .video iframe.svelte-v9kn9v {
+            border: 2px solid #393939;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            inset: 0
+        }
+
+        section.svelte-v9kn9v main .content.svelte-v9kn9v {
+            padding: 0;
+            margin: initial
+        }
+
+        section.svelte-v9kn9v main .content.svelte-v9kn9v a[href$="#gh-light-mode-only"] {
+            display: none
+        }
+
+        section.svelte-v9kn9v main .content.svelte-v9kn9v img[alt="Primo"] {
+            width: 10rem
+        }
+
+        section.svelte-v9kn9v main .content.svelte-v9kn9v h3 {
+            margin-top: 1rem
+        }
+
+        section.svelte-v9kn9v main .content.svelte-v9kn9v img {
+            width: 100%;
+            margin: 1rem 0
+        }
+
+        section.svelte-v9kn9v main .content.svelte-v9kn9v hr {
+            margin: 4rem 0;
+            border-color: var(--border-color)
+        }
+
+        section.svelte-v9kn9v main .content.svelte-v9kn9v p {
+            font-family: "Inter", sans-serif
+        }
+
+        @media(min-width: 800px) {
+            section.svelte-v9kn9v.svelte-v9kn9v {
+                grid-template-columns: minmax(auto, 15rem) auto
+            }
+
+            section.svelte-v9kn9v nav.svelte-v9kn9v {
+                display: grid
+            }
+        }
     </style>
 </head>
 
 <body id="page">
-    undefined
+
+    <div class="section" id="section-1cc78e2c">
+        <header class="svelte-ao8nxh">
+            <div class="parent-nav section-container svelte-ao8nxh">
+                <nav class="svelte-ao8nxh"></nav>
+            </div>
+            <div class="section-container svelte-ao8nxh">
+                <div class="logos svelte-ao8nxh"><a href="/" class="link svelte-ao8nxh">Primo Docs</a></div>
+                <div class="navigation svelte-ao8nxh">
+                    <nav class="svelte-ao8nxh"><a href="/getting-started" class="link svelte-ao8nxh">Getting Started</a><a href="/development" class="link svelte-ao8nxh">Development</a><a href="/publishing" class="link svelte-ao8nxh">Publishing</a>
+                        <div class="dropdown svelte-ao8nxh"><span class="title svelte-ao8nxh"><span>Guides</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden role="img" width="1em" height="1em" viewBox="0 0 24 24" class="iconify iconify--tabler"><!-- HTML_TAG_START -->
+                                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6" /><!-- HTML_TAG_END -->
+                                </svg></span>
+                        </div>
+                    </nav>
+                    <div class="call-to-action svelte-ao8nxh"><button id="open" class="svelte-ao8nxh"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden role="img" width="30" height="30" viewBox="0 0 24 24" class="iconify iconify--material-symbols"><!-- HTML_TAG_START -->
+                                <path fill="currentColor" d="M3 18v-2h18v2H3Zm0-5v-2h18v2H3Zm0-5V6h18v2H3Z" /><!-- HTML_TAG_END -->
+                            </svg></button></div>
+                </div>
+            </div>
+        </header>
+    </div>
+    <div class="section" id="section-d768fbf7">
+        <div class="section-container svelte-d3qrpf"></div>
+    </div>
+    <div class="section" id="section-b3aa097b">
+        <section class="section-container svelte-v9kn9v">
+            <nav class="svelte-v9kn9v"></nav>
+            <main class="svelte-v9kn9v">
+
+                <div class="content svelte-v9kn9v">
+                    <!-- HTML_TAG_START -->
+                    <h1>How to serve Primo pages from SvelteKit</h1>
+                    <p>You can use the serverside load hook to intercept requests based on a blocklist or allowlist and fetch/return a static Primo page from the site’s repository instead.</p>
+                    <p>This is useful when you have some content pages in your SvelteKit app that you want to have easily by yourself and other content editors, or when you have a full Primo site that you want to wrap in a SvelteKit application.</p>
+                    <h2>Example</h2>
+                    <p><a target="_blank" rel="noopener noreferrer nofollow" class="link link" href="https://github.com/primocms/sveltekit-with-primo">Here’s a repo</a> that demonstrates how to load Primo pages from a SvelteKit codebase.</p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p><!-- HTML_TAG_END -->
+                </div>
+            </main>
+        </section>
+        <link rel="stylesheet" href="https://unpkg.com/highlightjs@9.16.2/styles/solarized-dark.css">
+
+
+
+    </div>
+
     <script type="module">
         const path = window.location.pathname === '/' ? '' : window.location.pathname
         const [{

@@ -6,6 +6,11 @@ function assign(tar, src) {
         tar[k] = src[k];
     return tar;
 }
+// Adapted from https://github.com/then/is-promise/blob/master/index.js
+// Distributed under MIT License https://github.com/then/is-promise/blob/master/LICENSE
+function is_promise(value) {
+    return !!value && (typeof value === 'object' || typeof value === 'function') && typeof value.then === 'function';
+}
 function run(fn) {
     return fn();
 }
@@ -811,6 +816,70 @@ function transition_out(block, local, detach, callback) {
     }
 }
 const null_transition = { duration: 0 };
+function create_in_transition(node, fn, params) {
+    const options = { direction: 'in' };
+    let config = fn(node, params, options);
+    let running = false;
+    let animation_name;
+    let task;
+    let uid = 0;
+    function cleanup() {
+        if (animation_name)
+            delete_rule(node, animation_name);
+    }
+    function go() {
+        const { delay = 0, duration = 300, easing = identity, tick = noop, css } = config || null_transition;
+        if (css)
+            animation_name = create_rule(node, 0, 1, duration, delay, easing, css, uid++);
+        tick(0, 1);
+        const start_time = now() + delay;
+        const end_time = start_time + duration;
+        if (task)
+            task.abort();
+        running = true;
+        add_render_callback(() => dispatch(node, true, 'start'));
+        task = loop(now => {
+            if (running) {
+                if (now >= end_time) {
+                    tick(1, 0);
+                    dispatch(node, true, 'end');
+                    cleanup();
+                    return running = false;
+                }
+                if (now >= start_time) {
+                    const t = easing((now - start_time) / duration);
+                    tick(t, 1 - t);
+                }
+            }
+            return running;
+        });
+    }
+    let started = false;
+    return {
+        start() {
+            if (started)
+                return;
+            started = true;
+            delete_rule(node);
+            if (is_function(config)) {
+                config = config(options);
+                wait().then(go);
+            }
+            else {
+                go();
+            }
+        },
+        invalidate() {
+            started = false;
+        },
+        end() {
+            if (running) {
+                cleanup();
+                running = false;
+            }
+        }
+    };
+}
 function create_bidirectional_transition(node, fn, params, intro) {
     const options = { direction: 'both' };
     let config = fn(node, params, options);
@@ -916,6 +985,88 @@ function create_bidirectional_transition(node, fn, params, intro) {
             running_program = pending_program = null;
         }
     };
+}
+
+function handle_promise(promise, info) {
+    const token = info.token = {};
+    function update(type, index, key, value) {
+        if (info.token !== token)
+            return;
+        info.resolved = value;
+        let child_ctx = info.ctx;
+        if (key !== undefined) {
+            child_ctx = child_ctx.slice();
+            child_ctx[key] = value;
+        }
+        const block = type && (info.current = type)(child_ctx);
+        let needs_flush = false;
+        if (info.block) {
+            if (info.blocks) {
+                info.blocks.forEach((block, i) => {
+                    if (i !== index && block) {
+                        group_outros();
+                        transition_out(block, 1, 1, () => {
+                            if (info.blocks[i] === block) {
+                                info.blocks[i] = null;
+                            }
+                        });
+                        check_outros();
+                    }
+                });
+            }
+            else {
+                info.block.d(1);
+            }
+            block.c();
+            transition_in(block, 1);
+            block.m(info.mount(), info.anchor);
+            needs_flush = true;
+        }
+        info.block = block;
+        if (info.blocks)
+            info.blocks[index] = block;
+        if (needs_flush) {
+            flush();
+        }
+    }
+    if (is_promise(promise)) {
+        const current_component = get_current_component();
+        promise.then(value => {
+            set_current_component(current_component);
+            update(info.then, 1, info.value, value);
+            set_current_component(null);
+        }, error => {
+            set_current_component(current_component);
+            update(info.catch, 2, info.error, error);
+            set_current_component(null);
+            if (!info.hasCatch) {
+                throw error;
+            }
+        });
+        // if we previously had a then/catch block, destroy it
+        if (info.current !== info.pending) {
+            update(info.pending, 0);
+            return true;
+        }
+    }
+    else {
+        if (info.current !== info.then) {
+            update(info.then, 1, info.value, promise);
+            return true;
+        }
+        info.resolved = promise;
+    }
+}
+function update_await_block_branch(info, ctx, dirty) {
+    const child_ctx = ctx.slice();
+    const { resolved } = info;
+    if (info.current === info.then) {
+        child_ctx[info.value] = resolved;
+    }
+    if (info.current === info.catch) {
+        child_ctx[info.error] = resolved;
+    }
+    info.block.p(child_ctx, dirty);
 }
 
 function get_spread_update(levels, updates) {
@@ -1115,7 +1266,7 @@ function create_fragment(ctx) {
 			this.h();
 		},
 		l(nodes) {
-			const head_nodes = head_selector('svelte-178vttq', document.head);
+			const head_nodes = head_selector('svelte-tc9q34', document.head);
 			meta0 = claim_element(head_nodes, "META", { name: true, content: true });
 			meta1 = claim_element(head_nodes, "META", { charset: true });
 			link = claim_element(head_nodes, "LINK", { rel: true, type: true, href: true });
@@ -1182,2594 +1333,6 @@ class Component extends SvelteComponent {
 	constructor(options) {
 		super();
 		init(this, options, instance, create_fragment, safe_not_equal, { title: 0, description: 1 });
-	}
-}
-
-const matchIconName = /^[a-z0-9]+(-[a-z0-9]+)*$/;
-const stringToIcon = (value, validate, allowSimpleName, provider = "") => {
-  const colonSeparated = value.split(":");
-  if (value.slice(0, 1) === "@") {
-    if (colonSeparated.length < 2 || colonSeparated.length > 3) {
-      return null;
-    }
-    provider = colonSeparated.shift().slice(1);
-  }
-  if (colonSeparated.length > 3 || !colonSeparated.length) {
-    return null;
-  }
-  if (colonSeparated.length > 1) {
-    const name2 = colonSeparated.pop();
-    const prefix = colonSeparated.pop();
-    const result = {
-      provider: colonSeparated.length > 0 ? colonSeparated[0] : provider,
-      prefix,
-      name: name2
-    };
-    return validate && !validateIconName(result) ? null : result;
-  }
-  const name = colonSeparated[0];
-  const dashSeparated = name.split("-");
-  if (dashSeparated.length > 1) {
-    const result = {
-      provider,
-      prefix: dashSeparated.shift(),
-      name: dashSeparated.join("-")
-    };
-    return validate && !validateIconName(result) ? null : result;
-  }
-  if (allowSimpleName && provider === "") {
-    const result = {
-      provider,
-      prefix: "",
-      name
-    };
-    return validate && !validateIconName(result, allowSimpleName) ? null : result;
-  }
-  return null;
-};
-const validateIconName = (icon, allowSimpleName) => {
-  if (!icon) {
-    return false;
-  }
-  return !!((icon.provider === "" || icon.provider.match(matchIconName)) && (allowSimpleName && icon.prefix === "" || icon.prefix.match(matchIconName)) && icon.name.match(matchIconName));
-};
-const defaultIconDimensions = Object.freeze({
-  left: 0,
-  top: 0,
-  width: 16,
-  height: 16
-});
-const defaultIconTransformations = Object.freeze({
-  rotate: 0,
-  vFlip: false,
-  hFlip: false
-});
-const defaultIconProps = Object.freeze({
-  ...defaultIconDimensions,
-  ...defaultIconTransformations
-});
-const defaultExtendedIconProps = Object.freeze({
-  ...defaultIconProps,
-  body: "",
-  hidden: false
-});
-function mergeIconTransformations(obj1, obj2) {
-  const result = {};
-  if (!obj1.hFlip !== !obj2.hFlip) {
-    result.hFlip = true;
-  }
-  if (!obj1.vFlip !== !obj2.vFlip) {
-    result.vFlip = true;
-  }
-  const rotate = ((obj1.rotate || 0) + (obj2.rotate || 0)) % 4;
-  if (rotate) {
-    result.rotate = rotate;
-  }
-  return result;
-}
-function mergeIconData(parent, child) {
-  const result = mergeIconTransformations(parent, child);
-  for (const key in defaultExtendedIconProps) {
-    if (key in defaultIconTransformations) {
-      if (key in parent && !(key in result)) {
-        result[key] = defaultIconTransformations[key];
-      }
-    } else if (key in child) {
-      result[key] = child[key];
-    } else if (key in parent) {
-      result[key] = parent[key];
-    }
-  }
-  return result;
-}
-function getIconsTree(data, names) {
-  const icons = data.icons;
-  const aliases = data.aliases || /* @__PURE__ */ Object.create(null);
-  const resolved = /* @__PURE__ */ Object.create(null);
-  function resolve(name) {
-    if (icons[name]) {
-      return resolved[name] = [];
-    }
-    if (!(name in resolved)) {
-      resolved[name] = null;
-      const parent = aliases[name] && aliases[name].parent;
-      const value = parent && resolve(parent);
-      if (value) {
-        resolved[name] = [parent].concat(value);
-      }
-    }
-    return resolved[name];
-  }
-  (names || Object.keys(icons).concat(Object.keys(aliases))).forEach(resolve);
-  return resolved;
-}
-function internalGetIconData(data, name, tree) {
-  const icons = data.icons;
-  const aliases = data.aliases || /* @__PURE__ */ Object.create(null);
-  let currentProps = {};
-  function parse(name2) {
-    currentProps = mergeIconData(icons[name2] || aliases[name2], currentProps);
-  }
-  parse(name);
-  tree.forEach(parse);
-  return mergeIconData(data, currentProps);
-}
-function parseIconSet(data, callback) {
-  const names = [];
-  if (typeof data !== "object" || typeof data.icons !== "object") {
-    return names;
-  }
-  if (data.not_found instanceof Array) {
-    data.not_found.forEach((name) => {
-      callback(name, null);
-      names.push(name);
-    });
-  }
-  const tree = getIconsTree(data);
-  for (const name in tree) {
-    const item = tree[name];
-    if (item) {
-      callback(name, internalGetIconData(data, name, item));
-      names.push(name);
-    }
-  }
-  return names;
-}
-const optionalPropertyDefaults = {
-  provider: "",
-  aliases: {},
-  not_found: {},
-  ...defaultIconDimensions
-};
-function checkOptionalProps(item, defaults) {
-  for (const prop in defaults) {
-    if (prop in item && typeof item[prop] !== typeof defaults[prop]) {
-      return false;
-    }
-  }
-  return true;
-}
-function quicklyValidateIconSet(obj) {
-  if (typeof obj !== "object" || obj === null) {
-    return null;
-  }
-  const data = obj;
-  if (typeof data.prefix !== "string" || !obj.icons || typeof obj.icons !== "object") {
-    return null;
-  }
-  if (!checkOptionalProps(obj, optionalPropertyDefaults)) {
-    return null;
-  }
-  const icons = data.icons;
-  for (const name in icons) {
-    const icon = icons[name];
-    if (!name.match(matchIconName) || typeof icon.body !== "string" || !checkOptionalProps(icon, defaultExtendedIconProps)) {
-      return null;
-    }
-  }
-  const aliases = data.aliases || /* @__PURE__ */ Object.create(null);
-  for (const name in aliases) {
-    const icon = aliases[name];
-    const parent = icon.parent;
-    if (!name.match(matchIconName) || typeof parent !== "string" || !icons[parent] && !aliases[parent] || !checkOptionalProps(icon, defaultExtendedIconProps)) {
-      return null;
-    }
-  }
-  return data;
-}
-const dataStorage = /* @__PURE__ */ Object.create(null);
-function newStorage(provider, prefix) {
-  return {
-    provider,
-    prefix,
-    icons: /* @__PURE__ */ Object.create(null),
-    missing: /* @__PURE__ */ new Set()
-  };
-}
-function getStorage(provider, prefix) {
-  const providerStorage = dataStorage[provider] || (dataStorage[provider] = /* @__PURE__ */ Object.create(null));
-  return providerStorage[prefix] || (providerStorage[prefix] = newStorage(provider, prefix));
-}
-function addIconSet(storage2, data) {
-  if (!quicklyValidateIconSet(data)) {
-    return [];
-  }
-  return parseIconSet(data, (name, icon) => {
-    if (icon) {
-      storage2.icons[name] = icon;
-    } else {
-      storage2.missing.add(name);
-    }
-  });
-}
-function addIconToStorage(storage2, name, icon) {
-  try {
-    if (typeof icon.body === "string") {
-      storage2.icons[name] = {...icon};
-      return true;
-    }
-  } catch (err) {
-  }
-  return false;
-}
-let simpleNames = false;
-function allowSimpleNames(allow) {
-  if (typeof allow === "boolean") {
-    simpleNames = allow;
-  }
-  return simpleNames;
-}
-function getIconData(name) {
-  const icon = typeof name === "string" ? stringToIcon(name, true, simpleNames) : name;
-  if (icon) {
-    const storage2 = getStorage(icon.provider, icon.prefix);
-    const iconName = icon.name;
-    return storage2.icons[iconName] || (storage2.missing.has(iconName) ? null : void 0);
-  }
-}
-function addIcon(name, data) {
-  const icon = stringToIcon(name, true, simpleNames);
-  if (!icon) {
-    return false;
-  }
-  const storage2 = getStorage(icon.provider, icon.prefix);
-  return addIconToStorage(storage2, icon.name, data);
-}
-function addCollection(data, provider) {
-  if (typeof data !== "object") {
-    return false;
-  }
-  if (typeof provider !== "string") {
-    provider = data.provider || "";
-  }
-  if (simpleNames && !provider && !data.prefix) {
-    let added = false;
-    if (quicklyValidateIconSet(data)) {
-      data.prefix = "";
-      parseIconSet(data, (name, icon) => {
-        if (icon && addIcon(name, icon)) {
-          added = true;
-        }
-      });
-    }
-    return added;
-  }
-  const prefix = data.prefix;
-  if (!validateIconName({
-    provider,
-    prefix,
-    name: "a"
-  })) {
-    return false;
-  }
-  const storage2 = getStorage(provider, prefix);
-  return !!addIconSet(storage2, data);
-}
-const defaultIconSizeCustomisations = Object.freeze({
-  width: null,
-  height: null
-});
-const defaultIconCustomisations = Object.freeze({
-  ...defaultIconSizeCustomisations,
-  ...defaultIconTransformations
-});
-const unitsSplit = /(-?[0-9.]*[0-9]+[0-9.]*)/g;
-const unitsTest = /^-?[0-9.]*[0-9]+[0-9.]*$/g;
-function calculateSize(size, ratio, precision) {
-  if (ratio === 1) {
-    return size;
-  }
-  precision = precision || 100;
-  if (typeof size === "number") {
-    return Math.ceil(size * ratio * precision) / precision;
-  }
-  if (typeof size !== "string") {
-    return size;
-  }
-  const oldParts = size.split(unitsSplit);
-  if (oldParts === null || !oldParts.length) {
-    return size;
-  }
-  const newParts = [];
-  let code = oldParts.shift();
-  let isNumber = unitsTest.test(code);
-  while (true) {
-    if (isNumber) {
-      const num = parseFloat(code);
-      if (isNaN(num)) {
-        newParts.push(code);
-      } else {
-        newParts.push(Math.ceil(num * ratio * precision) / precision);
-      }
-    } else {
-      newParts.push(code);
-    }
-    code = oldParts.shift();
-    if (code === void 0) {
-      return newParts.join("");
-    }
-    isNumber = !isNumber;
-  }
-}
-const isUnsetKeyword = (value) => value === "unset" || value === "undefined" || value === "none";
-function iconToSVG(icon, customisations) {
-  const fullIcon = {
-    ...defaultIconProps,
-    ...icon
-  };
-  const fullCustomisations = {
-    ...defaultIconCustomisations,
-    ...customisations
-  };
-  const box = {
-    left: fullIcon.left,
-    top: fullIcon.top,
-    width: fullIcon.width,
-    height: fullIcon.height
-  };
-  let body = fullIcon.body;
-  [fullIcon, fullCustomisations].forEach((props) => {
-    const transformations = [];
-    const hFlip = props.hFlip;
-    const vFlip = props.vFlip;
-    let rotation = props.rotate;
-    if (hFlip) {
-      if (vFlip) {
-        rotation += 2;
-      } else {
-        transformations.push("translate(" + (box.width + box.left).toString() + " " + (0 - box.top).toString() + ")");
-        transformations.push("scale(-1 1)");
-        box.top = box.left = 0;
-      }
-    } else if (vFlip) {
-      transformations.push("translate(" + (0 - box.left).toString() + " " + (box.height + box.top).toString() + ")");
-      transformations.push("scale(1 -1)");
-      box.top = box.left = 0;
-    }
-    let tempValue;
-    if (rotation < 0) {
-      rotation -= Math.floor(rotation / 4) * 4;
-    }
-    rotation = rotation % 4;
-    switch (rotation) {
-      case 1:
-        tempValue = box.height / 2 + box.top;
-        transformations.unshift("rotate(90 " + tempValue.toString() + " " + tempValue.toString() + ")");
-        break;
-      case 2:
-        transformations.unshift("rotate(180 " + (box.width / 2 + box.left).toString() + " " + (box.height / 2 + box.top).toString() + ")");
-        break;
-      case 3:
-        tempValue = box.width / 2 + box.left;
-        transformations.unshift("rotate(-90 " + tempValue.toString() + " " + tempValue.toString() + ")");
-        break;
-    }
-    if (rotation % 2 === 1) {
-      if (box.left !== box.top) {
-        tempValue = box.left;
-        box.left = box.top;
-        box.top = tempValue;
-      }
-      if (box.width !== box.height) {
-        tempValue = box.width;
-        box.width = box.height;
-        box.height = tempValue;
-      }
-    }
-    if (transformations.length) {
-      body = '<g transform="' + transformations.join(" ") + '">' + body + "</g>";
-    }
-  });
-  const customisationsWidth = fullCustomisations.width;
-  const customisationsHeight = fullCustomisations.height;
-  const boxWidth = box.width;
-  const boxHeight = box.height;
-  let width;
-  let height;
-  if (customisationsWidth === null) {
-    height = customisationsHeight === null ? "1em" : customisationsHeight === "auto" ? boxHeight : customisationsHeight;
-    width = calculateSize(height, boxWidth / boxHeight);
-  } else {
-    width = customisationsWidth === "auto" ? boxWidth : customisationsWidth;
-    height = customisationsHeight === null ? calculateSize(width, boxHeight / boxWidth) : customisationsHeight === "auto" ? boxHeight : customisationsHeight;
-  }
-  const attributes = {};
-  const setAttr = (prop, value) => {
-    if (!isUnsetKeyword(value)) {
-      attributes[prop] = value.toString();
-    }
-  };
-  setAttr("width", width);
-  setAttr("height", height);
-  attributes.viewBox = box.left.toString() + " " + box.top.toString() + " " + boxWidth.toString() + " " + boxHeight.toString();
-  return {
-    attributes,
-    body
-  };
-}
-const regex = /\sid="(\S+)"/g;
-const randomPrefix = "IconifyId" + Date.now().toString(16) + (Math.random() * 16777216 | 0).toString(16);
-let counter = 0;
-function replaceIDs(body, prefix = randomPrefix) {
-  const ids = [];
-  let match;
-  while (match = regex.exec(body)) {
-    ids.push(match[1]);
-  }
-  if (!ids.length) {
-    return body;
-  }
-  const suffix = "suffix" + (Math.random() * 16777216 | Date.now()).toString(16);
-  ids.forEach((id) => {
-    const newID = typeof prefix === "function" ? prefix(id) : prefix + (counter++).toString();
-    const escapedID = id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    body = body.replace(new RegExp('([#;"])(' + escapedID + ')([")]|\\.[a-z])', "g"), "$1" + newID + suffix + "$3");
-  });
-  body = body.replace(new RegExp(suffix, "g"), "");
-  return body;
-}
-const storage = /* @__PURE__ */ Object.create(null);
-function setAPIModule(provider, item) {
-  storage[provider] = item;
-}
-function getAPIModule(provider) {
-  return storage[provider] || storage[""];
-}
-function createAPIConfig(source) {
-  let resources;
-  if (typeof source.resources === "string") {
-    resources = [source.resources];
-  } else {
-    resources = source.resources;
-    if (!(resources instanceof Array) || !resources.length) {
-      return null;
-    }
-  }
-  const result = {
-    resources,
-    path: source.path || "/",
-    maxURL: source.maxURL || 500,
-    rotate: source.rotate || 750,
-    timeout: source.timeout || 5e3,
-    random: source.random === true,
-    index: source.index || 0,
-    dataAfterTimeout: source.dataAfterTimeout !== false
-  };
-  return result;
-}
-const configStorage = /* @__PURE__ */ Object.create(null);
-const fallBackAPISources = [
-  "https://api.simplesvg.com",
-  "https://api.unisvg.com"
-];
-const fallBackAPI = [];
-while (fallBackAPISources.length > 0) {
-  if (fallBackAPISources.length === 1) {
-    fallBackAPI.push(fallBackAPISources.shift());
-  } else {
-    if (Math.random() > 0.5) {
-      fallBackAPI.push(fallBackAPISources.shift());
-    } else {
-      fallBackAPI.push(fallBackAPISources.pop());
-    }
-  }
-}
-configStorage[""] = createAPIConfig({
-  resources: ["https://api.iconify.design"].concat(fallBackAPI)
-});
-function addAPIProvider(provider, customConfig) {
-  const config = createAPIConfig(customConfig);
-  if (config === null) {
-    return false;
-  }
-  configStorage[provider] = config;
-  return true;
-}
-function getAPIConfig(provider) {
-  return configStorage[provider];
-}
-const detectFetch = () => {
-  let callback;
-  try {
-    callback = fetch;
-    if (typeof callback === "function") {
-      return callback;
-    }
-  } catch (err) {
-  }
-};
-let fetchModule = detectFetch();
-function calculateMaxLength(provider, prefix) {
-  const config = getAPIConfig(provider);
-  if (!config) {
-    return 0;
-  }
-  let result;
-  if (!config.maxURL) {
-    result = 0;
-  } else {
-    let maxHostLength = 0;
-    config.resources.forEach((item) => {
-      const host = item;
-      maxHostLength = Math.max(maxHostLength, host.length);
-    });
-    const url = prefix + ".json?icons=";
-    result = config.maxURL - maxHostLength - config.path.length - url.length;
-  }
-  return result;
-}
-function shouldAbort(status) {
-  return status === 404;
-}
-const prepare = (provider, prefix, icons) => {
-  const results = [];
-  const maxLength = calculateMaxLength(provider, prefix);
-  const type = "icons";
-  let item = {
-    type,
-    provider,
-    prefix,
-    icons: []
-  };
-  let length = 0;
-  icons.forEach((name, index) => {
-    length += name.length + 1;
-    if (length >= maxLength && index > 0) {
-      results.push(item);
-      item = {
-        type,
-        provider,
-        prefix,
-        icons: []
-      };
-      length = name.length;
-    }
-    item.icons.push(name);
-  });
-  results.push(item);
-  return results;
-};
-function getPath(provider) {
-  if (typeof provider === "string") {
-    const config = getAPIConfig(provider);
-    if (config) {
-      return config.path;
-    }
-  }
-  return "/";
-}
-const send = (host, params, callback) => {
-  if (!fetchModule) {
-    callback("abort", 424);
-    return;
-  }
-  let path = getPath(params.provider);
-  switch (params.type) {
-    case "icons": {
-      const prefix = params.prefix;
-      const icons = params.icons;
-      const iconsList = icons.join(",");
-      const urlParams = new URLSearchParams({
-        icons: iconsList
-      });
-      path += prefix + ".json?" + urlParams.toString();
-      break;
-    }
-    case "custom": {
-      const uri = params.uri;
-      path += uri.slice(0, 1) === "/" ? uri.slice(1) : uri;
-      break;
-    }
-    default:
-      callback("abort", 400);
-      return;
-  }
-  let defaultError = 503;
-  fetchModule(host + path).then((response) => {
-    const status = response.status;
-    if (status !== 200) {
-      setTimeout(() => {
-        callback(shouldAbort(status) ? "abort" : "next", status);
-      });
-      return;
-    }
-    defaultError = 501;
-    return response.json();
-  }).then((data) => {
-    if (typeof data !== "object" || data === null) {
-      setTimeout(() => {
-        if (data === 404) {
-          callback("abort", data);
-        } else {
-          callback("next", defaultError);
-        }
-      });
-      return;
-    }
-    setTimeout(() => {
-      callback("success", data);
-    });
-  }).catch(() => {
-    callback("next", defaultError);
-  });
-};
-const fetchAPIModule = {
-  prepare,
-  send
-};
-function sortIcons(icons) {
-  const result = {
-    loaded: [],
-    missing: [],
-    pending: []
-  };
-  const storage2 = /* @__PURE__ */ Object.create(null);
-  icons.sort((a, b) => {
-    if (a.provider !== b.provider) {
-      return a.provider.localeCompare(b.provider);
-    }
-    if (a.prefix !== b.prefix) {
-      return a.prefix.localeCompare(b.prefix);
-    }
-    return a.name.localeCompare(b.name);
-  });
-  let lastIcon = {
-    provider: "",
-    prefix: "",
-    name: ""
-  };
-  icons.forEach((icon) => {
-    if (lastIcon.name === icon.name && lastIcon.prefix === icon.prefix && lastIcon.provider === icon.provider) {
-      return;
-    }
-    lastIcon = icon;
-    const provider = icon.provider;
-    const prefix = icon.prefix;
-    const name = icon.name;
-    const providerStorage = storage2[provider] || (storage2[provider] = /* @__PURE__ */ Object.create(null));
-    const localStorage = providerStorage[prefix] || (providerStorage[prefix] = getStorage(provider, prefix));
-    let list;
-    if (name in localStorage.icons) {
-      list = result.loaded;
-    } else if (prefix === "" || localStorage.missing.has(name)) {
-      list = result.missing;
-    } else {
-      list = result.pending;
-    }
-    const item = {
-      provider,
-      prefix,
-      name
-    };
-    list.push(item);
-  });
-  return result;
-}
-function removeCallback(storages, id) {
-  storages.forEach((storage2) => {
-    const items = storage2.loaderCallbacks;
-    if (items) {
-      storage2.loaderCallbacks = items.filter((row) => row.id !== id);
-    }
-  });
-}
-function updateCallbacks(storage2) {
-  if (!storage2.pendingCallbacksFlag) {
-    storage2.pendingCallbacksFlag = true;
-    setTimeout(() => {
-      storage2.pendingCallbacksFlag = false;
-      const items = storage2.loaderCallbacks ? storage2.loaderCallbacks.slice(0) : [];
-      if (!items.length) {
-        return;
-      }
-      let hasPending = false;
-      const provider = storage2.provider;
-      const prefix = storage2.prefix;
-      items.forEach((item) => {
-        const icons = item.icons;
-        const oldLength = icons.pending.length;
-        icons.pending = icons.pending.filter((icon) => {
-          if (icon.prefix !== prefix) {
-            return true;
-          }
-          const name = icon.name;
-          if (storage2.icons[name]) {
-            icons.loaded.push({
-              provider,
-              prefix,
-              name
-            });
-          } else if (storage2.missing.has(name)) {
-            icons.missing.push({
-              provider,
-              prefix,
-              name
-            });
-          } else {
-            hasPending = true;
-            return true;
-          }
-          return false;
-        });
-        if (icons.pending.length !== oldLength) {
-          if (!hasPending) {
-            removeCallback([storage2], item.id);
-          }
-          item.callback(icons.loaded.slice(0), icons.missing.slice(0), icons.pending.slice(0), item.abort);
-        }
-      });
-    });
-  }
-}
-let idCounter = 0;
-function storeCallback(callback, icons, pendingSources) {
-  const id = idCounter++;
-  const abort = removeCallback.bind(null, pendingSources, id);
-  if (!icons.pending.length) {
-    return abort;
-  }
-  const item = {
-    id,
-    icons,
-    callback,
-    abort
-  };
-  pendingSources.forEach((storage2) => {
-    (storage2.loaderCallbacks || (storage2.loaderCallbacks = [])).push(item);
-  });
-  return abort;
-}
-function listToIcons(list, validate = true, simpleNames2 = false) {
-  const result = [];
-  list.forEach((item) => {
-    const icon = typeof item === "string" ? stringToIcon(item, validate, simpleNames2) : item;
-    if (icon) {
-      result.push(icon);
-    }
-  });
-  return result;
-}
-var defaultConfig = {
-  resources: [],
-  index: 0,
-  timeout: 2e3,
-  rotate: 750,
-  random: false,
-  dataAfterTimeout: false
-};
-function sendQuery(config, payload, query, done) {
-  const resourcesCount = config.resources.length;
-  const startIndex = config.random ? Math.floor(Math.random() * resourcesCount) : config.index;
-  let resources;
-  if (config.random) {
-    let list = config.resources.slice(0);
-    resources = [];
-    while (list.length > 1) {
-      const nextIndex = Math.floor(Math.random() * list.length);
-      resources.push(list[nextIndex]);
-      list = list.slice(0, nextIndex).concat(list.slice(nextIndex + 1));
-    }
-    resources = resources.concat(list);
-  } else {
-    resources = config.resources.slice(startIndex).concat(config.resources.slice(0, startIndex));
-  }
-  const startTime = Date.now();
-  let status = "pending";
-  let queriesSent = 0;
-  let lastError;
-  let timer = null;
-  let queue = [];
-  let doneCallbacks = [];
-  if (typeof done === "function") {
-    doneCallbacks.push(done);
-  }
-  function resetTimer() {
-    if (timer) {
-      clearTimeout(timer);
-      timer = null;
-    }
-  }
-  function abort() {
-    if (status === "pending") {
-      status = "aborted";
-    }
-    resetTimer();
-    queue.forEach((item) => {
-      if (item.status === "pending") {
-        item.status = "aborted";
-      }
-    });
-    queue = [];
-  }
-  function subscribe(callback, overwrite) {
-    if (overwrite) {
-      doneCallbacks = [];
-    }
-    if (typeof callback === "function") {
-      doneCallbacks.push(callback);
-    }
-  }
-  function getQueryStatus() {
-    return {
-      startTime,
-      payload,
-      status,
-      queriesSent,
-      queriesPending: queue.length,
-      subscribe,
-      abort
-    };
-  }
-  function failQuery() {
-    status = "failed";
-    doneCallbacks.forEach((callback) => {
-      callback(void 0, lastError);
-    });
-  }
-  function clearQueue() {
-    queue.forEach((item) => {
-      if (item.status === "pending") {
-        item.status = "aborted";
-      }
-    });
-    queue = [];
-  }
-  function moduleResponse(item, response, data) {
-    const isError = response !== "success";
-    queue = queue.filter((queued) => queued !== item);
-    switch (status) {
-      case "pending":
-        break;
-      case "failed":
-        if (isError || !config.dataAfterTimeout) {
-          return;
-        }
-        break;
-      default:
-        return;
-    }
-    if (response === "abort") {
-      lastError = data;
-      failQuery();
-      return;
-    }
-    if (isError) {
-      lastError = data;
-      if (!queue.length) {
-        if (!resources.length) {
-          failQuery();
-        } else {
-          execNext();
-        }
-      }
-      return;
-    }
-    resetTimer();
-    clearQueue();
-    if (!config.random) {
-      const index = config.resources.indexOf(item.resource);
-      if (index !== -1 && index !== config.index) {
-        config.index = index;
-      }
-    }
-    status = "completed";
-    doneCallbacks.forEach((callback) => {
-      callback(data);
-    });
-  }
-  function execNext() {
-    if (status !== "pending") {
-      return;
-    }
-    resetTimer();
-    const resource = resources.shift();
-    if (resource === void 0) {
-      if (queue.length) {
-        timer = setTimeout(() => {
-          resetTimer();
-          if (status === "pending") {
-            clearQueue();
-            failQuery();
-          }
-        }, config.timeout);
-        return;
-      }
-      failQuery();
-      return;
-    }
-    const item = {
-      status: "pending",
-      resource,
-      callback: (status2, data) => {
-        moduleResponse(item, status2, data);
-      }
-    };
-    queue.push(item);
-    queriesSent++;
-    timer = setTimeout(execNext, config.rotate);
-    query(resource, payload, item.callback);
-  }
-  setTimeout(execNext);
-  return getQueryStatus;
-}
-function initRedundancy(cfg) {
-  const config = {
-    ...defaultConfig,
-    ...cfg
-  };
-  let queries = [];
-  function cleanup() {
-    queries = queries.filter((item) => item().status === "pending");
-  }
-  function query(payload, queryCallback, doneCallback) {
-    const query2 = sendQuery(config, payload, queryCallback, (data, error) => {
-      cleanup();
-      if (doneCallback) {
-        doneCallback(data, error);
-      }
-    });
-    queries.push(query2);
-    return query2;
-  }
-  function find(callback) {
-    return queries.find((value) => {
-      return callback(value);
-    }) || null;
-  }
-  const instance = {
-    query,
-    find,
-    setIndex: (index) => {
-      config.index = index;
-    },
-    getIndex: () => config.index,
-    cleanup
-  };
-  return instance;
-}
-function emptyCallback$1() {
-}
-const redundancyCache = /* @__PURE__ */ Object.create(null);
-function getRedundancyCache(provider) {
-  if (!redundancyCache[provider]) {
-    const config = getAPIConfig(provider);
-    if (!config) {
-      return;
-    }
-    const redundancy = initRedundancy(config);
-    const cachedReundancy = {
-      config,
-      redundancy
-    };
-    redundancyCache[provider] = cachedReundancy;
-  }
-  return redundancyCache[provider];
-}
-function sendAPIQuery(target, query, callback) {
-  let redundancy;
-  let send2;
-  if (typeof target === "string") {
-    const api = getAPIModule(target);
-    if (!api) {
-      callback(void 0, 424);
-      return emptyCallback$1;
-    }
-    send2 = api.send;
-    const cached = getRedundancyCache(target);
-    if (cached) {
-      redundancy = cached.redundancy;
-    }
-  } else {
-    const config = createAPIConfig(target);
-    if (config) {
-      redundancy = initRedundancy(config);
-      const moduleKey = target.resources ? target.resources[0] : "";
-      const api = getAPIModule(moduleKey);
-      if (api) {
-        send2 = api.send;
-      }
-    }
-  }
-  if (!redundancy || !send2) {
-    callback(void 0, 424);
-    return emptyCallback$1;
-  }
-  return redundancy.query(query, send2, callback)().abort;
-}
-const browserCacheVersion = "iconify2";
-const browserCachePrefix = "iconify";
-const browserCacheCountKey = browserCachePrefix + "-count";
-const browserCacheVersionKey = browserCachePrefix + "-version";
-const browserStorageHour = 36e5;
-const browserStorageCacheExpiration = 168;
-function getStoredItem(func, key) {
-  try {
-    return func.getItem(key);
-  } catch (err) {
-  }
-}
-function setStoredItem(func, key, value) {
-  try {
-    func.setItem(key, value);
-    return true;
-  } catch (err) {
-  }
-}
-function removeStoredItem(func, key) {
-  try {
-    func.removeItem(key);
-  } catch (err) {
-  }
-}
-function setBrowserStorageItemsCount(storage2, value) {
-  return setStoredItem(storage2, browserCacheCountKey, value.toString());
-}
-function getBrowserStorageItemsCount(storage2) {
-  return parseInt(getStoredItem(storage2, browserCacheCountKey)) || 0;
-}
-const browserStorageConfig = {
-  local: true,
-  session: true
-};
-const browserStorageEmptyItems = {
-  local: /* @__PURE__ */ new Set(),
-  session: /* @__PURE__ */ new Set()
-};
-let browserStorageStatus = false;
-function setBrowserStorageStatus(status) {
-  browserStorageStatus = status;
-}
-let _window = typeof window === "undefined" ? {} : window;
-function getBrowserStorage(key) {
-  const attr = key + "Storage";
-  try {
-    if (_window && _window[attr] && typeof _window[attr].length === "number") {
-      return _window[attr];
-    }
-  } catch (err) {
-  }
-  browserStorageConfig[key] = false;
-}
-function iterateBrowserStorage(key, callback) {
-  const func = getBrowserStorage(key);
-  if (!func) {
-    return;
-  }
-  const version = getStoredItem(func, browserCacheVersionKey);
-  if (version !== browserCacheVersion) {
-    if (version) {
-      const total2 = getBrowserStorageItemsCount(func);
-      for (let i = 0; i < total2; i++) {
-        removeStoredItem(func, browserCachePrefix + i.toString());
-      }
-    }
-    setStoredItem(func, browserCacheVersionKey, browserCacheVersion);
-    setBrowserStorageItemsCount(func, 0);
-    return;
-  }
-  const minTime = Math.floor(Date.now() / browserStorageHour) - browserStorageCacheExpiration;
-  const parseItem = (index) => {
-    const name = browserCachePrefix + index.toString();
-    const item = getStoredItem(func, name);
-    if (typeof item !== "string") {
-      return;
-    }
-    try {
-      const data = JSON.parse(item);
-      if (typeof data === "object" && typeof data.cached === "number" && data.cached > minTime && typeof data.provider === "string" && typeof data.data === "object" && typeof data.data.prefix === "string" && callback(data, index)) {
-        return true;
-      }
-    } catch (err) {
-    }
-    removeStoredItem(func, name);
-  };
-  let total = getBrowserStorageItemsCount(func);
-  for (let i = total - 1; i >= 0; i--) {
-    if (!parseItem(i)) {
-      if (i === total - 1) {
-        total--;
-        setBrowserStorageItemsCount(func, total);
-      } else {
-        browserStorageEmptyItems[key].add(i);
-      }
-    }
-  }
-}
-function initBrowserStorage() {
-  if (browserStorageStatus) {
-    return;
-  }
-  setBrowserStorageStatus(true);
-  for (const key in browserStorageConfig) {
-    iterateBrowserStorage(key, (item) => {
-      const iconSet = item.data;
-      const provider = item.provider;
-      const prefix = iconSet.prefix;
-      const storage2 = getStorage(provider, prefix);
-      if (!addIconSet(storage2, iconSet).length) {
-        return false;
-      }
-      const lastModified = iconSet.lastModified || -1;
-      storage2.lastModifiedCached = storage2.lastModifiedCached ? Math.min(storage2.lastModifiedCached, lastModified) : lastModified;
-      return true;
-    });
-  }
-}
-function updateLastModified(storage2, lastModified) {
-  const lastValue = storage2.lastModifiedCached;
-  if (lastValue && lastValue >= lastModified) {
-    return lastValue === lastModified;
-  }
-  storage2.lastModifiedCached = lastModified;
-  if (lastValue) {
-    for (const key in browserStorageConfig) {
-      iterateBrowserStorage(key, (item) => {
-        const iconSet = item.data;
-        return item.provider !== storage2.provider || iconSet.prefix !== storage2.prefix || iconSet.lastModified === lastModified;
-      });
-    }
-  }
-  return true;
-}
-function storeInBrowserStorage(storage2, data) {
-  if (!browserStorageStatus) {
-    initBrowserStorage();
-  }
-  function store(key) {
-    let func;
-    if (!browserStorageConfig[key] || !(func = getBrowserStorage(key))) {
-      return;
-    }
-    const set = browserStorageEmptyItems[key];
-    let index;
-    if (set.size) {
-      set.delete(index = Array.from(set).shift());
-    } else {
-      index = getBrowserStorageItemsCount(func);
-      if (!setBrowserStorageItemsCount(func, index + 1)) {
-        return;
-      }
-    }
-    const item = {
-      cached: Math.floor(Date.now() / browserStorageHour),
-      provider: storage2.provider,
-      data
-    };
-    return setStoredItem(func, browserCachePrefix + index.toString(), JSON.stringify(item));
-  }
-  if (data.lastModified && !updateLastModified(storage2, data.lastModified)) {
-    return;
-  }
-  if (!Object.keys(data.icons).length) {
-    return;
-  }
-  if (data.not_found) {
-    data = Object.assign({}, data);
-    delete data.not_found;
-  }
-  if (!store("local")) {
-    store("session");
-  }
-}
-function emptyCallback() {
-}
-function loadedNewIcons(storage2) {
-  if (!storage2.iconsLoaderFlag) {
-    storage2.iconsLoaderFlag = true;
-    setTimeout(() => {
-      storage2.iconsLoaderFlag = false;
-      updateCallbacks(storage2);
-    });
-  }
-}
-function loadNewIcons(storage2, icons) {
-  if (!storage2.iconsToLoad) {
-    storage2.iconsToLoad = icons;
-  } else {
-    storage2.iconsToLoad = storage2.iconsToLoad.concat(icons).sort();
-  }
-  if (!storage2.iconsQueueFlag) {
-    storage2.iconsQueueFlag = true;
-    setTimeout(() => {
-      storage2.iconsQueueFlag = false;
-      const {provider, prefix} = storage2;
-      const icons2 = storage2.iconsToLoad;
-      delete storage2.iconsToLoad;
-      let api;
-      if (!icons2 || !(api = getAPIModule(provider))) {
-        return;
-      }
-      const params = api.prepare(provider, prefix, icons2);
-      params.forEach((item) => {
-        sendAPIQuery(provider, item, (data) => {
-          if (typeof data !== "object") {
-            item.icons.forEach((name) => {
-              storage2.missing.add(name);
-            });
-          } else {
-            try {
-              const parsed = addIconSet(storage2, data);
-              if (!parsed.length) {
-                return;
-              }
-              const pending = storage2.pendingIcons;
-              if (pending) {
-                parsed.forEach((name) => {
-                  pending.delete(name);
-                });
-              }
-              storeInBrowserStorage(storage2, data);
-            } catch (err) {
-              console.error(err);
-            }
-          }
-          loadedNewIcons(storage2);
-        });
-      });
-    });
-  }
-}
-const loadIcons = (icons, callback) => {
-  const cleanedIcons = listToIcons(icons, true, allowSimpleNames());
-  const sortedIcons = sortIcons(cleanedIcons);
-  if (!sortedIcons.pending.length) {
-    let callCallback = true;
-    if (callback) {
-      setTimeout(() => {
-        if (callCallback) {
-          callback(sortedIcons.loaded, sortedIcons.missing, sortedIcons.pending, emptyCallback);
-        }
-      });
-    }
-    return () => {
-      callCallback = false;
-    };
-  }
-  const newIcons = /* @__PURE__ */ Object.create(null);
-  const sources = [];
-  let lastProvider, lastPrefix;
-  sortedIcons.pending.forEach((icon) => {
-    const {provider, prefix} = icon;
-    if (prefix === lastPrefix && provider === lastProvider) {
-      return;
-    }
-    lastProvider = provider;
-    lastPrefix = prefix;
-    sources.push(getStorage(provider, prefix));
-    const providerNewIcons = newIcons[provider] || (newIcons[provider] = /* @__PURE__ */ Object.create(null));
-    if (!providerNewIcons[prefix]) {
-      providerNewIcons[prefix] = [];
-    }
-  });
-  sortedIcons.pending.forEach((icon) => {
-    const {provider, prefix, name} = icon;
-    const storage2 = getStorage(provider, prefix);
-    const pendingQueue = storage2.pendingIcons || (storage2.pendingIcons = /* @__PURE__ */ new Set());
-    if (!pendingQueue.has(name)) {
-      pendingQueue.add(name);
-      newIcons[provider][prefix].push(name);
-    }
-  });
-  sources.forEach((storage2) => {
-    const {provider, prefix} = storage2;
-    if (newIcons[provider][prefix].length) {
-      loadNewIcons(storage2, newIcons[provider][prefix]);
-    }
-  });
-  return callback ? storeCallback(callback, sortedIcons, sources) : emptyCallback;
-};
-function mergeCustomisations(defaults, item) {
-  const result = {
-    ...defaults
-  };
-  for (const key in item) {
-    const value = item[key];
-    const valueType = typeof value;
-    if (key in defaultIconSizeCustomisations) {
-      if (value === null || value && (valueType === "string" || valueType === "number")) {
-        result[key] = value;
-      }
-    } else if (valueType === typeof result[key]) {
-      result[key] = key === "rotate" ? value % 4 : value;
-    }
-  }
-  return result;
-}
-const separator = /[\s,]+/;
-function flipFromString(custom, flip) {
-  flip.split(separator).forEach((str) => {
-    const value = str.trim();
-    switch (value) {
-      case "horizontal":
-        custom.hFlip = true;
-        break;
-      case "vertical":
-        custom.vFlip = true;
-        break;
-    }
-  });
-}
-function rotateFromString(value, defaultValue = 0) {
-  const units = value.replace(/^-?[0-9.]*/, "");
-  function cleanup(value2) {
-    while (value2 < 0) {
-      value2 += 4;
-    }
-    return value2 % 4;
-  }
-  if (units === "") {
-    const num = parseInt(value);
-    return isNaN(num) ? 0 : cleanup(num);
-  } else if (units !== value) {
-    let split = 0;
-    switch (units) {
-      case "%":
-        split = 25;
-        break;
-      case "deg":
-        split = 90;
-    }
-    if (split) {
-      let num = parseFloat(value.slice(0, value.length - units.length));
-      if (isNaN(num)) {
-        return 0;
-      }
-      num = num / split;
-      return num % 1 === 0 ? cleanup(num) : 0;
-    }
-  }
-  return defaultValue;
-}
-function iconToHTML(body, attributes) {
-  let renderAttribsHTML = body.indexOf("xlink:") === -1 ? "" : ' xmlns:xlink="http://www.w3.org/1999/xlink"';
-  for (const attr in attributes) {
-    renderAttribsHTML += " " + attr + '="' + attributes[attr] + '"';
-  }
-  return '<svg xmlns="http://www.w3.org/2000/svg"' + renderAttribsHTML + ">" + body + "</svg>";
-}
-function encodeSVGforURL(svg) {
-  return svg.replace(/"/g, "'").replace(/%/g, "%25").replace(/#/g, "%23").replace(/</g, "%3C").replace(/>/g, "%3E").replace(/\s+/g, " ");
-}
-function svgToData(svg) {
-  return "data:image/svg+xml," + encodeSVGforURL(svg);
-}
-function svgToURL(svg) {
-  return 'url("' + svgToData(svg) + '")';
-}
-const defaultExtendedIconCustomisations = {
-  ...defaultIconCustomisations,
-  inline: false
-};
-const svgDefaults = {
-  xmlns: "http://www.w3.org/2000/svg",
-  "xmlns:xlink": "http://www.w3.org/1999/xlink",
-  "aria-hidden": true,
-  role: "img"
-};
-const commonProps = {
-  display: "inline-block"
-};
-const monotoneProps = {
-  "background-color": "currentColor"
-};
-const coloredProps = {
-  "background-color": "transparent"
-};
-const propsToAdd = {
-  image: "var(--svg)",
-  repeat: "no-repeat",
-  size: "100% 100%"
-};
-const propsToAddTo = {
-  "-webkit-mask": monotoneProps,
-  mask: monotoneProps,
-  background: coloredProps
-};
-for (const prefix in propsToAddTo) {
-  const list = propsToAddTo[prefix];
-  for (const prop in propsToAdd) {
-    list[prefix + "-" + prop] = propsToAdd[prop];
-  }
-}
-function fixSize(value) {
-  return value + (value.match(/^[-0-9.]+$/) ? "px" : "");
-}
-function render(icon, props) {
-  const customisations = mergeCustomisations(defaultExtendedIconCustomisations, props);
-  const mode = props.mode || "svg";
-  const componentProps = mode === "svg" ? {...svgDefaults} : {};
-  if (icon.body.indexOf("xlink:") === -1) {
-    delete componentProps["xmlns:xlink"];
-  }
-  let style = typeof props.style === "string" ? props.style : "";
-  for (let key in props) {
-    const value = props[key];
-    if (value === void 0) {
-      continue;
-    }
-    switch (key) {
-      case "icon":
-      case "style":
-      case "onLoad":
-      case "mode":
-        break;
-      case "inline":
-      case "hFlip":
-      case "vFlip":
-        customisations[key] = value === true || value === "true" || value === 1;
-        break;
-      case "flip":
-        if (typeof value === "string") {
-          flipFromString(customisations, value);
-        }
-        break;
-      case "color":
-        style = style + (style.length > 0 && style.trim().slice(-1) !== ";" ? ";" : "") + "color: " + value + "; ";
-        break;
-      case "rotate":
-        if (typeof value === "string") {
-          customisations[key] = rotateFromString(value);
-        } else if (typeof value === "number") {
-          customisations[key] = value;
-        }
-        break;
-      case "ariaHidden":
-      case "aria-hidden":
-        if (value !== true && value !== "true") {
-          delete componentProps["aria-hidden"];
-        }
-        break;
-      default:
-        if (key.slice(0, 3) === "on:") {
-          break;
-        }
-        if (defaultExtendedIconCustomisations[key] === void 0) {
-          componentProps[key] = value;
-        }
-    }
-  }
-  const item = iconToSVG(icon, customisations);
-  const renderAttribs = item.attributes;
-  if (customisations.inline) {
-    style = "vertical-align: -0.125em; " + style;
-  }
-  if (mode === "svg") {
-    Object.assign(componentProps, renderAttribs);
-    if (style !== "") {
-      componentProps.style = style;
-    }
-    let localCounter = 0;
-    let id = props.id;
-    if (typeof id === "string") {
-      id = id.replace(/-/g, "_");
-    }
-    return {
-      svg: true,
-      attributes: componentProps,
-      body: replaceIDs(item.body, id ? () => id + "ID" + localCounter++ : "iconifySvelte")
-    };
-  }
-  const {body, width, height} = icon;
-  const useMask = mode === "mask" || (mode === "bg" ? false : body.indexOf("currentColor") !== -1);
-  const html = iconToHTML(body, {
-    ...renderAttribs,
-    width: width + "",
-    height: height + ""
-  });
-  const url = svgToURL(html);
-  const styles = {
-    "--svg": url
-  };
-  const size = (prop) => {
-    const value = renderAttribs[prop];
-    if (value) {
-      styles[prop] = fixSize(value);
-    }
-  };
-  size("width");
-  size("height");
-  Object.assign(styles, commonProps, useMask ? monotoneProps : coloredProps);
-  let customStyle = "";
-  for (const key in styles) {
-    customStyle += key + ": " + styles[key] + ";";
-  }
-  componentProps.style = customStyle + style;
-  return {
-    svg: false,
-    attributes: componentProps
-  };
-}
-allowSimpleNames(true);
-setAPIModule("", fetchAPIModule);
-if (typeof document !== "undefined" && typeof window !== "undefined") {
-  initBrowserStorage();
-  const _window2 = window;
-  if (_window2.IconifyPreload !== void 0) {
-    const preload = _window2.IconifyPreload;
-    const err = "Invalid IconifyPreload syntax.";
-    if (typeof preload === "object" && preload !== null) {
-      (preload instanceof Array ? preload : [preload]).forEach((item) => {
-        try {
-          if (typeof item !== "object" || item === null || item instanceof Array || typeof item.icons !== "object" || typeof item.prefix !== "string" || !addCollection(item)) {
-            console.error(err);
-          }
-        } catch (e) {
-          console.error(err);
-        }
-      });
-    }
-  }
-  if (_window2.IconifyProviders !== void 0) {
-    const providers = _window2.IconifyProviders;
-    if (typeof providers === "object" && providers !== null) {
-      for (let key in providers) {
-        const err = "IconifyProviders[" + key + "] is invalid.";
-        try {
-          const value = providers[key];
-          if (typeof value !== "object" || !value || value.resources === void 0) {
-            continue;
-          }
-          if (!addAPIProvider(key, value)) {
-            console.error(err);
-          }
-        } catch (e) {
-          console.error(err);
-        }
-      }
-    }
-  }
-}
-function checkIconState(icon, state, mounted, callback, onload) {
-  function abortLoading() {
-    if (state.loading) {
-      state.loading.abort();
-      state.loading = null;
-    }
-  }
-  if (typeof icon === "object" && icon !== null && typeof icon.body === "string") {
-    state.name = "";
-    abortLoading();
-    return {data: {...defaultIconProps, ...icon}};
-  }
-  let iconName;
-  if (typeof icon !== "string" || (iconName = stringToIcon(icon, false, true)) === null) {
-    abortLoading();
-    return null;
-  }
-  const data = getIconData(iconName);
-  if (!data) {
-    if (mounted && (!state.loading || state.loading.name !== icon)) {
-      abortLoading();
-      state.name = "";
-      state.loading = {
-        name: icon,
-        abort: loadIcons([iconName], callback)
-      };
-    }
-    return null;
-  }
-  abortLoading();
-  if (state.name !== icon) {
-    state.name = icon;
-    if (onload && !state.destroyed) {
-      onload(icon);
-    }
-  }
-  const classes = ["iconify"];
-  if (iconName.prefix !== "") {
-    classes.push("iconify--" + iconName.prefix);
-  }
-  if (iconName.provider !== "") {
-    classes.push("iconify--" + iconName.provider);
-  }
-  return {data, classes};
-}
-function generateIcon(icon, props) {
-  return icon ? render({
-    ...defaultIconProps,
-    ...icon
-  }, props) : null;
-}
-var checkIconState_1 = checkIconState;
-var generateIcon_1 = generateIcon;
-
-/* generated by Svelte v3.58.0 */
-
-function create_if_block(ctx) {
-	let if_block_anchor;
-
-	function select_block_type(ctx, dirty) {
-		if (/*data*/ ctx[0].svg) return create_if_block_1;
-		return create_else_block;
-	}
-
-	let current_block_type = select_block_type(ctx);
-	let if_block = current_block_type(ctx);
-
-	return {
-		c() {
-			if_block.c();
-			if_block_anchor = empty();
-		},
-		l(nodes) {
-			if_block.l(nodes);
-			if_block_anchor = empty();
-		},
-		m(target, anchor) {
-			if_block.m(target, anchor);
-			insert_hydration(target, if_block_anchor, anchor);
-		},
-		p(ctx, dirty) {
-			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
-				if_block.p(ctx, dirty);
-			} else {
-				if_block.d(1);
-				if_block = current_block_type(ctx);
-
-				if (if_block) {
-					if_block.c();
-					if_block.m(if_block_anchor.parentNode, if_block_anchor);
-				}
-			}
-		},
-		d(detaching) {
-			if_block.d(detaching);
-			if (detaching) detach(if_block_anchor);
-		}
-	};
-}
-
-// (113:1) {:else}
-function create_else_block(ctx) {
-	let span;
-	let span_levels = [/*data*/ ctx[0].attributes];
-	let span_data = {};
-
-	for (let i = 0; i < span_levels.length; i += 1) {
-		span_data = assign(span_data, span_levels[i]);
-	}
-
-	return {
-		c() {
-			span = element("span");
-			this.h();
-		},
-		l(nodes) {
-			span = claim_element(nodes, "SPAN", {});
-			children(span).forEach(detach);
-			this.h();
-		},
-		h() {
-			set_attributes(span, span_data);
-		},
-		m(target, anchor) {
-			insert_hydration(target, span, anchor);
-		},
-		p(ctx, dirty) {
-			set_attributes(span, span_data = get_spread_update(span_levels, [dirty & /*data*/ 1 && /*data*/ ctx[0].attributes]));
-		},
-		d(detaching) {
-			if (detaching) detach(span);
-		}
-	};
-}
-
-// (109:1) {#if data.svg}
-function create_if_block_1(ctx) {
-	let svg;
-	let raw_value = /*data*/ ctx[0].body + "";
-	let svg_levels = [/*data*/ ctx[0].attributes];
-	let svg_data = {};
-
-	for (let i = 0; i < svg_levels.length; i += 1) {
-		svg_data = assign(svg_data, svg_levels[i]);
-	}
-
-	return {
-		c() {
-			svg = svg_element("svg");
-			this.h();
-		},
-		l(nodes) {
-			svg = claim_svg_element(nodes, "svg", {});
-			var svg_nodes = children(svg);
-			svg_nodes.forEach(detach);
-			this.h();
-		},
-		h() {
-			set_svg_attributes(svg, svg_data);
-		},
-		m(target, anchor) {
-			insert_hydration(target, svg, anchor);
-			svg.innerHTML = raw_value;
-		},
-		p(ctx, dirty) {
-			if (dirty & /*data*/ 1 && raw_value !== (raw_value = /*data*/ ctx[0].body + "")) svg.innerHTML = raw_value;			set_svg_attributes(svg, svg_data = get_spread_update(svg_levels, [dirty & /*data*/ 1 && /*data*/ ctx[0].attributes]));
-		},
-		d(detaching) {
-			if (detaching) detach(svg);
-		}
-	};
-}
-
-function create_fragment$1(ctx) {
-	let if_block_anchor;
-	let if_block = /*data*/ ctx[0] && create_if_block(ctx);
-
-	return {
-		c() {
-			if (if_block) if_block.c();
-			if_block_anchor = empty();
-		},
-		l(nodes) {
-			if (if_block) if_block.l(nodes);
-			if_block_anchor = empty();
-		},
-		m(target, anchor) {
-			if (if_block) if_block.m(target, anchor);
-			insert_hydration(target, if_block_anchor, anchor);
-		},
-		p(ctx, [dirty]) {
-			if (/*data*/ ctx[0]) {
-				if (if_block) {
-					if_block.p(ctx, dirty);
-				} else {
-					if_block = create_if_block(ctx);
-					if_block.c();
-					if_block.m(if_block_anchor.parentNode, if_block_anchor);
-				}
-			} else if (if_block) {
-				if_block.d(1);
-				if_block = null;
-			}
-		},
-		i: noop,
-		o: noop,
-		d(detaching) {
-			if (if_block) if_block.d(detaching);
-			if (detaching) detach(if_block_anchor);
-		}
-	};
-}
-
-function instance$1($$self, $$props, $$invalidate) {
-	const state = {
-		// Last icon name
-		name: '',
-		// Loading status
-		loading: null,
-		// Destroyed status
-		destroyed: false
-	};
-
-	// Mounted status
-	let mounted = false;
-
-	// Callback counter
-	let counter = 0;
-
-	// Generated data
-	let data;
-
-	const onLoad = icon => {
-		// Legacy onLoad property
-		if (typeof $$props.onLoad === 'function') {
-			$$props.onLoad(icon);
-		}
-
-		// on:load event
-		const dispatch = createEventDispatcher();
-
-		dispatch('load', { icon });
-	};
-
-	// Increase counter when loaded to force re-calculation of data
-	function loaded() {
-		$$invalidate(3, counter++, counter);
-	}
-
-	// Force re-render
-	onMount(() => {
-		$$invalidate(2, mounted = true);
-	});
-
-	// Abort loading when component is destroyed
-	onDestroy(() => {
-		$$invalidate(1, state.destroyed = true, state);
-
-		if (state.loading) {
-			state.loading.abort();
-			$$invalidate(1, state.loading = null, state);
-		}
-	});
-
-	$$self.$$set = $$new_props => {
-		$$invalidate(6, $$props = assign(assign({}, $$props), exclude_internal_props($$new_props)));
-	};
-
-	$$self.$$.update = () => {
-		 {
-			const iconData = checkIconState_1($$props.icon, state, mounted, loaded, onLoad);
-			$$invalidate(0, data = iconData ? generateIcon_1(iconData.data, $$props) : null);
-
-			if (data && iconData.classes) {
-				// Add classes
-				$$invalidate(
-					0,
-					data.attributes['class'] = (typeof $$props['class'] === 'string'
-					? $$props['class'] + ' '
-					: '') + iconData.classes.join(' '),
-					data
-				);
-			}
-		}
-	};
-
-	$$props = exclude_internal_props($$props);
-	return [data, state, mounted, counter];
-}
-
-class Component$1 extends SvelteComponent {
-	constructor(options) {
-		super();
-		init(this, options, instance$1, create_fragment$1, safe_not_equal, {});
-	}
-}
-
-function fade(node, { delay = 0, duration = 400, easing = identity } = {}) {
-    const o = +getComputedStyle(node).opacity;
-    return {
-        delay,
-        duration,
-        easing,
-        css: t => `opacity: ${t * o}`
-    };
-}
-
-/* generated by Svelte v3.58.0 */
-
-function get_each_context(ctx, list, i) {
-	const child_ctx = ctx.slice();
-	child_ctx[6] = list[i].link;
-	return child_ctx;
-}
-
-function get_each_context_1(ctx, list, i) {
-	const child_ctx = ctx.slice();
-	child_ctx[6] = list[i].link;
-	return child_ctx;
-}
-
-// (233:6) {#each nav as { link }}
-function create_each_block_1(ctx) {
-	let a;
-	let t_value = /*link*/ ctx[6].label + "";
-	let t;
-	let a_href_value;
-
-	return {
-		c() {
-			a = element("a");
-			t = text(t_value);
-			this.h();
-		},
-		l(nodes) {
-			a = claim_element(nodes, "A", { href: true, class: true });
-			var a_nodes = children(a);
-			t = claim_text(a_nodes, t_value);
-			a_nodes.forEach(detach);
-			this.h();
-		},
-		h() {
-			attr(a, "href", a_href_value = /*link*/ ctx[6].url);
-			attr(a, "class", "link svelte-1qa91hg");
-			toggle_class(a, "active", window.location.pathname === /*link*/ ctx[6].url);
-		},
-		m(target, anchor) {
-			insert_hydration(target, a, anchor);
-			append_hydration(a, t);
-		},
-		p(ctx, dirty) {
-			if (dirty & /*nav*/ 2 && t_value !== (t_value = /*link*/ ctx[6].label + "")) set_data(t, t_value);
-
-			if (dirty & /*nav*/ 2 && a_href_value !== (a_href_value = /*link*/ ctx[6].url)) {
-				attr(a, "href", a_href_value);
-			}
-
-			if (dirty & /*window, nav*/ 2) {
-				toggle_class(a, "active", window.location.pathname === /*link*/ ctx[6].url);
-			}
-		},
-		d(detaching) {
-			if (detaching) detach(a);
-		}
-	};
-}
-
-// (254:4) {#if mobileNavOpen}
-function create_if_block$1(ctx) {
-	let nav_1;
-	let t;
-	let button;
-	let svg;
-	let path;
-	let nav_1_transition;
-	let current;
-	let mounted;
-	let dispose;
-	let each_value = /*nav*/ ctx[1];
-	let each_blocks = [];
-
-	for (let i = 0; i < each_value.length; i += 1) {
-		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
-	}
-
-	return {
-		c() {
-			nav_1 = element("nav");
-
-			for (let i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-
-			t = space();
-			button = element("button");
-			svg = svg_element("svg");
-			path = svg_element("path");
-			this.h();
-		},
-		l(nodes) {
-			nav_1 = claim_element(nodes, "NAV", { id: true, class: true });
-			var nav_1_nodes = children(nav_1);
-
-			for (let i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].l(nav_1_nodes);
-			}
-
-			t = claim_space(nav_1_nodes);
-
-			button = claim_element(nav_1_nodes, "BUTTON", {
-				id: true,
-				"aria-label": true,
-				class: true
-			});
-
-			var button_nodes = children(button);
-
-			svg = claim_svg_element(button_nodes, "svg", {
-				xmlns: true,
-				viewBox: true,
-				fill: true,
-				class: true
-			});
-
-			var svg_nodes = children(svg);
-
-			path = claim_svg_element(svg_nodes, "path", {
-				fill: true,
-				"fill-rule": true,
-				d: true,
-				"clip-rule": true
-			});
-
-			children(path).forEach(detach);
-			svg_nodes.forEach(detach);
-			button_nodes.forEach(detach);
-			nav_1_nodes.forEach(detach);
-			this.h();
-		},
-		h() {
-			attr(path, "fill", "currentColor");
-			attr(path, "fill-rule", "evenodd");
-			attr(path, "d", "M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z");
-			attr(path, "clip-rule", "evenodd");
-			attr(svg, "xmlns", "http://www.w3.org/2000/svg");
-			attr(svg, "viewBox", "0 0 20 20");
-			attr(svg, "fill", "currentColor");
-			attr(svg, "class", "svelte-1qa91hg");
-			attr(button, "id", "close");
-			attr(button, "aria-label", "Close Navigation");
-			attr(button, "class", "svelte-1qa91hg");
-			attr(nav_1, "id", "mobile-nav");
-			attr(nav_1, "class", "svelte-1qa91hg");
-		},
-		m(target, anchor) {
-			insert_hydration(target, nav_1, anchor);
-
-			for (let i = 0; i < each_blocks.length; i += 1) {
-				if (each_blocks[i]) {
-					each_blocks[i].m(nav_1, null);
-				}
-			}
-
-			append_hydration(nav_1, t);
-			append_hydration(nav_1, button);
-			append_hydration(button, svg);
-			append_hydration(svg, path);
-			current = true;
-
-			if (!mounted) {
-				dispose = listen(button, "click", /*toggleMobileNav*/ ctx[3]);
-				mounted = true;
-			}
-		},
-		p(ctx, dirty) {
-			if (dirty & /*nav*/ 2) {
-				each_value = /*nav*/ ctx[1];
-				let i;
-
-				for (i = 0; i < each_value.length; i += 1) {
-					const child_ctx = get_each_context(ctx, each_value, i);
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(child_ctx, dirty);
-					} else {
-						each_blocks[i] = create_each_block(child_ctx);
-						each_blocks[i].c();
-						each_blocks[i].m(nav_1, t);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].d(1);
-				}
-
-				each_blocks.length = each_value.length;
-			}
-		},
-		i(local) {
-			if (current) return;
-
-			add_render_callback(() => {
-				if (!current) return;
-				if (!nav_1_transition) nav_1_transition = create_bidirectional_transition(nav_1, fade, { duration: 200 }, true);
-				nav_1_transition.run(1);
-			});
-
-			current = true;
-		},
-		o(local) {
-			if (!nav_1_transition) nav_1_transition = create_bidirectional_transition(nav_1, fade, { duration: 200 }, false);
-			nav_1_transition.run(0);
-			current = false;
-		},
-		d(detaching) {
-			if (detaching) detach(nav_1);
-			destroy_each(each_blocks, detaching);
-			if (detaching && nav_1_transition) nav_1_transition.end();
-			mounted = false;
-			dispose();
-		}
-	};
-}
-
-// (256:8) {#each nav as { link }}
-function create_each_block(ctx) {
-	let a;
-	let t_value = /*link*/ ctx[6].label + "";
-	let t;
-	let a_href_value;
-
-	return {
-		c() {
-			a = element("a");
-			t = text(t_value);
-			this.h();
-		},
-		l(nodes) {
-			a = claim_element(nodes, "A", { href: true, class: true });
-			var a_nodes = children(a);
-			t = claim_text(a_nodes, t_value);
-			a_nodes.forEach(detach);
-			this.h();
-		},
-		h() {
-			attr(a, "href", a_href_value = /*link*/ ctx[6].url);
-			attr(a, "class", "link svelte-1qa91hg");
-		},
-		m(target, anchor) {
-			insert_hydration(target, a, anchor);
-			append_hydration(a, t);
-		},
-		p(ctx, dirty) {
-			if (dirty & /*nav*/ 2 && t_value !== (t_value = /*link*/ ctx[6].label + "")) set_data(t, t_value);
-
-			if (dirty & /*nav*/ 2 && a_href_value !== (a_href_value = /*link*/ ctx[6].url)) {
-				attr(a, "href", a_href_value);
-			}
-		},
-		d(detaching) {
-			if (detaching) detach(a);
-		}
-	};
-}
-
-function create_fragment$2(ctx) {
-	let div3;
-	let header;
-	let div2;
-	let div0;
-	let a0;
-	let svg0;
-	let g;
-	let path0;
-	let path1;
-	let path2;
-	let path3;
-	let path4;
-	let path5;
-	let path6;
-	let path7;
-	let path8;
-	let defs;
-	let linearGradient;
-	let stop0;
-	let stop1;
-	let stop2;
-	let stop3;
-	let stop4;
-	let stop5;
-	let clipPath;
-	let rect;
-	let t0;
-	let icon;
-	let t1;
-	let a1;
-	let span;
-	let t2_value = /*secondary_logo*/ ctx[0].label + "";
-	let t2;
-	let a1_href_value;
-	let t3;
-	let nav_1;
-	let t4;
-	let div1;
-	let button;
-	let svg1;
-	let path9;
-	let t5;
-	let current;
-	let mounted;
-	let dispose;
-
-	icon = new Component$1({
-			props: {
-				icon: "ph:caret-right-bold",
-				size: "2rem"
-			}
-		});
-
-	let each_value_1 = /*nav*/ ctx[1];
-	let each_blocks = [];
-
-	for (let i = 0; i < each_value_1.length; i += 1) {
-		each_blocks[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
-	}
-
-	let if_block = /*mobileNavOpen*/ ctx[2] && create_if_block$1(ctx);
-
-	return {
-		c() {
-			div3 = element("div");
-			header = element("header");
-			div2 = element("div");
-			div0 = element("div");
-			a0 = element("a");
-			svg0 = svg_element("svg");
-			g = svg_element("g");
-			path0 = svg_element("path");
-			path1 = svg_element("path");
-			path2 = svg_element("path");
-			path3 = svg_element("path");
-			path4 = svg_element("path");
-			path5 = svg_element("path");
-			path6 = svg_element("path");
-			path7 = svg_element("path");
-			path8 = svg_element("path");
-			defs = svg_element("defs");
-			linearGradient = svg_element("linearGradient");
-			stop0 = svg_element("stop");
-			stop1 = svg_element("stop");
-			stop2 = svg_element("stop");
-			stop3 = svg_element("stop");
-			stop4 = svg_element("stop");
-			stop5 = svg_element("stop");
-			clipPath = svg_element("clipPath");
-			rect = svg_element("rect");
-			t0 = space();
-			create_component(icon.$$.fragment);
-			t1 = space();
-			a1 = element("a");
-			span = element("span");
-			t2 = text(t2_value);
-			t3 = space();
-			nav_1 = element("nav");
-
-			for (let i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].c();
-			}
-
-			t4 = space();
-			div1 = element("div");
-			button = element("button");
-			svg1 = svg_element("svg");
-			path9 = svg_element("path");
-			t5 = space();
-			if (if_block) if_block.c();
-			this.h();
-		},
-		l(nodes) {
-			div3 = claim_element(nodes, "DIV", { class: true, id: true });
-			var div3_nodes = children(div3);
-			header = claim_element(div3_nodes, "HEADER", { class: true });
-			var header_nodes = children(header);
-			div2 = claim_element(header_nodes, "DIV", { class: true });
-			var div2_nodes = children(div2);
-			div0 = claim_element(div2_nodes, "DIV", { class: true });
-			var div0_nodes = children(div0);
-			a0 = claim_element(div0_nodes, "A", { href: true, class: true });
-			var a0_nodes = children(a0);
-
-			svg0 = claim_svg_element(a0_nodes, "svg", {
-				viewBox: true,
-				fill: true,
-				xmlns: true,
-				class: true
-			});
-
-			var svg0_nodes = children(svg0);
-			g = claim_svg_element(svg0_nodes, "g", { "clip-path": true });
-			var g_nodes = children(g);
-			path0 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
-			children(path0).forEach(detach);
-			path1 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
-			children(path1).forEach(detach);
-			path2 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
-			children(path2).forEach(detach);
-			path3 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
-			children(path3).forEach(detach);
-			path4 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
-			children(path4).forEach(detach);
-			path5 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
-			children(path5).forEach(detach);
-			path6 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
-			children(path6).forEach(detach);
-			path7 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
-			children(path7).forEach(detach);
-			path8 = claim_svg_element(g_nodes, "path", { d: true, fill: true });
-			children(path8).forEach(detach);
-			g_nodes.forEach(detach);
-			defs = claim_svg_element(svg0_nodes, "defs", {});
-			var defs_nodes = children(defs);
-
-			linearGradient = claim_svg_element(defs_nodes, "linearGradient", {
-				id: true,
-				x1: true,
-				y1: true,
-				x2: true,
-				y2: true,
-				gradientUnits: true
-			});
-
-			var linearGradient_nodes = children(linearGradient);
-			stop0 = claim_svg_element(linearGradient_nodes, "stop", { "stop-color": true });
-			children(stop0).forEach(detach);
-			stop1 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
-			children(stop1).forEach(detach);
-			stop2 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
-			children(stop2).forEach(detach);
-			stop3 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
-			children(stop3).forEach(detach);
-			stop4 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
-			children(stop4).forEach(detach);
-			stop5 = claim_svg_element(linearGradient_nodes, "stop", { offset: true, "stop-color": true });
-			children(stop5).forEach(detach);
-			linearGradient_nodes.forEach(detach);
-			clipPath = claim_svg_element(defs_nodes, "clipPath", { id: true });
-			var clipPath_nodes = children(clipPath);
-			rect = claim_svg_element(clipPath_nodes, "rect", { width: true, height: true, fill: true });
-			children(rect).forEach(detach);
-			clipPath_nodes.forEach(detach);
-			defs_nodes.forEach(detach);
-			svg0_nodes.forEach(detach);
-			a0_nodes.forEach(detach);
-			t0 = claim_space(div0_nodes);
-			claim_component(icon.$$.fragment, div0_nodes);
-			t1 = claim_space(div0_nodes);
-			a1 = claim_element(div0_nodes, "A", { href: true, class: true });
-			var a1_nodes = children(a1);
-			span = claim_element(a1_nodes, "SPAN", { class: true });
-			var span_nodes = children(span);
-			t2 = claim_text(span_nodes, t2_value);
-			span_nodes.forEach(detach);
-			a1_nodes.forEach(detach);
-			div0_nodes.forEach(detach);
-			t3 = claim_space(div2_nodes);
-			nav_1 = claim_element(div2_nodes, "NAV", { class: true });
-			var nav_1_nodes = children(nav_1);
-
-			for (let i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].l(nav_1_nodes);
-			}
-
-			nav_1_nodes.forEach(detach);
-			t4 = claim_space(div2_nodes);
-			div1 = claim_element(div2_nodes, "DIV", { class: true });
-			var div1_nodes = children(div1);
-			button = claim_element(div1_nodes, "BUTTON", { id: true, class: true });
-			var button_nodes = children(button);
-
-			svg1 = claim_svg_element(button_nodes, "svg", {
-				width: true,
-				height: true,
-				viewBox: true,
-				fill: true,
-				xmlns: true,
-				class: true
-			});
-
-			var svg1_nodes = children(svg1);
-			path9 = claim_svg_element(svg1_nodes, "path", { d: true, fill: true });
-			children(path9).forEach(detach);
-			svg1_nodes.forEach(detach);
-			button_nodes.forEach(detach);
-			div1_nodes.forEach(detach);
-			t5 = claim_space(div2_nodes);
-			if (if_block) if_block.l(div2_nodes);
-			div2_nodes.forEach(detach);
-			header_nodes.forEach(detach);
-			div3_nodes.forEach(detach);
-			this.h();
-		},
-		h() {
-			attr(path0, "d", "M814.062 159.924C782.686 159.924 757.171 134.408 757.171 103.032C757.171 71.6567 782.686 46.1408 814.062 46.1408C845.438 46.1408 870.954 71.6567 870.954 103.032C870.954 134.408 845.438 159.924 814.062 159.924ZM814.062 70.3186C796.021 70.3186 781.395 84.9914 781.395 102.986C781.395 120.981 796.067 135.654 814.062 135.654C832.057 135.654 846.73 120.981 846.73 102.986C846.73 84.9914 832.057 70.3186 814.062 70.3186V70.3186Z");
-			attr(path0, "fill", "#FDFDFD");
-			attr(path1, "d", "M700.925 46.0947C689.897 46.0947 679.931 50.5242 672.641 57.676C665.35 50.5242 655.384 46.0947 644.356 46.0947C622.07 46.0947 603.983 64.228 603.983 86.4679V147.789C603.983 154.479 609.382 159.878 616.072 159.878C622.763 159.878 628.161 154.479 628.161 147.789V86.4679C628.161 77.5627 635.405 70.3186 644.31 70.3186C653.215 70.3186 660.46 77.5627 660.46 86.4679V147.789C660.46 154.479 665.858 159.878 672.548 159.878C679.239 159.878 684.637 154.479 684.637 147.789V86.4679C684.637 77.5627 691.881 70.3186 700.787 70.3186C709.692 70.3186 716.936 77.5627 716.936 86.4679V147.789C716.936 154.479 722.334 159.878 729.025 159.878C735.715 159.878 741.114 154.479 741.114 147.789V86.4679C741.114 64.1819 722.98 46.0947 700.74 46.0947H700.925Z");
-			attr(path1, "fill", "#FDFDFD");
-			attr(path2, "d", "M571.039 159.786C564.348 159.786 558.95 154.387 558.95 147.697V58.0913C558.95 51.4009 564.348 46.0024 571.039 46.0024C577.729 46.0024 583.128 51.4009 583.128 58.0913V147.697C583.128 154.387 577.729 159.786 571.039 159.786Z");
-			attr(path2, "fill", "#FDFDFD");
-			attr(path3, "d", "M571.039 26.4848C578.352 26.4848 584.281 20.556 584.281 13.2424C584.281 5.92883 578.352 0 571.039 0C563.725 0 557.796 5.92883 557.796 13.2424C557.796 20.556 563.725 26.4848 571.039 26.4848Z");
-			attr(path3, "fill", "#FDFDFD");
-			attr(path4, "d", "M482.356 159.785C475.666 159.785 470.267 154.387 470.267 147.697V102.894C470.267 71.5181 495.783 46.0023 527.159 46.0023C533.849 46.0023 539.248 51.4007 539.248 58.0911C539.248 64.7816 533.849 70.18 527.159 70.18C509.118 70.18 494.491 84.8528 494.491 102.848V147.65C494.491 154.341 489.093 159.739 482.402 159.739L482.356 159.785Z");
-			attr(path4, "fill", "#FDFDFD");
-			attr(path5, "d", "M349.701 197.99C343.011 197.99 337.612 192.592 337.612 185.901V102.894C337.612 71.5182 363.128 46.0024 394.504 46.0024C425.88 46.0024 451.396 71.5182 451.396 102.894C451.396 134.27 425.88 159.786 394.504 159.786C387.814 159.786 382.415 154.387 382.415 147.697C382.415 141.006 387.814 135.608 394.504 135.608C412.545 135.608 427.172 120.935 427.172 102.94C427.172 84.9452 412.499 70.2724 394.504 70.2724C376.509 70.2724 361.836 84.9452 361.836 102.94V185.947C361.836 192.638 356.438 198.036 349.747 198.036L349.701 197.99Z");
-			attr(path5, "fill", "#FDFDFD");
-			attr(path6, "d", "M222.814 159.371C219.723 159.371 216.631 158.171 214.232 155.818C209.526 151.065 209.526 143.406 214.232 138.699L249.668 103.263L214.232 67.8271C209.526 63.0746 209.526 55.4153 214.232 50.7089C218.984 45.9564 226.644 45.9564 231.35 50.7089L275.369 94.7272C280.075 99.4797 280.075 107.139 275.369 111.845L231.35 155.864C228.997 158.217 225.906 159.417 222.768 159.417L222.814 159.371Z");
-			attr(path6, "fill", "#35D994");
-			attr(path7, "d", "M94.7272 197.99C91.6358 197.99 88.5443 196.791 86.145 194.437L3.55296 111.799C-1.1534 107.047 -1.1534 99.3874 3.55296 94.681L47.5713 50.6627C52.3238 45.9102 59.9832 45.9102 64.6895 50.6627C69.3959 55.4152 69.3959 63.0746 64.6895 67.7809L29.2073 103.217L103.263 177.273C107.97 182.026 107.97 189.685 103.263 194.391C100.91 196.744 97.8186 197.944 94.6811 197.944L94.7272 197.99Z");
-			attr(path7, "fill", "url(#paint0_linear_250_527)");
-			attr(path8, "d", "M94.7273 197.99C88.0369 197.99 82.6384 192.592 82.6384 185.901V102.894C82.6384 71.5181 108.154 46.0023 139.53 46.0023C170.906 46.0023 196.422 71.5181 196.422 102.894C196.422 134.27 170.906 159.785 139.53 159.785C132.84 159.785 127.441 154.387 127.441 147.697C127.441 141.006 132.84 135.608 139.53 135.608C157.571 135.608 172.198 120.935 172.198 102.94C172.198 84.9451 157.525 70.2723 139.53 70.2723C121.535 70.2723 106.862 84.9451 106.862 102.94V185.947C106.862 192.638 101.464 198.036 94.7735 198.036L94.7273 197.99Z");
-			attr(path8, "fill", "#35D994");
-			attr(g, "clip-path", "url(#clip0_250_527)");
-			attr(stop0, "stop-color", "#35D994");
-			attr(stop1, "offset", "0.16");
-			attr(stop1, "stop-color", "#32D28E");
-			attr(stop2, "offset", "0.38");
-			attr(stop2, "stop-color", "#29BF80");
-			attr(stop3, "offset", "0.64");
-			attr(stop3, "stop-color", "#1CA169");
-			attr(stop4, "offset", "0.93");
-			attr(stop4, "stop-color", "#097649");
-			attr(stop5, "offset", "0.95");
-			attr(stop5, "stop-color", "#097548");
-			attr(linearGradient, "id", "paint0_linear_250_527");
-			attr(linearGradient, "x1", "25.5621");
-			attr(linearGradient, "y1", "72.6719");
-			attr(linearGradient, "x2", "125.319");
-			attr(linearGradient, "y2", "172.428");
-			attr(linearGradient, "gradientUnits", "userSpaceOnUse");
-			attr(rect, "width", "871");
-			attr(rect, "height", "197.99");
-			attr(rect, "fill", "white");
-			attr(clipPath, "id", "clip0_250_527");
-			attr(svg0, "viewBox", "0 0 871 198");
-			attr(svg0, "fill", "none");
-			attr(svg0, "xmlns", "http://www.w3.org/2000/svg");
-			attr(svg0, "class", "svelte-1qa91hg");
-			attr(a0, "href", "https://primo.so");
-			attr(a0, "class", "is-primo");
-			attr(span, "class", "svelte-1qa91hg");
-			attr(a1, "href", a1_href_value = /*secondary_logo*/ ctx[0].url);
-			attr(a1, "class", "link svelte-1qa91hg");
-			attr(div0, "class", "logos svelte-1qa91hg");
-			attr(nav_1, "class", "svelte-1qa91hg");
-			attr(path9, "d", "M19.4643 17.0213H0.535714C0.239866 17.0213 0 17.3071 0 17.6596V19.3617C0 19.7142 0.239866 20 0.535714 20H19.4643C19.7601 20 20 19.7142 20 19.3617V17.6596C20 17.3071 19.7601 17.0213 19.4643 17.0213ZM19.4643 8.51064H0.535714C0.239866 8.51064 0 8.79644 0 9.14894V10.8511C0 11.2036 0.239866 11.4894 0.535714 11.4894H19.4643C19.7601 11.4894 20 11.2036 20 10.8511V9.14894C20 8.79644 19.7601 8.51064 19.4643 8.51064ZM19.4643 0H0.535714C0.239866 0 0 0.285797 0 0.638296V2.34042C0 2.69292 0.239866 2.97872 0.535714 2.97872H19.4643C19.7601 2.97872 20 2.69292 20 2.34042V0.638296C20 0.285797 19.7601 0 19.4643 0Z");
-			attr(path9, "fill", "currentColor");
-			attr(svg1, "width", "20");
-			attr(svg1, "height", "20");
-			attr(svg1, "viewBox", "0 0 20 20");
-			attr(svg1, "fill", "none");
-			attr(svg1, "xmlns", "http://www.w3.org/2000/svg");
-			attr(svg1, "class", "svelte-1qa91hg");
-			attr(button, "id", "open");
-			attr(button, "class", "svelte-1qa91hg");
-			attr(div1, "class", "call-to-action svelte-1qa91hg");
-			attr(div2, "class", "section-container svelte-1qa91hg");
-			attr(header, "class", "svelte-1qa91hg");
-			attr(div3, "class", "section");
-			attr(div3, "id", "section-0a4216c5");
-		},
-		m(target, anchor) {
-			insert_hydration(target, div3, anchor);
-			append_hydration(div3, header);
-			append_hydration(header, div2);
-			append_hydration(div2, div0);
-			append_hydration(div0, a0);
-			append_hydration(a0, svg0);
-			append_hydration(svg0, g);
-			append_hydration(g, path0);
-			append_hydration(g, path1);
-			append_hydration(g, path2);
-			append_hydration(g, path3);
-			append_hydration(g, path4);
-			append_hydration(g, path5);
-			append_hydration(g, path6);
-			append_hydration(g, path7);
-			append_hydration(g, path8);
-			append_hydration(svg0, defs);
-			append_hydration(defs, linearGradient);
-			append_hydration(linearGradient, stop0);
-			append_hydration(linearGradient, stop1);
-			append_hydration(linearGradient, stop2);
-			append_hydration(linearGradient, stop3);
-			append_hydration(linearGradient, stop4);
-			append_hydration(linearGradient, stop5);
-			append_hydration(defs, clipPath);
-			append_hydration(clipPath, rect);
-			append_hydration(div0, t0);
-			mount_component(icon, div0, null);
-			append_hydration(div0, t1);
-			append_hydration(div0, a1);
-			append_hydration(a1, span);
-			append_hydration(span, t2);
-			append_hydration(div2, t3);
-			append_hydration(div2, nav_1);
-
-			for (let i = 0; i < each_blocks.length; i += 1) {
-				if (each_blocks[i]) {
-					each_blocks[i].m(nav_1, null);
-				}
-			}
-
-			append_hydration(div2, t4);
-			append_hydration(div2, div1);
-			append_hydration(div1, button);
-			append_hydration(button, svg1);
-			append_hydration(svg1, path9);
-			append_hydration(div2, t5);
-			if (if_block) if_block.m(div2, null);
-			current = true;
-
-			if (!mounted) {
-				dispose = listen(button, "click", /*toggleMobileNav*/ ctx[3]);
-				mounted = true;
-			}
-		},
-		p(ctx, [dirty]) {
-			if ((!current || dirty & /*secondary_logo*/ 1) && t2_value !== (t2_value = /*secondary_logo*/ ctx[0].label + "")) set_data(t2, t2_value);
-
-			if (!current || dirty & /*secondary_logo*/ 1 && a1_href_value !== (a1_href_value = /*secondary_logo*/ ctx[0].url)) {
-				attr(a1, "href", a1_href_value);
-			}
-
-			if (dirty & /*nav, window*/ 2) {
-				each_value_1 = /*nav*/ ctx[1];
-				let i;
-
-				for (i = 0; i < each_value_1.length; i += 1) {
-					const child_ctx = get_each_context_1(ctx, each_value_1, i);
-
-					if (each_blocks[i]) {
-						each_blocks[i].p(child_ctx, dirty);
-					} else {
-						each_blocks[i] = create_each_block_1(child_ctx);
-						each_blocks[i].c();
-						each_blocks[i].m(nav_1, null);
-					}
-				}
-
-				for (; i < each_blocks.length; i += 1) {
-					each_blocks[i].d(1);
-				}
-
-				each_blocks.length = each_value_1.length;
-			}
-
-			if (/*mobileNavOpen*/ ctx[2]) {
-				if (if_block) {
-					if_block.p(ctx, dirty);
-
-					if (dirty & /*mobileNavOpen*/ 4) {
-						transition_in(if_block, 1);
-					}
-				} else {
-					if_block = create_if_block$1(ctx);
-					if_block.c();
-					transition_in(if_block, 1);
-					if_block.m(div2, null);
-				}
-			} else if (if_block) {
-				group_outros();
-
-				transition_out(if_block, 1, 1, () => {
-					if_block = null;
-				});
-
-				check_outros();
-			}
-		},
-		i(local) {
-			if (current) return;
-			transition_in(icon.$$.fragment, local);
-			transition_in(if_block);
-			current = true;
-		},
-		o(local) {
-			transition_out(icon.$$.fragment, local);
-			transition_out(if_block);
-			current = false;
-		},
-		d(detaching) {
-			if (detaching) detach(div3);
-			destroy_component(icon);
-			destroy_each(each_blocks, detaching);
-			if (if_block) if_block.d();
-			mounted = false;
-			dispose();
-		}
-	};
-}
-
-function instance$2($$self, $$props, $$invalidate) {
-	let { title } = $$props;
-	let { description } = $$props;
-	let { secondary_logo } = $$props;
-	let { nav } = $$props;
-	let mobileNavOpen = false;
-
-	function toggleMobileNav() {
-		$$invalidate(2, mobileNavOpen = !mobileNavOpen);
-	}
-
-	$$self.$$set = $$props => {
-		if ('title' in $$props) $$invalidate(4, title = $$props.title);
-		if ('description' in $$props) $$invalidate(5, description = $$props.description);
-		if ('secondary_logo' in $$props) $$invalidate(0, secondary_logo = $$props.secondary_logo);
-		if ('nav' in $$props) $$invalidate(1, nav = $$props.nav);
-	};
-
-	return [secondary_logo, nav, mobileNavOpen, toggleMobileNav, title, description];
-}
-
-class Component$2 extends SvelteComponent {
-	constructor(options) {
-		super();
-
-		init(this, options, instance$2, create_fragment$2, safe_not_equal, {
-			title: 4,
-			description: 5,
-			secondary_logo: 0,
-			nav: 1
-		});
 	}
 }
 
@@ -7223,6 +4786,3310 @@ axios.AxiosHeaders = AxiosHeaders;
 axios.formToJSON = (thing) => formDataToJSON(utils.isHTMLForm(thing) ? new FormData(thing) : thing);
 axios.HttpStatusCode = HttpStatusCode;
 axios.default = axios;
+
+const matchIconName = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+const stringToIcon = (value, validate, allowSimpleName, provider = "") => {
+  const colonSeparated = value.split(":");
+  if (value.slice(0, 1) === "@") {
+    if (colonSeparated.length < 2 || colonSeparated.length > 3) {
+      return null;
+    }
+    provider = colonSeparated.shift().slice(1);
+  }
+  if (colonSeparated.length > 3 || !colonSeparated.length) {
+    return null;
+  }
+  if (colonSeparated.length > 1) {
+    const name2 = colonSeparated.pop();
+    const prefix = colonSeparated.pop();
+    const result = {
+      provider: colonSeparated.length > 0 ? colonSeparated[0] : provider,
+      prefix,
+      name: name2
+    };
+    return validate && !validateIconName(result) ? null : result;
+  }
+  const name = colonSeparated[0];
+  const dashSeparated = name.split("-");
+  if (dashSeparated.length > 1) {
+    const result = {
+      provider,
+      prefix: dashSeparated.shift(),
+      name: dashSeparated.join("-")
+    };
+    return validate && !validateIconName(result) ? null : result;
+  }
+  if (allowSimpleName && provider === "") {
+    const result = {
+      provider,
+      prefix: "",
+      name
+    };
+    return validate && !validateIconName(result, allowSimpleName) ? null : result;
+  }
+  return null;
+};
+const validateIconName = (icon, allowSimpleName) => {
+  if (!icon) {
+    return false;
+  }
+  return !!((icon.provider === "" || icon.provider.match(matchIconName)) && (allowSimpleName && icon.prefix === "" || icon.prefix.match(matchIconName)) && icon.name.match(matchIconName));
+};
+const defaultIconDimensions = Object.freeze({
+  left: 0,
+  top: 0,
+  width: 16,
+  height: 16
+});
+const defaultIconTransformations = Object.freeze({
+  rotate: 0,
+  vFlip: false,
+  hFlip: false
+});
+const defaultIconProps = Object.freeze({
+  ...defaultIconDimensions,
+  ...defaultIconTransformations
+});
+const defaultExtendedIconProps = Object.freeze({
+  ...defaultIconProps,
+  body: "",
+  hidden: false
+});
+function mergeIconTransformations(obj1, obj2) {
+  const result = {};
+  if (!obj1.hFlip !== !obj2.hFlip) {
+    result.hFlip = true;
+  }
+  if (!obj1.vFlip !== !obj2.vFlip) {
+    result.vFlip = true;
+  }
+  const rotate = ((obj1.rotate || 0) + (obj2.rotate || 0)) % 4;
+  if (rotate) {
+    result.rotate = rotate;
+  }
+  return result;
+}
+function mergeIconData(parent, child) {
+  const result = mergeIconTransformations(parent, child);
+  for (const key in defaultExtendedIconProps) {
+    if (key in defaultIconTransformations) {
+      if (key in parent && !(key in result)) {
+        result[key] = defaultIconTransformations[key];
+      }
+    } else if (key in child) {
+      result[key] = child[key];
+    } else if (key in parent) {
+      result[key] = parent[key];
+    }
+  }
+  return result;
+}
+function getIconsTree(data, names) {
+  const icons = data.icons;
+  const aliases = data.aliases || /* @__PURE__ */ Object.create(null);
+  const resolved = /* @__PURE__ */ Object.create(null);
+  function resolve(name) {
+    if (icons[name]) {
+      return resolved[name] = [];
+    }
+    if (!(name in resolved)) {
+      resolved[name] = null;
+      const parent = aliases[name] && aliases[name].parent;
+      const value = parent && resolve(parent);
+      if (value) {
+        resolved[name] = [parent].concat(value);
+      }
+    }
+    return resolved[name];
+  }
+  (names || Object.keys(icons).concat(Object.keys(aliases))).forEach(resolve);
+  return resolved;
+}
+function internalGetIconData(data, name, tree) {
+  const icons = data.icons;
+  const aliases = data.aliases || /* @__PURE__ */ Object.create(null);
+  let currentProps = {};
+  function parse(name2) {
+    currentProps = mergeIconData(icons[name2] || aliases[name2], currentProps);
+  }
+  parse(name);
+  tree.forEach(parse);
+  return mergeIconData(data, currentProps);
+}
+function parseIconSet(data, callback) {
+  const names = [];
+  if (typeof data !== "object" || typeof data.icons !== "object") {
+    return names;
+  }
+  if (data.not_found instanceof Array) {
+    data.not_found.forEach((name) => {
+      callback(name, null);
+      names.push(name);
+    });
+  }
+  const tree = getIconsTree(data);
+  for (const name in tree) {
+    const item = tree[name];
+    if (item) {
+      callback(name, internalGetIconData(data, name, item));
+      names.push(name);
+    }
+  }
+  return names;
+}
+const optionalPropertyDefaults = {
+  provider: "",
+  aliases: {},
+  not_found: {},
+  ...defaultIconDimensions
+};
+function checkOptionalProps(item, defaults) {
+  for (const prop in defaults) {
+    if (prop in item && typeof item[prop] !== typeof defaults[prop]) {
+      return false;
+    }
+  }
+  return true;
+}
+function quicklyValidateIconSet(obj) {
+  if (typeof obj !== "object" || obj === null) {
+    return null;
+  }
+  const data = obj;
+  if (typeof data.prefix !== "string" || !obj.icons || typeof obj.icons !== "object") {
+    return null;
+  }
+  if (!checkOptionalProps(obj, optionalPropertyDefaults)) {
+    return null;
+  }
+  const icons = data.icons;
+  for (const name in icons) {
+    const icon = icons[name];
+    if (!name.match(matchIconName) || typeof icon.body !== "string" || !checkOptionalProps(icon, defaultExtendedIconProps)) {
+      return null;
+    }
+  }
+  const aliases = data.aliases || /* @__PURE__ */ Object.create(null);
+  for (const name in aliases) {
+    const icon = aliases[name];
+    const parent = icon.parent;
+    if (!name.match(matchIconName) || typeof parent !== "string" || !icons[parent] && !aliases[parent] || !checkOptionalProps(icon, defaultExtendedIconProps)) {
+      return null;
+    }
+  }
+  return data;
+}
+const dataStorage = /* @__PURE__ */ Object.create(null);
+function newStorage(provider, prefix) {
+  return {
+    provider,
+    prefix,
+    icons: /* @__PURE__ */ Object.create(null),
+    missing: /* @__PURE__ */ new Set()
+  };
+}
+function getStorage(provider, prefix) {
+  const providerStorage = dataStorage[provider] || (dataStorage[provider] = /* @__PURE__ */ Object.create(null));
+  return providerStorage[prefix] || (providerStorage[prefix] = newStorage(provider, prefix));
+}
+function addIconSet(storage2, data) {
+  if (!quicklyValidateIconSet(data)) {
+    return [];
+  }
+  return parseIconSet(data, (name, icon) => {
+    if (icon) {
+      storage2.icons[name] = icon;
+    } else {
+      storage2.missing.add(name);
+    }
+  });
+}
+function addIconToStorage(storage2, name, icon) {
+  try {
+    if (typeof icon.body === "string") {
+      storage2.icons[name] = {...icon};
+      return true;
+    }
+  } catch (err) {
+  }
+  return false;
+}
+let simpleNames = false;
+function allowSimpleNames(allow) {
+  if (typeof allow === "boolean") {
+    simpleNames = allow;
+  }
+  return simpleNames;
+}
+function getIconData(name) {
+  const icon = typeof name === "string" ? stringToIcon(name, true, simpleNames) : name;
+  if (icon) {
+    const storage2 = getStorage(icon.provider, icon.prefix);
+    const iconName = icon.name;
+    return storage2.icons[iconName] || (storage2.missing.has(iconName) ? null : void 0);
+  }
+}
+function addIcon(name, data) {
+  const icon = stringToIcon(name, true, simpleNames);
+  if (!icon) {
+    return false;
+  }
+  const storage2 = getStorage(icon.provider, icon.prefix);
+  return addIconToStorage(storage2, icon.name, data);
+}
+function addCollection(data, provider) {
+  if (typeof data !== "object") {
+    return false;
+  }
+  if (typeof provider !== "string") {
+    provider = data.provider || "";
+  }
+  if (simpleNames && !provider && !data.prefix) {
+    let added = false;
+    if (quicklyValidateIconSet(data)) {
+      data.prefix = "";
+      parseIconSet(data, (name, icon) => {
+        if (icon && addIcon(name, icon)) {
+          added = true;
+        }
+      });
+    }
+    return added;
+  }
+  const prefix = data.prefix;
+  if (!validateIconName({
+    provider,
+    prefix,
+    name: "a"
+  })) {
+    return false;
+  }
+  const storage2 = getStorage(provider, prefix);
+  return !!addIconSet(storage2, data);
+}
+const defaultIconSizeCustomisations = Object.freeze({
+  width: null,
+  height: null
+});
+const defaultIconCustomisations = Object.freeze({
+  ...defaultIconSizeCustomisations,
+  ...defaultIconTransformations
+});
+const unitsSplit = /(-?[0-9.]*[0-9]+[0-9.]*)/g;
+const unitsTest = /^-?[0-9.]*[0-9]+[0-9.]*$/g;
+function calculateSize(size, ratio, precision) {
+  if (ratio === 1) {
+    return size;
+  }
+  precision = precision || 100;
+  if (typeof size === "number") {
+    return Math.ceil(size * ratio * precision) / precision;
+  }
+  if (typeof size !== "string") {
+    return size;
+  }
+  const oldParts = size.split(unitsSplit);
+  if (oldParts === null || !oldParts.length) {
+    return size;
+  }
+  const newParts = [];
+  let code = oldParts.shift();
+  let isNumber = unitsTest.test(code);
+  while (true) {
+    if (isNumber) {
+      const num = parseFloat(code);
+      if (isNaN(num)) {
+        newParts.push(code);
+      } else {
+        newParts.push(Math.ceil(num * ratio * precision) / precision);
+      }
+    } else {
+      newParts.push(code);
+    }
+    code = oldParts.shift();
+    if (code === void 0) {
+      return newParts.join("");
+    }
+    isNumber = !isNumber;
+  }
+}
+const isUnsetKeyword = (value) => value === "unset" || value === "undefined" || value === "none";
+function iconToSVG(icon, customisations) {
+  const fullIcon = {
+    ...defaultIconProps,
+    ...icon
+  };
+  const fullCustomisations = {
+    ...defaultIconCustomisations,
+    ...customisations
+  };
+  const box = {
+    left: fullIcon.left,
+    top: fullIcon.top,
+    width: fullIcon.width,
+    height: fullIcon.height
+  };
+  let body = fullIcon.body;
+  [fullIcon, fullCustomisations].forEach((props) => {
+    const transformations = [];
+    const hFlip = props.hFlip;
+    const vFlip = props.vFlip;
+    let rotation = props.rotate;
+    if (hFlip) {
+      if (vFlip) {
+        rotation += 2;
+      } else {
+        transformations.push("translate(" + (box.width + box.left).toString() + " " + (0 - box.top).toString() + ")");
+        transformations.push("scale(-1 1)");
+        box.top = box.left = 0;
+      }
+    } else if (vFlip) {
+      transformations.push("translate(" + (0 - box.left).toString() + " " + (box.height + box.top).toString() + ")");
+      transformations.push("scale(1 -1)");
+      box.top = box.left = 0;
+    }
+    let tempValue;
+    if (rotation < 0) {
+      rotation -= Math.floor(rotation / 4) * 4;
+    }
+    rotation = rotation % 4;
+    switch (rotation) {
+      case 1:
+        tempValue = box.height / 2 + box.top;
+        transformations.unshift("rotate(90 " + tempValue.toString() + " " + tempValue.toString() + ")");
+        break;
+      case 2:
+        transformations.unshift("rotate(180 " + (box.width / 2 + box.left).toString() + " " + (box.height / 2 + box.top).toString() + ")");
+        break;
+      case 3:
+        tempValue = box.width / 2 + box.left;
+        transformations.unshift("rotate(-90 " + tempValue.toString() + " " + tempValue.toString() + ")");
+        break;
+    }
+    if (rotation % 2 === 1) {
+      if (box.left !== box.top) {
+        tempValue = box.left;
+        box.left = box.top;
+        box.top = tempValue;
+      }
+      if (box.width !== box.height) {
+        tempValue = box.width;
+        box.width = box.height;
+        box.height = tempValue;
+      }
+    }
+    if (transformations.length) {
+      body = '<g transform="' + transformations.join(" ") + '">' + body + "</g>";
+    }
+  });
+  const customisationsWidth = fullCustomisations.width;
+  const customisationsHeight = fullCustomisations.height;
+  const boxWidth = box.width;
+  const boxHeight = box.height;
+  let width;
+  let height;
+  if (customisationsWidth === null) {
+    height = customisationsHeight === null ? "1em" : customisationsHeight === "auto" ? boxHeight : customisationsHeight;
+    width = calculateSize(height, boxWidth / boxHeight);
+  } else {
+    width = customisationsWidth === "auto" ? boxWidth : customisationsWidth;
+    height = customisationsHeight === null ? calculateSize(width, boxHeight / boxWidth) : customisationsHeight === "auto" ? boxHeight : customisationsHeight;
+  }
+  const attributes = {};
+  const setAttr = (prop, value) => {
+    if (!isUnsetKeyword(value)) {
+      attributes[prop] = value.toString();
+    }
+  };
+  setAttr("width", width);
+  setAttr("height", height);
+  attributes.viewBox = box.left.toString() + " " + box.top.toString() + " " + boxWidth.toString() + " " + boxHeight.toString();
+  return {
+    attributes,
+    body
+  };
+}
+const regex = /\sid="(\S+)"/g;
+const randomPrefix = "IconifyId" + Date.now().toString(16) + (Math.random() * 16777216 | 0).toString(16);
+let counter = 0;
+function replaceIDs(body, prefix = randomPrefix) {
+  const ids = [];
+  let match;
+  while (match = regex.exec(body)) {
+    ids.push(match[1]);
+  }
+  if (!ids.length) {
+    return body;
+  }
+  const suffix = "suffix" + (Math.random() * 16777216 | Date.now()).toString(16);
+  ids.forEach((id) => {
+    const newID = typeof prefix === "function" ? prefix(id) : prefix + (counter++).toString();
+    const escapedID = id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    body = body.replace(new RegExp('([#;"])(' + escapedID + ')([")]|\\.[a-z])', "g"), "$1" + newID + suffix + "$3");
+  });
+  body = body.replace(new RegExp(suffix, "g"), "");
+  return body;
+}
+const storage = /* @__PURE__ */ Object.create(null);
+function setAPIModule(provider, item) {
+  storage[provider] = item;
+}
+function getAPIModule(provider) {
+  return storage[provider] || storage[""];
+}
+function createAPIConfig(source) {
+  let resources;
+  if (typeof source.resources === "string") {
+    resources = [source.resources];
+  } else {
+    resources = source.resources;
+    if (!(resources instanceof Array) || !resources.length) {
+      return null;
+    }
+  }
+  const result = {
+    resources,
+    path: source.path || "/",
+    maxURL: source.maxURL || 500,
+    rotate: source.rotate || 750,
+    timeout: source.timeout || 5e3,
+    random: source.random === true,
+    index: source.index || 0,
+    dataAfterTimeout: source.dataAfterTimeout !== false
+  };
+  return result;
+}
+const configStorage = /* @__PURE__ */ Object.create(null);
+const fallBackAPISources = [
+  "https://api.simplesvg.com",
+  "https://api.unisvg.com"
+];
+const fallBackAPI = [];
+while (fallBackAPISources.length > 0) {
+  if (fallBackAPISources.length === 1) {
+    fallBackAPI.push(fallBackAPISources.shift());
+  } else {
+    if (Math.random() > 0.5) {
+      fallBackAPI.push(fallBackAPISources.shift());
+    } else {
+      fallBackAPI.push(fallBackAPISources.pop());
+    }
+  }
+}
+configStorage[""] = createAPIConfig({
+  resources: ["https://api.iconify.design"].concat(fallBackAPI)
+});
+function addAPIProvider(provider, customConfig) {
+  const config = createAPIConfig(customConfig);
+  if (config === null) {
+    return false;
+  }
+  configStorage[provider] = config;
+  return true;
+}
+function getAPIConfig(provider) {
+  return configStorage[provider];
+}
+const detectFetch = () => {
+  let callback;
+  try {
+    callback = fetch;
+    if (typeof callback === "function") {
+      return callback;
+    }
+  } catch (err) {
+  }
+};
+let fetchModule = detectFetch();
+function calculateMaxLength(provider, prefix) {
+  const config = getAPIConfig(provider);
+  if (!config) {
+    return 0;
+  }
+  let result;
+  if (!config.maxURL) {
+    result = 0;
+  } else {
+    let maxHostLength = 0;
+    config.resources.forEach((item) => {
+      const host = item;
+      maxHostLength = Math.max(maxHostLength, host.length);
+    });
+    const url = prefix + ".json?icons=";
+    result = config.maxURL - maxHostLength - config.path.length - url.length;
+  }
+  return result;
+}
+function shouldAbort(status) {
+  return status === 404;
+}
+const prepare = (provider, prefix, icons) => {
+  const results = [];
+  const maxLength = calculateMaxLength(provider, prefix);
+  const type = "icons";
+  let item = {
+    type,
+    provider,
+    prefix,
+    icons: []
+  };
+  let length = 0;
+  icons.forEach((name, index) => {
+    length += name.length + 1;
+    if (length >= maxLength && index > 0) {
+      results.push(item);
+      item = {
+        type,
+        provider,
+        prefix,
+        icons: []
+      };
+      length = name.length;
+    }
+    item.icons.push(name);
+  });
+  results.push(item);
+  return results;
+};
+function getPath(provider) {
+  if (typeof provider === "string") {
+    const config = getAPIConfig(provider);
+    if (config) {
+      return config.path;
+    }
+  }
+  return "/";
+}
+const send = (host, params, callback) => {
+  if (!fetchModule) {
+    callback("abort", 424);
+    return;
+  }
+  let path = getPath(params.provider);
+  switch (params.type) {
+    case "icons": {
+      const prefix = params.prefix;
+      const icons = params.icons;
+      const iconsList = icons.join(",");
+      const urlParams = new URLSearchParams({
+        icons: iconsList
+      });
+      path += prefix + ".json?" + urlParams.toString();
+      break;
+    }
+    case "custom": {
+      const uri = params.uri;
+      path += uri.slice(0, 1) === "/" ? uri.slice(1) : uri;
+      break;
+    }
+    default:
+      callback("abort", 400);
+      return;
+  }
+  let defaultError = 503;
+  fetchModule(host + path).then((response) => {
+    const status = response.status;
+    if (status !== 200) {
+      setTimeout(() => {
+        callback(shouldAbort(status) ? "abort" : "next", status);
+      });
+      return;
+    }
+    defaultError = 501;
+    return response.json();
+  }).then((data) => {
+    if (typeof data !== "object" || data === null) {
+      setTimeout(() => {
+        if (data === 404) {
+          callback("abort", data);
+        } else {
+          callback("next", defaultError);
+        }
+      });
+      return;
+    }
+    setTimeout(() => {
+      callback("success", data);
+    });
+  }).catch(() => {
+    callback("next", defaultError);
+  });
+};
+const fetchAPIModule = {
+  prepare,
+  send
+};
+function sortIcons(icons) {
+  const result = {
+    loaded: [],
+    missing: [],
+    pending: []
+  };
+  const storage2 = /* @__PURE__ */ Object.create(null);
+  icons.sort((a, b) => {
+    if (a.provider !== b.provider) {
+      return a.provider.localeCompare(b.provider);
+    }
+    if (a.prefix !== b.prefix) {
+      return a.prefix.localeCompare(b.prefix);
+    }
+    return a.name.localeCompare(b.name);
+  });
+  let lastIcon = {
+    provider: "",
+    prefix: "",
+    name: ""
+  };
+  icons.forEach((icon) => {
+    if (lastIcon.name === icon.name && lastIcon.prefix === icon.prefix && lastIcon.provider === icon.provider) {
+      return;
+    }
+    lastIcon = icon;
+    const provider = icon.provider;
+    const prefix = icon.prefix;
+    const name = icon.name;
+    const providerStorage = storage2[provider] || (storage2[provider] = /* @__PURE__ */ Object.create(null));
+    const localStorage = providerStorage[prefix] || (providerStorage[prefix] = getStorage(provider, prefix));
+    let list;
+    if (name in localStorage.icons) {
+      list = result.loaded;
+    } else if (prefix === "" || localStorage.missing.has(name)) {
+      list = result.missing;
+    } else {
+      list = result.pending;
+    }
+    const item = {
+      provider,
+      prefix,
+      name
+    };
+    list.push(item);
+  });
+  return result;
+}
+function removeCallback(storages, id) {
+  storages.forEach((storage2) => {
+    const items = storage2.loaderCallbacks;
+    if (items) {
+      storage2.loaderCallbacks = items.filter((row) => row.id !== id);
+    }
+  });
+}
+function updateCallbacks(storage2) {
+  if (!storage2.pendingCallbacksFlag) {
+    storage2.pendingCallbacksFlag = true;
+    setTimeout(() => {
+      storage2.pendingCallbacksFlag = false;
+      const items = storage2.loaderCallbacks ? storage2.loaderCallbacks.slice(0) : [];
+      if (!items.length) {
+        return;
+      }
+      let hasPending = false;
+      const provider = storage2.provider;
+      const prefix = storage2.prefix;
+      items.forEach((item) => {
+        const icons = item.icons;
+        const oldLength = icons.pending.length;
+        icons.pending = icons.pending.filter((icon) => {
+          if (icon.prefix !== prefix) {
+            return true;
+          }
+          const name = icon.name;
+          if (storage2.icons[name]) {
+            icons.loaded.push({
+              provider,
+              prefix,
+              name
+            });
+          } else if (storage2.missing.has(name)) {
+            icons.missing.push({
+              provider,
+              prefix,
+              name
+            });
+          } else {
+            hasPending = true;
+            return true;
+          }
+          return false;
+        });
+        if (icons.pending.length !== oldLength) {
+          if (!hasPending) {
+            removeCallback([storage2], item.id);
+          }
+          item.callback(icons.loaded.slice(0), icons.missing.slice(0), icons.pending.slice(0), item.abort);
+        }
+      });
+    });
+  }
+}
+let idCounter = 0;
+function storeCallback(callback, icons, pendingSources) {
+  const id = idCounter++;
+  const abort = removeCallback.bind(null, pendingSources, id);
+  if (!icons.pending.length) {
+    return abort;
+  }
+  const item = {
+    id,
+    icons,
+    callback,
+    abort
+  };
+  pendingSources.forEach((storage2) => {
+    (storage2.loaderCallbacks || (storage2.loaderCallbacks = [])).push(item);
+  });
+  return abort;
+}
+function listToIcons(list, validate = true, simpleNames2 = false) {
+  const result = [];
+  list.forEach((item) => {
+    const icon = typeof item === "string" ? stringToIcon(item, validate, simpleNames2) : item;
+    if (icon) {
+      result.push(icon);
+    }
+  });
+  return result;
+}
+var defaultConfig = {
+  resources: [],
+  index: 0,
+  timeout: 2e3,
+  rotate: 750,
+  random: false,
+  dataAfterTimeout: false
+};
+function sendQuery(config, payload, query, done) {
+  const resourcesCount = config.resources.length;
+  const startIndex = config.random ? Math.floor(Math.random() * resourcesCount) : config.index;
+  let resources;
+  if (config.random) {
+    let list = config.resources.slice(0);
+    resources = [];
+    while (list.length > 1) {
+      const nextIndex = Math.floor(Math.random() * list.length);
+      resources.push(list[nextIndex]);
+      list = list.slice(0, nextIndex).concat(list.slice(nextIndex + 1));
+    }
+    resources = resources.concat(list);
+  } else {
+    resources = config.resources.slice(startIndex).concat(config.resources.slice(0, startIndex));
+  }
+  const startTime = Date.now();
+  let status = "pending";
+  let queriesSent = 0;
+  let lastError;
+  let timer = null;
+  let queue = [];
+  let doneCallbacks = [];
+  if (typeof done === "function") {
+    doneCallbacks.push(done);
+  }
+  function resetTimer() {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  }
+  function abort() {
+    if (status === "pending") {
+      status = "aborted";
+    }
+    resetTimer();
+    queue.forEach((item) => {
+      if (item.status === "pending") {
+        item.status = "aborted";
+      }
+    });
+    queue = [];
+  }
+  function subscribe(callback, overwrite) {
+    if (overwrite) {
+      doneCallbacks = [];
+    }
+    if (typeof callback === "function") {
+      doneCallbacks.push(callback);
+    }
+  }
+  function getQueryStatus() {
+    return {
+      startTime,
+      payload,
+      status,
+      queriesSent,
+      queriesPending: queue.length,
+      subscribe,
+      abort
+    };
+  }
+  function failQuery() {
+    status = "failed";
+    doneCallbacks.forEach((callback) => {
+      callback(void 0, lastError);
+    });
+  }
+  function clearQueue() {
+    queue.forEach((item) => {
+      if (item.status === "pending") {
+        item.status = "aborted";
+      }
+    });
+    queue = [];
+  }
+  function moduleResponse(item, response, data) {
+    const isError = response !== "success";
+    queue = queue.filter((queued) => queued !== item);
+    switch (status) {
+      case "pending":
+        break;
+      case "failed":
+        if (isError || !config.dataAfterTimeout) {
+          return;
+        }
+        break;
+      default:
+        return;
+    }
+    if (response === "abort") {
+      lastError = data;
+      failQuery();
+      return;
+    }
+    if (isError) {
+      lastError = data;
+      if (!queue.length) {
+        if (!resources.length) {
+          failQuery();
+        } else {
+          execNext();
+        }
+      }
+      return;
+    }
+    resetTimer();
+    clearQueue();
+    if (!config.random) {
+      const index = config.resources.indexOf(item.resource);
+      if (index !== -1 && index !== config.index) {
+        config.index = index;
+      }
+    }
+    status = "completed";
+    doneCallbacks.forEach((callback) => {
+      callback(data);
+    });
+  }
+  function execNext() {
+    if (status !== "pending") {
+      return;
+    }
+    resetTimer();
+    const resource = resources.shift();
+    if (resource === void 0) {
+      if (queue.length) {
+        timer = setTimeout(() => {
+          resetTimer();
+          if (status === "pending") {
+            clearQueue();
+            failQuery();
+          }
+        }, config.timeout);
+        return;
+      }
+      failQuery();
+      return;
+    }
+    const item = {
+      status: "pending",
+      resource,
+      callback: (status2, data) => {
+        moduleResponse(item, status2, data);
+      }
+    };
+    queue.push(item);
+    queriesSent++;
+    timer = setTimeout(execNext, config.rotate);
+    query(resource, payload, item.callback);
+  }
+  setTimeout(execNext);
+  return getQueryStatus;
+}
+function initRedundancy(cfg) {
+  const config = {
+    ...defaultConfig,
+    ...cfg
+  };
+  let queries = [];
+  function cleanup() {
+    queries = queries.filter((item) => item().status === "pending");
+  }
+  function query(payload, queryCallback, doneCallback) {
+    const query2 = sendQuery(config, payload, queryCallback, (data, error) => {
+      cleanup();
+      if (doneCallback) {
+        doneCallback(data, error);
+      }
+    });
+    queries.push(query2);
+    return query2;
+  }
+  function find(callback) {
+    return queries.find((value) => {
+      return callback(value);
+    }) || null;
+  }
+  const instance = {
+    query,
+    find,
+    setIndex: (index) => {
+      config.index = index;
+    },
+    getIndex: () => config.index,
+    cleanup
+  };
+  return instance;
+}
+function emptyCallback$1() {
+}
+const redundancyCache = /* @__PURE__ */ Object.create(null);
+function getRedundancyCache(provider) {
+  if (!redundancyCache[provider]) {
+    const config = getAPIConfig(provider);
+    if (!config) {
+      return;
+    }
+    const redundancy = initRedundancy(config);
+    const cachedReundancy = {
+      config,
+      redundancy
+    };
+    redundancyCache[provider] = cachedReundancy;
+  }
+  return redundancyCache[provider];
+}
+function sendAPIQuery(target, query, callback) {
+  let redundancy;
+  let send2;
+  if (typeof target === "string") {
+    const api = getAPIModule(target);
+    if (!api) {
+      callback(void 0, 424);
+      return emptyCallback$1;
+    }
+    send2 = api.send;
+    const cached = getRedundancyCache(target);
+    if (cached) {
+      redundancy = cached.redundancy;
+    }
+  } else {
+    const config = createAPIConfig(target);
+    if (config) {
+      redundancy = initRedundancy(config);
+      const moduleKey = target.resources ? target.resources[0] : "";
+      const api = getAPIModule(moduleKey);
+      if (api) {
+        send2 = api.send;
+      }
+    }
+  }
+  if (!redundancy || !send2) {
+    callback(void 0, 424);
+    return emptyCallback$1;
+  }
+  return redundancy.query(query, send2, callback)().abort;
+}
+const browserCacheVersion = "iconify2";
+const browserCachePrefix = "iconify";
+const browserCacheCountKey = browserCachePrefix + "-count";
+const browserCacheVersionKey = browserCachePrefix + "-version";
+const browserStorageHour = 36e5;
+const browserStorageCacheExpiration = 168;
+function getStoredItem(func, key) {
+  try {
+    return func.getItem(key);
+  } catch (err) {
+  }
+}
+function setStoredItem(func, key, value) {
+  try {
+    func.setItem(key, value);
+    return true;
+  } catch (err) {
+  }
+}
+function removeStoredItem(func, key) {
+  try {
+    func.removeItem(key);
+  } catch (err) {
+  }
+}
+function setBrowserStorageItemsCount(storage2, value) {
+  return setStoredItem(storage2, browserCacheCountKey, value.toString());
+}
+function getBrowserStorageItemsCount(storage2) {
+  return parseInt(getStoredItem(storage2, browserCacheCountKey)) || 0;
+}
+const browserStorageConfig = {
+  local: true,
+  session: true
+};
+const browserStorageEmptyItems = {
+  local: /* @__PURE__ */ new Set(),
+  session: /* @__PURE__ */ new Set()
+};
+let browserStorageStatus = false;
+function setBrowserStorageStatus(status) {
+  browserStorageStatus = status;
+}
+let _window = typeof window === "undefined" ? {} : window;
+function getBrowserStorage(key) {
+  const attr = key + "Storage";
+  try {
+    if (_window && _window[attr] && typeof _window[attr].length === "number") {
+      return _window[attr];
+    }
+  } catch (err) {
+  }
+  browserStorageConfig[key] = false;
+}
+function iterateBrowserStorage(key, callback) {
+  const func = getBrowserStorage(key);
+  if (!func) {
+    return;
+  }
+  const version = getStoredItem(func, browserCacheVersionKey);
+  if (version !== browserCacheVersion) {
+    if (version) {
+      const total2 = getBrowserStorageItemsCount(func);
+      for (let i = 0; i < total2; i++) {
+        removeStoredItem(func, browserCachePrefix + i.toString());
+      }
+    }
+    setStoredItem(func, browserCacheVersionKey, browserCacheVersion);
+    setBrowserStorageItemsCount(func, 0);
+    return;
+  }
+  const minTime = Math.floor(Date.now() / browserStorageHour) - browserStorageCacheExpiration;
+  const parseItem = (index) => {
+    const name = browserCachePrefix + index.toString();
+    const item = getStoredItem(func, name);
+    if (typeof item !== "string") {
+      return;
+    }
+    try {
+      const data = JSON.parse(item);
+      if (typeof data === "object" && typeof data.cached === "number" && data.cached > minTime && typeof data.provider === "string" && typeof data.data === "object" && typeof data.data.prefix === "string" && callback(data, index)) {
+        return true;
+      }
+    } catch (err) {
+    }
+    removeStoredItem(func, name);
+  };
+  let total = getBrowserStorageItemsCount(func);
+  for (let i = total - 1; i >= 0; i--) {
+    if (!parseItem(i)) {
+      if (i === total - 1) {
+        total--;
+        setBrowserStorageItemsCount(func, total);
+      } else {
+        browserStorageEmptyItems[key].add(i);
+      }
+    }
+  }
+}
+function initBrowserStorage() {
+  if (browserStorageStatus) {
+    return;
+  }
+  setBrowserStorageStatus(true);
+  for (const key in browserStorageConfig) {
+    iterateBrowserStorage(key, (item) => {
+      const iconSet = item.data;
+      const provider = item.provider;
+      const prefix = iconSet.prefix;
+      const storage2 = getStorage(provider, prefix);
+      if (!addIconSet(storage2, iconSet).length) {
+        return false;
+      }
+      const lastModified = iconSet.lastModified || -1;
+      storage2.lastModifiedCached = storage2.lastModifiedCached ? Math.min(storage2.lastModifiedCached, lastModified) : lastModified;
+      return true;
+    });
+  }
+}
+function updateLastModified(storage2, lastModified) {
+  const lastValue = storage2.lastModifiedCached;
+  if (lastValue && lastValue >= lastModified) {
+    return lastValue === lastModified;
+  }
+  storage2.lastModifiedCached = lastModified;
+  if (lastValue) {
+    for (const key in browserStorageConfig) {
+      iterateBrowserStorage(key, (item) => {
+        const iconSet = item.data;
+        return item.provider !== storage2.provider || iconSet.prefix !== storage2.prefix || iconSet.lastModified === lastModified;
+      });
+    }
+  }
+  return true;
+}
+function storeInBrowserStorage(storage2, data) {
+  if (!browserStorageStatus) {
+    initBrowserStorage();
+  }
+  function store(key) {
+    let func;
+    if (!browserStorageConfig[key] || !(func = getBrowserStorage(key))) {
+      return;
+    }
+    const set = browserStorageEmptyItems[key];
+    let index;
+    if (set.size) {
+      set.delete(index = Array.from(set).shift());
+    } else {
+      index = getBrowserStorageItemsCount(func);
+      if (!setBrowserStorageItemsCount(func, index + 1)) {
+        return;
+      }
+    }
+    const item = {
+      cached: Math.floor(Date.now() / browserStorageHour),
+      provider: storage2.provider,
+      data
+    };
+    return setStoredItem(func, browserCachePrefix + index.toString(), JSON.stringify(item));
+  }
+  if (data.lastModified && !updateLastModified(storage2, data.lastModified)) {
+    return;
+  }
+  if (!Object.keys(data.icons).length) {
+    return;
+  }
+  if (data.not_found) {
+    data = Object.assign({}, data);
+    delete data.not_found;
+  }
+  if (!store("local")) {
+    store("session");
+  }
+}
+function emptyCallback() {
+}
+function loadedNewIcons(storage2) {
+  if (!storage2.iconsLoaderFlag) {
+    storage2.iconsLoaderFlag = true;
+    setTimeout(() => {
+      storage2.iconsLoaderFlag = false;
+      updateCallbacks(storage2);
+    });
+  }
+}
+function loadNewIcons(storage2, icons) {
+  if (!storage2.iconsToLoad) {
+    storage2.iconsToLoad = icons;
+  } else {
+    storage2.iconsToLoad = storage2.iconsToLoad.concat(icons).sort();
+  }
+  if (!storage2.iconsQueueFlag) {
+    storage2.iconsQueueFlag = true;
+    setTimeout(() => {
+      storage2.iconsQueueFlag = false;
+      const {provider, prefix} = storage2;
+      const icons2 = storage2.iconsToLoad;
+      delete storage2.iconsToLoad;
+      let api;
+      if (!icons2 || !(api = getAPIModule(provider))) {
+        return;
+      }
+      const params = api.prepare(provider, prefix, icons2);
+      params.forEach((item) => {
+        sendAPIQuery(provider, item, (data) => {
+          if (typeof data !== "object") {
+            item.icons.forEach((name) => {
+              storage2.missing.add(name);
+            });
+          } else {
+            try {
+              const parsed = addIconSet(storage2, data);
+              if (!parsed.length) {
+                return;
+              }
+              const pending = storage2.pendingIcons;
+              if (pending) {
+                parsed.forEach((name) => {
+                  pending.delete(name);
+                });
+              }
+              storeInBrowserStorage(storage2, data);
+            } catch (err) {
+              console.error(err);
+            }
+          }
+          loadedNewIcons(storage2);
+        });
+      });
+    });
+  }
+}
+const loadIcons = (icons, callback) => {
+  const cleanedIcons = listToIcons(icons, true, allowSimpleNames());
+  const sortedIcons = sortIcons(cleanedIcons);
+  if (!sortedIcons.pending.length) {
+    let callCallback = true;
+    if (callback) {
+      setTimeout(() => {
+        if (callCallback) {
+          callback(sortedIcons.loaded, sortedIcons.missing, sortedIcons.pending, emptyCallback);
+        }
+      });
+    }
+    return () => {
+      callCallback = false;
+    };
+  }
+  const newIcons = /* @__PURE__ */ Object.create(null);
+  const sources = [];
+  let lastProvider, lastPrefix;
+  sortedIcons.pending.forEach((icon) => {
+    const {provider, prefix} = icon;
+    if (prefix === lastPrefix && provider === lastProvider) {
+      return;
+    }
+    lastProvider = provider;
+    lastPrefix = prefix;
+    sources.push(getStorage(provider, prefix));
+    const providerNewIcons = newIcons[provider] || (newIcons[provider] = /* @__PURE__ */ Object.create(null));
+    if (!providerNewIcons[prefix]) {
+      providerNewIcons[prefix] = [];
+    }
+  });
+  sortedIcons.pending.forEach((icon) => {
+    const {provider, prefix, name} = icon;
+    const storage2 = getStorage(provider, prefix);
+    const pendingQueue = storage2.pendingIcons || (storage2.pendingIcons = /* @__PURE__ */ new Set());
+    if (!pendingQueue.has(name)) {
+      pendingQueue.add(name);
+      newIcons[provider][prefix].push(name);
+    }
+  });
+  sources.forEach((storage2) => {
+    const {provider, prefix} = storage2;
+    if (newIcons[provider][prefix].length) {
+      loadNewIcons(storage2, newIcons[provider][prefix]);
+    }
+  });
+  return callback ? storeCallback(callback, sortedIcons, sources) : emptyCallback;
+};
+function mergeCustomisations(defaults, item) {
+  const result = {
+    ...defaults
+  };
+  for (const key in item) {
+    const value = item[key];
+    const valueType = typeof value;
+    if (key in defaultIconSizeCustomisations) {
+      if (value === null || value && (valueType === "string" || valueType === "number")) {
+        result[key] = value;
+      }
+    } else if (valueType === typeof result[key]) {
+      result[key] = key === "rotate" ? value % 4 : value;
+    }
+  }
+  return result;
+}
+const separator = /[\s,]+/;
+function flipFromString(custom, flip) {
+  flip.split(separator).forEach((str) => {
+    const value = str.trim();
+    switch (value) {
+      case "horizontal":
+        custom.hFlip = true;
+        break;
+      case "vertical":
+        custom.vFlip = true;
+        break;
+    }
+  });
+}
+function rotateFromString(value, defaultValue = 0) {
+  const units = value.replace(/^-?[0-9.]*/, "");
+  function cleanup(value2) {
+    while (value2 < 0) {
+      value2 += 4;
+    }
+    return value2 % 4;
+  }
+  if (units === "") {
+    const num = parseInt(value);
+    return isNaN(num) ? 0 : cleanup(num);
+  } else if (units !== value) {
+    let split = 0;
+    switch (units) {
+      case "%":
+        split = 25;
+        break;
+      case "deg":
+        split = 90;
+    }
+    if (split) {
+      let num = parseFloat(value.slice(0, value.length - units.length));
+      if (isNaN(num)) {
+        return 0;
+      }
+      num = num / split;
+      return num % 1 === 0 ? cleanup(num) : 0;
+    }
+  }
+  return defaultValue;
+}
+function iconToHTML(body, attributes) {
+  let renderAttribsHTML = body.indexOf("xlink:") === -1 ? "" : ' xmlns:xlink="http://www.w3.org/1999/xlink"';
+  for (const attr in attributes) {
+    renderAttribsHTML += " " + attr + '="' + attributes[attr] + '"';
+  }
+  return '<svg xmlns="http://www.w3.org/2000/svg"' + renderAttribsHTML + ">" + body + "</svg>";
+}
+function encodeSVGforURL(svg) {
+  return svg.replace(/"/g, "'").replace(/%/g, "%25").replace(/#/g, "%23").replace(/</g, "%3C").replace(/>/g, "%3E").replace(/\s+/g, " ");
+}
+function svgToData(svg) {
+  return "data:image/svg+xml," + encodeSVGforURL(svg);
+}
+function svgToURL(svg) {
+  return 'url("' + svgToData(svg) + '")';
+}
+const defaultExtendedIconCustomisations = {
+  ...defaultIconCustomisations,
+  inline: false
+};
+const svgDefaults = {
+  xmlns: "http://www.w3.org/2000/svg",
+  "xmlns:xlink": "http://www.w3.org/1999/xlink",
+  "aria-hidden": true,
+  role: "img"
+};
+const commonProps = {
+  display: "inline-block"
+};
+const monotoneProps = {
+  "background-color": "currentColor"
+};
+const coloredProps = {
+  "background-color": "transparent"
+};
+const propsToAdd = {
+  image: "var(--svg)",
+  repeat: "no-repeat",
+  size: "100% 100%"
+};
+const propsToAddTo = {
+  "-webkit-mask": monotoneProps,
+  mask: monotoneProps,
+  background: coloredProps
+};
+for (const prefix in propsToAddTo) {
+  const list = propsToAddTo[prefix];
+  for (const prop in propsToAdd) {
+    list[prefix + "-" + prop] = propsToAdd[prop];
+  }
+}
+function fixSize(value) {
+  return value + (value.match(/^[-0-9.]+$/) ? "px" : "");
+}
+function render(icon, props) {
+  const customisations = mergeCustomisations(defaultExtendedIconCustomisations, props);
+  const mode = props.mode || "svg";
+  const componentProps = mode === "svg" ? {...svgDefaults} : {};
+  if (icon.body.indexOf("xlink:") === -1) {
+    delete componentProps["xmlns:xlink"];
+  }
+  let style = typeof props.style === "string" ? props.style : "";
+  for (let key in props) {
+    const value = props[key];
+    if (value === void 0) {
+      continue;
+    }
+    switch (key) {
+      case "icon":
+      case "style":
+      case "onLoad":
+      case "mode":
+        break;
+      case "inline":
+      case "hFlip":
+      case "vFlip":
+        customisations[key] = value === true || value === "true" || value === 1;
+        break;
+      case "flip":
+        if (typeof value === "string") {
+          flipFromString(customisations, value);
+        }
+        break;
+      case "color":
+        style = style + (style.length > 0 && style.trim().slice(-1) !== ";" ? ";" : "") + "color: " + value + "; ";
+        break;
+      case "rotate":
+        if (typeof value === "string") {
+          customisations[key] = rotateFromString(value);
+        } else if (typeof value === "number") {
+          customisations[key] = value;
+        }
+        break;
+      case "ariaHidden":
+      case "aria-hidden":
+        if (value !== true && value !== "true") {
+          delete componentProps["aria-hidden"];
+        }
+        break;
+      default:
+        if (key.slice(0, 3) === "on:") {
+          break;
+        }
+        if (defaultExtendedIconCustomisations[key] === void 0) {
+          componentProps[key] = value;
+        }
+    }
+  }
+  const item = iconToSVG(icon, customisations);
+  const renderAttribs = item.attributes;
+  if (customisations.inline) {
+    style = "vertical-align: -0.125em; " + style;
+  }
+  if (mode === "svg") {
+    Object.assign(componentProps, renderAttribs);
+    if (style !== "") {
+      componentProps.style = style;
+    }
+    let localCounter = 0;
+    let id = props.id;
+    if (typeof id === "string") {
+      id = id.replace(/-/g, "_");
+    }
+    return {
+      svg: true,
+      attributes: componentProps,
+      body: replaceIDs(item.body, id ? () => id + "ID" + localCounter++ : "iconifySvelte")
+    };
+  }
+  const {body, width, height} = icon;
+  const useMask = mode === "mask" || (mode === "bg" ? false : body.indexOf("currentColor") !== -1);
+  const html = iconToHTML(body, {
+    ...renderAttribs,
+    width: width + "",
+    height: height + ""
+  });
+  const url = svgToURL(html);
+  const styles = {
+    "--svg": url
+  };
+  const size = (prop) => {
+    const value = renderAttribs[prop];
+    if (value) {
+      styles[prop] = fixSize(value);
+    }
+  };
+  size("width");
+  size("height");
+  Object.assign(styles, commonProps, useMask ? monotoneProps : coloredProps);
+  let customStyle = "";
+  for (const key in styles) {
+    customStyle += key + ": " + styles[key] + ";";
+  }
+  componentProps.style = customStyle + style;
+  return {
+    svg: false,
+    attributes: componentProps
+  };
+}
+allowSimpleNames(true);
+setAPIModule("", fetchAPIModule);
+if (typeof document !== "undefined" && typeof window !== "undefined") {
+  initBrowserStorage();
+  const _window2 = window;
+  if (_window2.IconifyPreload !== void 0) {
+    const preload = _window2.IconifyPreload;
+    const err = "Invalid IconifyPreload syntax.";
+    if (typeof preload === "object" && preload !== null) {
+      (preload instanceof Array ? preload : [preload]).forEach((item) => {
+        try {
+          if (typeof item !== "object" || item === null || item instanceof Array || typeof item.icons !== "object" || typeof item.prefix !== "string" || !addCollection(item)) {
+            console.error(err);
+          }
+        } catch (e) {
+          console.error(err);
+        }
+      });
+    }
+  }
+  if (_window2.IconifyProviders !== void 0) {
+    const providers = _window2.IconifyProviders;
+    if (typeof providers === "object" && providers !== null) {
+      for (let key in providers) {
+        const err = "IconifyProviders[" + key + "] is invalid.";
+        try {
+          const value = providers[key];
+          if (typeof value !== "object" || !value || value.resources === void 0) {
+            continue;
+          }
+          if (!addAPIProvider(key, value)) {
+            console.error(err);
+          }
+        } catch (e) {
+          console.error(err);
+        }
+      }
+    }
+  }
+}
+function checkIconState(icon, state, mounted, callback, onload) {
+  function abortLoading() {
+    if (state.loading) {
+      state.loading.abort();
+      state.loading = null;
+    }
+  }
+  if (typeof icon === "object" && icon !== null && typeof icon.body === "string") {
+    state.name = "";
+    abortLoading();
+    return {data: {...defaultIconProps, ...icon}};
+  }
+  let iconName;
+  if (typeof icon !== "string" || (iconName = stringToIcon(icon, false, true)) === null) {
+    abortLoading();
+    return null;
+  }
+  const data = getIconData(iconName);
+  if (!data) {
+    if (mounted && (!state.loading || state.loading.name !== icon)) {
+      abortLoading();
+      state.name = "";
+      state.loading = {
+        name: icon,
+        abort: loadIcons([iconName], callback)
+      };
+    }
+    return null;
+  }
+  abortLoading();
+  if (state.name !== icon) {
+    state.name = icon;
+    if (onload && !state.destroyed) {
+      onload(icon);
+    }
+  }
+  const classes = ["iconify"];
+  if (iconName.prefix !== "") {
+    classes.push("iconify--" + iconName.prefix);
+  }
+  if (iconName.provider !== "") {
+    classes.push("iconify--" + iconName.provider);
+  }
+  return {data, classes};
+}
+function generateIcon(icon, props) {
+  return icon ? render({
+    ...defaultIconProps,
+    ...icon
+  }, props) : null;
+}
+var checkIconState_1 = checkIconState;
+var generateIcon_1 = generateIcon;
+
+/* generated by Svelte v3.58.0 */
+
+function create_if_block(ctx) {
+	let if_block_anchor;
+
+	function select_block_type(ctx, dirty) {
+		if (/*data*/ ctx[0].svg) return create_if_block_1;
+		return create_else_block;
+	}
+
+	let current_block_type = select_block_type(ctx);
+	let if_block = current_block_type(ctx);
+
+	return {
+		c() {
+			if_block.c();
+			if_block_anchor = empty();
+		},
+		l(nodes) {
+			if_block.l(nodes);
+			if_block_anchor = empty();
+		},
+		m(target, anchor) {
+			if_block.m(target, anchor);
+			insert_hydration(target, if_block_anchor, anchor);
+		},
+		p(ctx, dirty) {
+			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
+				if_block.p(ctx, dirty);
+			} else {
+				if_block.d(1);
+				if_block = current_block_type(ctx);
+
+				if (if_block) {
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			}
+		},
+		d(detaching) {
+			if_block.d(detaching);
+			if (detaching) detach(if_block_anchor);
+		}
+	};
+}
+
+// (113:1) {:else}
+function create_else_block(ctx) {
+	let span;
+	let span_levels = [/*data*/ ctx[0].attributes];
+	let span_data = {};
+
+	for (let i = 0; i < span_levels.length; i += 1) {
+		span_data = assign(span_data, span_levels[i]);
+	}
+
+	return {
+		c() {
+			span = element("span");
+			this.h();
+		},
+		l(nodes) {
+			span = claim_element(nodes, "SPAN", {});
+			children(span).forEach(detach);
+			this.h();
+		},
+		h() {
+			set_attributes(span, span_data);
+		},
+		m(target, anchor) {
+			insert_hydration(target, span, anchor);
+		},
+		p(ctx, dirty) {
+			set_attributes(span, span_data = get_spread_update(span_levels, [dirty & /*data*/ 1 && /*data*/ ctx[0].attributes]));
+		},
+		d(detaching) {
+			if (detaching) detach(span);
+		}
+	};
+}
+
+// (109:1) {#if data.svg}
+function create_if_block_1(ctx) {
+	let svg;
+	let raw_value = /*data*/ ctx[0].body + "";
+	let svg_levels = [/*data*/ ctx[0].attributes];
+	let svg_data = {};
+
+	for (let i = 0; i < svg_levels.length; i += 1) {
+		svg_data = assign(svg_data, svg_levels[i]);
+	}
+
+	return {
+		c() {
+			svg = svg_element("svg");
+			this.h();
+		},
+		l(nodes) {
+			svg = claim_svg_element(nodes, "svg", {});
+			var svg_nodes = children(svg);
+			svg_nodes.forEach(detach);
+			this.h();
+		},
+		h() {
+			set_svg_attributes(svg, svg_data);
+		},
+		m(target, anchor) {
+			insert_hydration(target, svg, anchor);
+			svg.innerHTML = raw_value;
+		},
+		p(ctx, dirty) {
+			if (dirty & /*data*/ 1 && raw_value !== (raw_value = /*data*/ ctx[0].body + "")) svg.innerHTML = raw_value;			set_svg_attributes(svg, svg_data = get_spread_update(svg_levels, [dirty & /*data*/ 1 && /*data*/ ctx[0].attributes]));
+		},
+		d(detaching) {
+			if (detaching) detach(svg);
+		}
+	};
+}
+
+function create_fragment$1(ctx) {
+	let if_block_anchor;
+	let if_block = /*data*/ ctx[0] && create_if_block(ctx);
+
+	return {
+		c() {
+			if (if_block) if_block.c();
+			if_block_anchor = empty();
+		},
+		l(nodes) {
+			if (if_block) if_block.l(nodes);
+			if_block_anchor = empty();
+		},
+		m(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insert_hydration(target, if_block_anchor, anchor);
+		},
+		p(ctx, [dirty]) {
+			if (/*data*/ ctx[0]) {
+				if (if_block) {
+					if_block.p(ctx, dirty);
+				} else {
+					if_block = create_if_block(ctx);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.d(1);
+				if_block = null;
+			}
+		},
+		i: noop,
+		o: noop,
+		d(detaching) {
+			if (if_block) if_block.d(detaching);
+			if (detaching) detach(if_block_anchor);
+		}
+	};
+}
+
+function instance$1($$self, $$props, $$invalidate) {
+	const state = {
+		// Last icon name
+		name: '',
+		// Loading status
+		loading: null,
+		// Destroyed status
+		destroyed: false
+	};
+
+	// Mounted status
+	let mounted = false;
+
+	// Callback counter
+	let counter = 0;
+
+	// Generated data
+	let data;
+
+	const onLoad = icon => {
+		// Legacy onLoad property
+		if (typeof $$props.onLoad === 'function') {
+			$$props.onLoad(icon);
+		}
+
+		// on:load event
+		const dispatch = createEventDispatcher();
+
+		dispatch('load', { icon });
+	};
+
+	// Increase counter when loaded to force re-calculation of data
+	function loaded() {
+		$$invalidate(3, counter++, counter);
+	}
+
+	// Force re-render
+	onMount(() => {
+		$$invalidate(2, mounted = true);
+	});
+
+	// Abort loading when component is destroyed
+	onDestroy(() => {
+		$$invalidate(1, state.destroyed = true, state);
+
+		if (state.loading) {
+			state.loading.abort();
+			$$invalidate(1, state.loading = null, state);
+		}
+	});
+
+	$$self.$$set = $$new_props => {
+		$$invalidate(6, $$props = assign(assign({}, $$props), exclude_internal_props($$new_props)));
+	};
+
+	$$self.$$.update = () => {
+		 {
+			const iconData = checkIconState_1($$props.icon, state, mounted, loaded, onLoad);
+			$$invalidate(0, data = iconData ? generateIcon_1(iconData.data, $$props) : null);
+
+			if (data && iconData.classes) {
+				// Add classes
+				$$invalidate(
+					0,
+					data.attributes['class'] = (typeof $$props['class'] === 'string'
+					? $$props['class'] + ' '
+					: '') + iconData.classes.join(' '),
+					data
+				);
+			}
+		}
+	};
+
+	$$props = exclude_internal_props($$props);
+	return [data, state, mounted, counter];
+}
+
+class Component$1 extends SvelteComponent {
+	constructor(options) {
+		super();
+		init(this, options, instance$1, create_fragment$1, safe_not_equal, {});
+	}
+}
+
+function fade(node, { delay = 0, duration = 400, easing = identity } = {}) {
+    const o = +getComputedStyle(node).opacity;
+    return {
+        delay,
+        duration,
+        easing,
+        css: t => `opacity: ${t * o}`
+    };
+}
+
+/* generated by Svelte v3.58.0 */
+
+function get_each_context(ctx, list, i) {
+	const child_ctx = ctx.slice();
+	child_ctx[9] = list[i].link;
+	return child_ctx;
+}
+
+function get_each_context_1(ctx, list, i) {
+	const child_ctx = ctx.slice();
+	child_ctx[13] = list[i];
+	return child_ctx;
+}
+
+function get_each_context_2(ctx, list, i) {
+	const child_ctx = ctx.slice();
+	child_ctx[9] = list[i].link;
+	return child_ctx;
+}
+
+function get_then_context_1(ctx) {
+	const constants_0 = /*footer*/ ctx[18].content.en;
+	ctx[19] = constants_0.social;
+}
+
+function get_each_context_3(ctx, list, i) {
+	const child_ctx = ctx.slice();
+	child_ctx[20] = list[i].icon;
+	child_ctx[9] = list[i].link;
+	return child_ctx;
+}
+
+function get_then_context(ctx) {
+	const constants_0 = /*header*/ ctx[23].content.en;
+	ctx[24] = constants_0.logo;
+}
+
+// (1:0)            <script>                         export let title; export let description; export let secondary_logo; export let nav;               import axios from "axios"; import Icon from "@iconify/svelte/dist/Icon.svelte"; import { fade }
+function create_catch_block_2(ctx) {
+	return {
+		c: noop,
+		l: noop,
+		m: noop,
+		p: noop,
+		d: noop
+	};
+}
+
+// (294:77)        {@const { logo }
+function create_then_block_2(ctx) {
+	get_then_context(ctx);
+	let a;
+	let raw_value = /*logo*/ ctx[24].svg + "";
+
+	return {
+		c() {
+			a = element("a");
+			this.h();
+		},
+		l(nodes) {
+			a = claim_element(nodes, "A", {
+				href: true,
+				class: true,
+				"aria-label": true
+			});
+
+			var a_nodes = children(a);
+			a_nodes.forEach(detach);
+			this.h();
+		},
+		h() {
+			attr(a, "href", "https://primocms.org");
+			attr(a, "class", "logo svelte-ao8nxh");
+			attr(a, "aria-label", "Primo main site");
+		},
+		m(target, anchor) {
+			insert_hydration(target, a, anchor);
+			a.innerHTML = raw_value;
+		},
+		p(ctx, dirty) {
+			get_then_context(ctx);
+		},
+		d(detaching) {
+			if (detaching) detach(a);
+		}
+	};
+}
+
+// (1:0)            <script>                         export let title; export let description; export let secondary_logo; export let nav;               import axios from "axios"; import Icon from "@iconify/svelte/dist/Icon.svelte"; import { fade }
+function create_pending_block_2(ctx) {
+	return {
+		c: noop,
+		l: noop,
+		m: noop,
+		p: noop,
+		d: noop
+	};
+}
+
+// (1:0)            <script>                         export let title; export let description; export let secondary_logo; export let nav;               import axios from "axios"; import Icon from "@iconify/svelte/dist/Icon.svelte"; import { fade }
+function create_catch_block_1(ctx) {
+	return {
+		c: noop,
+		l: noop,
+		m: noop,
+		p: noop,
+		i: noop,
+		o: noop,
+		d: noop
+	};
+}
+
+// (301:70)          {@const { social }
+function create_then_block_1(ctx) {
+	get_then_context_1(ctx);
+	let each_1_anchor;
+	let current;
+	let each_value_3 = /*social*/ ctx[19];
+	let each_blocks = [];
+
+	for (let i = 0; i < each_value_3.length; i += 1) {
+		each_blocks[i] = create_each_block_3(get_each_context_3(ctx, each_value_3, i));
+	}
+
+	const out = i => transition_out(each_blocks[i], 1, 1, () => {
+		each_blocks[i] = null;
+	});
+
+	return {
+		c() {
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			each_1_anchor = empty();
+		},
+		l(nodes) {
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].l(nodes);
+			}
+
+			each_1_anchor = empty();
+		},
+		m(target, anchor) {
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				if (each_blocks[i]) {
+					each_blocks[i].m(target, anchor);
+				}
+			}
+
+			insert_hydration(target, each_1_anchor, anchor);
+			current = true;
+		},
+		p(ctx, dirty) {
+			get_then_context_1(ctx);
+
+			if (dirty & /*parent_href, main_site*/ 32) {
+				each_value_3 = /*social*/ ctx[19];
+				let i;
+
+				for (i = 0; i < each_value_3.length; i += 1) {
+					const child_ctx = get_each_context_3(ctx, each_value_3, i);
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(child_ctx, dirty);
+						transition_in(each_blocks[i], 1);
+					} else {
+						each_blocks[i] = create_each_block_3(child_ctx);
+						each_blocks[i].c();
+						transition_in(each_blocks[i], 1);
+						each_blocks[i].m(each_1_anchor.parentNode, each_1_anchor);
+					}
+				}
+
+				group_outros();
+
+				for (i = each_value_3.length; i < each_blocks.length; i += 1) {
+					out(i);
+				}
+
+				check_outros();
+			}
+		},
+		i(local) {
+			if (current) return;
+
+			for (let i = 0; i < each_value_3.length; i += 1) {
+				transition_in(each_blocks[i]);
+			}
+
+			current = true;
+		},
+		o(local) {
+			each_blocks = each_blocks.filter(Boolean);
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				transition_out(each_blocks[i]);
+			}
+
+			current = false;
+		},
+		d(detaching) {
+			destroy_each(each_blocks, detaching);
+			if (detaching) detach(each_1_anchor);
+		}
+	};
+}
+
+// (303:8) {#each social as { icon, link }}
+function create_each_block_3(ctx) {
+	let a;
+	let icon;
+	let t;
+	let a_href_value;
+	let current;
+	icon = new Component$1({ props: { icon: /*icon*/ ctx[20] } });
+
+	return {
+		c() {
+			a = element("a");
+			create_component(icon.$$.fragment);
+			t = space();
+			this.h();
+		},
+		l(nodes) {
+			a = claim_element(nodes, "A", { href: true, class: true });
+			var a_nodes = children(a);
+			claim_component(icon.$$.fragment, a_nodes);
+			t = claim_space(a_nodes);
+			a_nodes.forEach(detach);
+			this.h();
+		},
+		h() {
+			attr(a, "href", a_href_value = parent_href(/*link*/ ctx[9]));
+			attr(a, "class", "svelte-ao8nxh");
+		},
+		m(target, anchor) {
+			insert_hydration(target, a, anchor);
+			mount_component(icon, a, null);
+			append_hydration(a, t);
+			current = true;
+		},
+		p: noop,
+		i(local) {
+			if (current) return;
+			transition_in(icon.$$.fragment, local);
+			current = true;
+		},
+		o(local) {
+			transition_out(icon.$$.fragment, local);
+			current = false;
+		},
+		d(detaching) {
+			if (detaching) detach(a);
+			destroy_component(icon);
+		}
+	};
+}
+
+// (1:0)            <script>                         export let title; export let description; export let secondary_logo; export let nav;               import axios from "axios"; import Icon from "@iconify/svelte/dist/Icon.svelte"; import { fade }
+function create_pending_block_1(ctx) {
+	return {
+		c: noop,
+		l: noop,
+		m: noop,
+		p: noop,
+		i: noop,
+		o: noop,
+		d: noop
+	};
+}
+
+// (317:8) {#each nav as { link }}
+function create_each_block_2(ctx) {
+	let a;
+	let t_value = /*link*/ ctx[9].label + "";
+	let t;
+	let a_href_value;
+
+	return {
+		c() {
+			a = element("a");
+			t = text(t_value);
+			this.h();
+		},
+		l(nodes) {
+			a = claim_element(nodes, "A", { href: true, class: true });
+			var a_nodes = children(a);
+			t = claim_text(a_nodes, t_value);
+			a_nodes.forEach(detach);
+			this.h();
+		},
+		h() {
+			attr(a, "href", a_href_value = /*link*/ ctx[9].url);
+			attr(a, "class", "link svelte-ao8nxh");
+			toggle_class(a, "active", window.location.pathname === /*link*/ ctx[9].url);
+		},
+		m(target, anchor) {
+			insert_hydration(target, a, anchor);
+			append_hydration(a, t);
+		},
+		p(ctx, dirty) {
+			if (dirty & /*nav*/ 1 && t_value !== (t_value = /*link*/ ctx[9].label + "")) set_data(t, t_value);
+
+			if (dirty & /*nav*/ 1 && a_href_value !== (a_href_value = /*link*/ ctx[9].url)) {
+				attr(a, "href", a_href_value);
+			}
+
+			if (dirty & /*window, nav*/ 1) {
+				toggle_class(a, "active", window.location.pathname === /*link*/ ctx[9].url);
+			}
+		},
+		d(detaching) {
+			if (detaching) detach(a);
+		}
+	};
+}
+
+// (1:0)            <script>                         export let title; export let description; export let secondary_logo; export let nav;               import axios from "axios"; import Icon from "@iconify/svelte/dist/Icon.svelte"; import { fade }
+function create_catch_block(ctx) {
+	return {
+		c: noop,
+		l: noop,
+		m: noop,
+		p: noop,
+		d: noop
+	};
+}
+
+// (329:120)              <ul>               {#each guides as guide}
+function create_then_block(ctx) {
+	let ul;
+	let each_value_1 = /*guides*/ ctx[12];
+	let each_blocks = [];
+
+	for (let i = 0; i < each_value_1.length; i += 1) {
+		each_blocks[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
+	}
+
+	return {
+		c() {
+			ul = element("ul");
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			this.h();
+		},
+		l(nodes) {
+			ul = claim_element(nodes, "UL", { class: true });
+			var ul_nodes = children(ul);
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].l(ul_nodes);
+			}
+
+			ul_nodes.forEach(detach);
+			this.h();
+		},
+		h() {
+			attr(ul, "class", "svelte-ao8nxh");
+		},
+		m(target, anchor) {
+			insert_hydration(target, ul, anchor);
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				if (each_blocks[i]) {
+					each_blocks[i].m(ul, null);
+				}
+			}
+		},
+		p(ctx, dirty) {
+			if (dirty & /*Site*/ 16) {
+				each_value_1 = /*guides*/ ctx[12];
+				let i;
+
+				for (i = 0; i < each_value_1.length; i += 1) {
+					const child_ctx = get_each_context_1(ctx, each_value_1, i);
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(child_ctx, dirty);
+					} else {
+						each_blocks[i] = create_each_block_1(child_ctx);
+						each_blocks[i].c();
+						each_blocks[i].m(ul, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].d(1);
+				}
+
+				each_blocks.length = each_value_1.length;
+			}
+		},
+		d(detaching) {
+			if (detaching) detach(ul);
+			destroy_each(each_blocks, detaching);
+		}
+	};
+}
+
+// (331:14) {#each guides as guide}
+function create_each_block_1(ctx) {
+	let li;
+	let a;
+	let t0_value = /*guide*/ ctx[13].name + "";
+	let t0;
+	let a_href_value;
+	let t1;
+
+	return {
+		c() {
+			li = element("li");
+			a = element("a");
+			t0 = text(t0_value);
+			t1 = space();
+			this.h();
+		},
+		l(nodes) {
+			li = claim_element(nodes, "LI", {});
+			var li_nodes = children(li);
+			a = claim_element(li_nodes, "A", { href: true, class: true });
+			var a_nodes = children(a);
+			t0 = claim_text(a_nodes, t0_value);
+			a_nodes.forEach(detach);
+			t1 = claim_space(li_nodes);
+			li_nodes.forEach(detach);
+			this.h();
+		},
+		h() {
+			attr(a, "href", a_href_value = "/guides/" + /*guide*/ ctx[13].url);
+			attr(a, "class", "svelte-ao8nxh");
+		},
+		m(target, anchor) {
+			insert_hydration(target, li, anchor);
+			append_hydration(li, a);
+			append_hydration(a, t0);
+			append_hydration(li, t1);
+		},
+		p: noop,
+		d(detaching) {
+			if (detaching) detach(li);
+		}
+	};
+}
+
+// (1:0)            <script>                         export let title; export let description; export let secondary_logo; export let nav;               import axios from "axios"; import Icon from "@iconify/svelte/dist/Icon.svelte"; import { fade }
+function create_pending_block(ctx) {
+	return {
+		c: noop,
+		l: noop,
+		m: noop,
+		p: noop,
+		d: noop
+	};
+}
+
+// (346:4) {#if mobileNavOpen}
+function create_if_block$1(ctx) {
+	let nav_1;
+	let t;
+	let button;
+	let icon;
+	let nav_1_transition;
+	let current;
+	let mounted;
+	let dispose;
+	let each_value = /*nav*/ ctx[0];
+	let each_blocks = [];
+
+	for (let i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
+	}
+
+	icon = new Component$1({
+			props: {
+				height: "30",
+				icon: "material-symbols:close"
+			}
+		});
+
+	return {
+		c() {
+			nav_1 = element("nav");
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			t = space();
+			button = element("button");
+			create_component(icon.$$.fragment);
+			this.h();
+		},
+		l(nodes) {
+			nav_1 = claim_element(nodes, "NAV", { id: true, class: true });
+			var nav_1_nodes = children(nav_1);
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].l(nav_1_nodes);
+			}
+
+			t = claim_space(nav_1_nodes);
+
+			button = claim_element(nav_1_nodes, "BUTTON", {
+				id: true,
+				"aria-label": true,
+				class: true
+			});
+
+			var button_nodes = children(button);
+			claim_component(icon.$$.fragment, button_nodes);
+			button_nodes.forEach(detach);
+			nav_1_nodes.forEach(detach);
+			this.h();
+		},
+		h() {
+			attr(button, "id", "close");
+			attr(button, "aria-label", "Close Navigation");
+			attr(button, "class", "svelte-ao8nxh");
+			attr(nav_1, "id", "mobile-nav");
+			attr(nav_1, "class", "svelte-ao8nxh");
+		},
+		m(target, anchor) {
+			insert_hydration(target, nav_1, anchor);
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				if (each_blocks[i]) {
+					each_blocks[i].m(nav_1, null);
+				}
+			}
+
+			append_hydration(nav_1, t);
+			append_hydration(nav_1, button);
+			mount_component(icon, button, null);
+			current = true;
+
+			if (!mounted) {
+				dispose = listen(button, "click", /*toggleMobileNav*/ ctx[3]);
+				mounted = true;
+			}
+		},
+		p(ctx, dirty) {
+			if (dirty & /*nav*/ 1) {
+				each_value = /*nav*/ ctx[0];
+				let i;
+
+				for (i = 0; i < each_value.length; i += 1) {
+					const child_ctx = get_each_context(ctx, each_value, i);
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(child_ctx, dirty);
+					} else {
+						each_blocks[i] = create_each_block(child_ctx);
+						each_blocks[i].c();
+						each_blocks[i].m(nav_1, t);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].d(1);
+				}
+
+				each_blocks.length = each_value.length;
+			}
+		},
+		i(local) {
+			if (current) return;
+			transition_in(icon.$$.fragment, local);
+
+			add_render_callback(() => {
+				if (!current) return;
+				if (!nav_1_transition) nav_1_transition = create_bidirectional_transition(nav_1, fade, { duration: 200 }, true);
+				nav_1_transition.run(1);
+			});
+
+			current = true;
+		},
+		o(local) {
+			transition_out(icon.$$.fragment, local);
+			if (!nav_1_transition) nav_1_transition = create_bidirectional_transition(nav_1, fade, { duration: 200 }, false);
+			nav_1_transition.run(0);
+			current = false;
+		},
+		d(detaching) {
+			if (detaching) detach(nav_1);
+			destroy_each(each_blocks, detaching);
+			destroy_component(icon);
+			if (detaching && nav_1_transition) nav_1_transition.end();
+			mounted = false;
+			dispose();
+		}
+	};
+}
+
+// (348:8) {#each nav as { link }}
+function create_each_block(ctx) {
+	let a;
+	let t_value = /*link*/ ctx[9].label + "";
+	let t;
+	let a_href_value;
+
+	return {
+		c() {
+			a = element("a");
+			t = text(t_value);
+			this.h();
+		},
+		l(nodes) {
+			a = claim_element(nodes, "A", { href: true, class: true });
+			var a_nodes = children(a);
+			t = claim_text(a_nodes, t_value);
+			a_nodes.forEach(detach);
+			this.h();
+		},
+		h() {
+			attr(a, "href", a_href_value = /*link*/ ctx[9].url);
+			attr(a, "class", "link svelte-ao8nxh");
+		},
+		m(target, anchor) {
+			insert_hydration(target, a, anchor);
+			append_hydration(a, t);
+		},
+		p(ctx, dirty) {
+			if (dirty & /*nav*/ 1 && t_value !== (t_value = /*link*/ ctx[9].label + "")) set_data(t, t_value);
+
+			if (dirty & /*nav*/ 1 && a_href_value !== (a_href_value = /*link*/ ctx[9].url)) {
+				attr(a, "href", a_href_value);
+			}
+		},
+		d(detaching) {
+			if (detaching) detach(a);
+		}
+	};
+}
+
+function create_fragment$2(ctx) {
+	let div6;
+	let header;
+	let div0;
+	let promise;
+	let t0;
+	let nav0;
+	let promise_1;
+	let t1;
+	let div5;
+	let div1;
+	let a;
+	let t2;
+	let t3;
+	let div4;
+	let nav1;
+	let t4;
+	let div2;
+	let span1;
+	let span0;
+	let t5;
+	let t6;
+	let icon0;
+	let t7;
+	let promise_2;
+	let t8;
+	let div3;
+	let button;
+	let icon1;
+	let t9;
+	let current;
+	let mounted;
+	let dispose;
+
+	let info = {
+		ctx,
+		current: null,
+		token: null,
+		hasCatch: false,
+		pending: create_pending_block_2,
+		then: create_then_block_2,
+		catch: create_catch_block_2,
+		value: 23
+	};
+
+	handle_promise(promise = /*main_site*/ ctx[5].symbols.match({ name: "Site Navigation" }), info);
+
+	let info_1 = {
+		ctx,
+		current: null,
+		token: null,
+		hasCatch: false,
+		pending: create_pending_block_1,
+		then: create_then_block_1,
+		catch: create_catch_block_1,
+		value: 18,
+		blocks: [,,,]
+	};
+
+	handle_promise(promise_1 = /*main_site*/ ctx[5].symbols.match({ name: "Footer" }), info_1);
+	let each_value_2 = /*nav*/ ctx[0];
+	let each_blocks = [];
+
+	for (let i = 0; i < each_value_2.length; i += 1) {
+		each_blocks[i] = create_each_block_2(get_each_context_2(ctx, each_value_2, i));
+	}
+
+	icon0 = new Component$1({ props: { icon: "tabler:chevron-down" } });
+
+	let info_2 = {
+		ctx,
+		current: null,
+		token: null,
+		hasCatch: false,
+		pending: create_pending_block,
+		then: create_then_block,
+		catch: create_catch_block,
+		value: 12
+	};
+
+	handle_promise(promise_2 = new /*Site*/ ctx[4]().pages.filter(func), info_2);
+
+	icon1 = new Component$1({
+			props: {
+				height: "30",
+				icon: "material-symbols:menu"
+			}
+		});
+
+	let if_block = /*mobileNavOpen*/ ctx[1] && create_if_block$1(ctx);
+
+	return {
+		c() {
+			div6 = element("div");
+			header = element("header");
+			div0 = element("div");
+			info.block.c();
+			t0 = space();
+			nav0 = element("nav");
+			info_1.block.c();
+			t1 = space();
+			div5 = element("div");
+			div1 = element("div");
+			a = element("a");
+			t2 = text("Primo Docs");
+			t3 = space();
+			div4 = element("div");
+			nav1 = element("nav");
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			t4 = space();
+			div2 = element("div");
+			span1 = element("span");
+			span0 = element("span");
+			t5 = text("Guides");
+			t6 = space();
+			create_component(icon0.$$.fragment);
+			t7 = space();
+			info_2.block.c();
+			t8 = space();
+			div3 = element("div");
+			button = element("button");
+			create_component(icon1.$$.fragment);
+			t9 = space();
+			if (if_block) if_block.c();
+			this.h();
+		},
+		l(nodes) {
+			div6 = claim_element(nodes, "DIV", { class: true, id: true });
+			var div6_nodes = children(div6);
+			header = claim_element(div6_nodes, "HEADER", { class: true });
+			var header_nodes = children(header);
+			div0 = claim_element(header_nodes, "DIV", { class: true });
+			var div0_nodes = children(div0);
+			info.block.l(div0_nodes);
+			t0 = claim_space(div0_nodes);
+			nav0 = claim_element(div0_nodes, "NAV", { class: true });
+			var nav0_nodes = children(nav0);
+			info_1.block.l(nav0_nodes);
+			nav0_nodes.forEach(detach);
+			div0_nodes.forEach(detach);
+			t1 = claim_space(header_nodes);
+			div5 = claim_element(header_nodes, "DIV", { class: true });
+			var div5_nodes = children(div5);
+			div1 = claim_element(div5_nodes, "DIV", { class: true });
+			var div1_nodes = children(div1);
+			a = claim_element(div1_nodes, "A", { href: true, class: true });
+			var a_nodes = children(a);
+			t2 = claim_text(a_nodes, "Primo Docs");
+			a_nodes.forEach(detach);
+			div1_nodes.forEach(detach);
+			t3 = claim_space(div5_nodes);
+			div4 = claim_element(div5_nodes, "DIV", { class: true });
+			var div4_nodes = children(div4);
+			nav1 = claim_element(div4_nodes, "NAV", { class: true });
+			var nav1_nodes = children(nav1);
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].l(nav1_nodes);
+			}
+
+			t4 = claim_space(nav1_nodes);
+			div2 = claim_element(nav1_nodes, "DIV", { class: true });
+			var div2_nodes = children(div2);
+			span1 = claim_element(div2_nodes, "SPAN", { class: true });
+			var span1_nodes = children(span1);
+			span0 = claim_element(span1_nodes, "SPAN", {});
+			var span0_nodes = children(span0);
+			t5 = claim_text(span0_nodes, "Guides");
+			span0_nodes.forEach(detach);
+			t6 = claim_space(span1_nodes);
+			claim_component(icon0.$$.fragment, span1_nodes);
+			span1_nodes.forEach(detach);
+			t7 = claim_space(div2_nodes);
+			info_2.block.l(div2_nodes);
+			div2_nodes.forEach(detach);
+			nav1_nodes.forEach(detach);
+			t8 = claim_space(div4_nodes);
+			div3 = claim_element(div4_nodes, "DIV", { class: true });
+			var div3_nodes = children(div3);
+			button = claim_element(div3_nodes, "BUTTON", { id: true, class: true });
+			var button_nodes = children(button);
+			claim_component(icon1.$$.fragment, button_nodes);
+			button_nodes.forEach(detach);
+			div3_nodes.forEach(detach);
+			div4_nodes.forEach(detach);
+			t9 = claim_space(div5_nodes);
+			if (if_block) if_block.l(div5_nodes);
+			div5_nodes.forEach(detach);
+			header_nodes.forEach(detach);
+			div6_nodes.forEach(detach);
+			this.h();
+		},
+		h() {
+			attr(nav0, "class", "svelte-ao8nxh");
+			attr(div0, "class", "parent-nav section-container svelte-ao8nxh");
+			toggle_class(div0, "loaded", /*loaded*/ ctx[2]);
+			attr(a, "href", "/");
+			attr(a, "class", "link svelte-ao8nxh");
+			attr(div1, "class", "logos svelte-ao8nxh");
+			attr(span1, "class", "title svelte-ao8nxh");
+			attr(div2, "class", "dropdown svelte-ao8nxh");
+			attr(nav1, "class", "svelte-ao8nxh");
+			attr(button, "id", "open");
+			attr(button, "class", "svelte-ao8nxh");
+			attr(div3, "class", "call-to-action svelte-ao8nxh");
+			attr(div4, "class", "navigation svelte-ao8nxh");
+			attr(div5, "class", "section-container svelte-ao8nxh");
+			attr(header, "class", "svelte-ao8nxh");
+			attr(div6, "class", "section");
+			attr(div6, "id", "section-1cc78e2c");
+		},
+		m(target, anchor) {
+			insert_hydration(target, div6, anchor);
+			append_hydration(div6, header);
+			append_hydration(header, div0);
+			info.block.m(div0, info.anchor = null);
+			info.mount = () => div0;
+			info.anchor = t0;
+			append_hydration(div0, t0);
+			append_hydration(div0, nav0);
+			info_1.block.m(nav0, info_1.anchor = null);
+			info_1.mount = () => nav0;
+			info_1.anchor = null;
+			append_hydration(header, t1);
+			append_hydration(header, div5);
+			append_hydration(div5, div1);
+			append_hydration(div1, a);
+			append_hydration(a, t2);
+			append_hydration(div5, t3);
+			append_hydration(div5, div4);
+			append_hydration(div4, nav1);
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				if (each_blocks[i]) {
+					each_blocks[i].m(nav1, null);
+				}
+			}
+
+			append_hydration(nav1, t4);
+			append_hydration(nav1, div2);
+			append_hydration(div2, span1);
+			append_hydration(span1, span0);
+			append_hydration(span0, t5);
+			append_hydration(span1, t6);
+			mount_component(icon0, span1, null);
+			append_hydration(div2, t7);
+			info_2.block.m(div2, info_2.anchor = null);
+			info_2.mount = () => div2;
+			info_2.anchor = null;
+			append_hydration(div4, t8);
+			append_hydration(div4, div3);
+			append_hydration(div3, button);
+			mount_component(icon1, button, null);
+			append_hydration(div5, t9);
+			if (if_block) if_block.m(div5, null);
+			current = true;
+
+			if (!mounted) {
+				dispose = listen(button, "click", /*toggleMobileNav*/ ctx[3]);
+				mounted = true;
+			}
+		},
+		p(new_ctx, [dirty]) {
+			ctx = new_ctx;
+			update_await_block_branch(info, ctx, dirty);
+			update_await_block_branch(info_1, ctx, dirty);
+
+			if (!current || dirty & /*loaded*/ 4) {
+				toggle_class(div0, "loaded", /*loaded*/ ctx[2]);
+			}
+
+			if (dirty & /*nav, window*/ 1) {
+				each_value_2 = /*nav*/ ctx[0];
+				let i;
+
+				for (i = 0; i < each_value_2.length; i += 1) {
+					const child_ctx = get_each_context_2(ctx, each_value_2, i);
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(child_ctx, dirty);
+					} else {
+						each_blocks[i] = create_each_block_2(child_ctx);
+						each_blocks[i].c();
+						each_blocks[i].m(nav1, t4);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].d(1);
+				}
+
+				each_blocks.length = each_value_2.length;
+			}
+
+			update_await_block_branch(info_2, ctx, dirty);
+
+			if (/*mobileNavOpen*/ ctx[1]) {
+				if (if_block) {
+					if_block.p(ctx, dirty);
+
+					if (dirty & /*mobileNavOpen*/ 2) {
+						transition_in(if_block, 1);
+					}
+				} else {
+					if_block = create_if_block$1(ctx);
+					if_block.c();
+					transition_in(if_block, 1);
+					if_block.m(div5, null);
+				}
+			} else if (if_block) {
+				group_outros();
+
+				transition_out(if_block, 1, 1, () => {
+					if_block = null;
+				});
+
+				check_outros();
+			}
+		},
+		i(local) {
+			if (current) return;
+			transition_in(info_1.block);
+			transition_in(icon0.$$.fragment, local);
+			transition_in(icon1.$$.fragment, local);
+			transition_in(if_block);
+			current = true;
+		},
+		o(local) {
+			for (let i = 0; i < 3; i += 1) {
+				const block = info_1.blocks[i];
+				transition_out(block);
+			}
+
+			transition_out(icon0.$$.fragment, local);
+			transition_out(icon1.$$.fragment, local);
+			transition_out(if_block);
+			current = false;
+		},
+		d(detaching) {
+			if (detaching) detach(div6);
+			info.block.d();
+			info.token = null;
+			info = null;
+			info_1.block.d();
+			info_1.token = null;
+			info_1 = null;
+			destroy_each(each_blocks, detaching);
+			destroy_component(icon0);
+			info_2.block.d();
+			info_2.token = null;
+			info_2 = null;
+			destroy_component(icon1);
+			if (if_block) if_block.d();
+			mounted = false;
+			dispose();
+		}
+	};
+}
+
+function parent_href(link) {
+	return link.url.startsWith("/")
+	? `https://primocms.org${link.url}`
+	: link.url;
+}
+
+const func = page => page.parent === "092114f6-8259-4f21-8c08-3e5dfcfe2e47";
+
+function instance$2($$self, $$props, $$invalidate) {
+	let { title } = $$props;
+	let { description } = $$props;
+	let { secondary_logo } = $$props;
+	let { nav } = $$props;
+	let mobileNavOpen = false;
+
+	function toggleMobileNav() {
+		$$invalidate(1, mobileNavOpen = !mobileNavOpen);
+	}
+
+	class Site {
+		constructor(url = '') {
+			this.url = url;
+			this.pages = this.createActions("pages");
+			this.symbols = this.createActions("symbols");
+		}
+
+		createActions(property) {
+			const url = this.url;
+
+			return {
+				match: async args => {
+					const [prop] = Object.entries(args);
+					const [key, value] = prop;
+					const { data } = await axios.get(`${url}/primo.json`);
+					const [item] = data[property].filter(item => item[key] === value);
+					return item;
+				},
+				filter: async fn => {
+					const { data } = await axios.get(`${url}/primo.json`);
+					const items = data[property].filter(fn);
+					return items;
+				}
+			};
+		}
+
+		async on_load(fn) {
+			const { data } = await axios.get(`${this.url}/primo.json`);
+			fn(data);
+		}
+	}
+
+	// function Actions(property, url) {
+	//   return {
+	//     match: async (args) => {
+	//       const [prop] = Object.entries(args);
+	//       const [key, value] = prop;
+	//       const { data } = await axios.get(`${url}/primo.json`);
+	//       const [item] = data[property].filter((item) => item[key] === value);
+	//       return item;
+	//     },
+	//     filter: async (fn) => {
+	//       const { data } = await axios.get(`${url}/primo.json`);
+	//       const items = data[property].filter(fn);
+	//       return items;
+	//     },
+	//   };
+	// }
+	// function Site(url = "") {
+	//   this.url = url;
+	//   this.pages = Actions("pages", url);
+	//   this.symbols = Actions("symbols", url);
+	// }
+	// Site.prototype.on_load = async function (fn) {
+	//   console.log(this);
+	//   const { data } = await axios.get(`${this.url}/primo.json`);
+	//   fn(data);
+	// };
+	const main_site = new Site("https://primocms.org");
+
+	let loaded = false;
+
+	main_site.on_load(() => {
+		$$invalidate(2, loaded = true);
+	});
+
+	$$self.$$set = $$props => {
+		if ('title' in $$props) $$invalidate(6, title = $$props.title);
+		if ('description' in $$props) $$invalidate(7, description = $$props.description);
+		if ('secondary_logo' in $$props) $$invalidate(8, secondary_logo = $$props.secondary_logo);
+		if ('nav' in $$props) $$invalidate(0, nav = $$props.nav);
+	};
+
+	return [
+		nav,
+		mobileNavOpen,
+		loaded,
+		toggleMobileNav,
+		Site,
+		main_site,
+		title,
+		description,
+		secondary_logo
+	];
+}
+
+class Component$2 extends SvelteComponent {
+	constructor(options) {
+		super();
+
+		init(this, options, instance$2, create_fragment$2, safe_not_equal, {
+			title: 6,
+			description: 7,
+			secondary_logo: 8,
+			nav: 0
+		});
+	}
+}
+
+/* generated by Svelte v3.58.0 */
+
+function get_each_context$1(ctx, list, i) {
+	const child_ctx = ctx.slice();
+	child_ctx[1] = list[i].url;
+	child_ctx[5] = list[i].name;
+	child_ctx[7] = i;
+	return child_ctx;
+}
+
+// (73:2) {#if breadcrumbs.length > 0}
+function create_if_block$2(ctx) {
+	let ul;
+	let ul_intro;
+	let each_value = /*breadcrumbs*/ ctx[0];
+	let each_blocks = [];
+
+	for (let i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
+	}
+
+	return {
+		c() {
+			ul = element("ul");
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
+			this.h();
+		},
+		l(nodes) {
+			ul = claim_element(nodes, "UL", { class: true });
+			var ul_nodes = children(ul);
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].l(ul_nodes);
+			}
+
+			ul_nodes.forEach(detach);
+			this.h();
+		},
+		h() {
+			attr(ul, "class", "svelte-d3qrpf");
+		},
+		m(target, anchor) {
+			insert_hydration(target, ul, anchor);
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				if (each_blocks[i]) {
+					each_blocks[i].m(ul, null);
+				}
+			}
+		},
+		p(ctx, dirty) {
+			if (dirty & /*breadcrumbs*/ 1) {
+				each_value = /*breadcrumbs*/ ctx[0];
+				let i;
+
+				for (i = 0; i < each_value.length; i += 1) {
+					const child_ctx = get_each_context$1(ctx, each_value, i);
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(child_ctx, dirty);
+					} else {
+						each_blocks[i] = create_each_block$1(child_ctx);
+						each_blocks[i].c();
+						each_blocks[i].m(ul, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].d(1);
+				}
+
+				each_blocks.length = each_value.length;
+			}
+		},
+		i(local) {
+			if (!ul_intro) {
+				add_render_callback(() => {
+					ul_intro = create_in_transition(ul, fade, {});
+					ul_intro.start();
+				});
+			}
+		},
+		o: noop,
+		d(detaching) {
+			if (detaching) detach(ul);
+			destroy_each(each_blocks, detaching);
+		}
+	};
+}
+
+// (79:10) {:else}
+function create_else_block$1(ctx) {
+	let a;
+	let t_value = /*name*/ ctx[5] + "";
+	let t;
+	let a_href_value;
+
+	return {
+		c() {
+			a = element("a");
+			t = text(t_value);
+			this.h();
+		},
+		l(nodes) {
+			a = claim_element(nodes, "A", { href: true, class: true });
+			var a_nodes = children(a);
+			t = claim_text(a_nodes, t_value);
+			a_nodes.forEach(detach);
+			this.h();
+		},
+		h() {
+			attr(a, "href", a_href_value = /*url*/ ctx[1]);
+			attr(a, "class", "svelte-d3qrpf");
+		},
+		m(target, anchor) {
+			insert_hydration(target, a, anchor);
+			append_hydration(a, t);
+		},
+		p(ctx, dirty) {
+			if (dirty & /*breadcrumbs*/ 1 && t_value !== (t_value = /*name*/ ctx[5] + "")) set_data(t, t_value);
+
+			if (dirty & /*breadcrumbs*/ 1 && a_href_value !== (a_href_value = /*url*/ ctx[1])) {
+				attr(a, "href", a_href_value);
+			}
+		},
+		d(detaching) {
+			if (detaching) detach(a);
+		}
+	};
+}
+
+// (77:10) {#if i === breadcrumbs.length - 1}
+function create_if_block_1$1(ctx) {
+	let span;
+	let t_value = /*name*/ ctx[5] + "";
+	let t;
+
+	return {
+		c() {
+			span = element("span");
+			t = text(t_value);
+		},
+		l(nodes) {
+			span = claim_element(nodes, "SPAN", {});
+			var span_nodes = children(span);
+			t = claim_text(span_nodes, t_value);
+			span_nodes.forEach(detach);
+		},
+		m(target, anchor) {
+			insert_hydration(target, span, anchor);
+			append_hydration(span, t);
+		},
+		p(ctx, dirty) {
+			if (dirty & /*breadcrumbs*/ 1 && t_value !== (t_value = /*name*/ ctx[5] + "")) set_data(t, t_value);
+		},
+		d(detaching) {
+			if (detaching) detach(span);
+		}
+	};
+}
+
+// (75:6) {#each breadcrumbs as { url, name }
+function create_each_block$1(ctx) {
+	let li;
+	let t;
+
+	function select_block_type(ctx, dirty) {
+		if (/*i*/ ctx[7] === /*breadcrumbs*/ ctx[0].length - 1) return create_if_block_1$1;
+		return create_else_block$1;
+	}
+
+	let current_block_type = select_block_type(ctx);
+	let if_block = current_block_type(ctx);
+
+	return {
+		c() {
+			li = element("li");
+			if_block.c();
+			t = space();
+			this.h();
+		},
+		l(nodes) {
+			li = claim_element(nodes, "LI", { class: true });
+			var li_nodes = children(li);
+			if_block.l(li_nodes);
+			t = claim_space(li_nodes);
+			li_nodes.forEach(detach);
+			this.h();
+		},
+		h() {
+			attr(li, "class", "svelte-d3qrpf");
+		},
+		m(target, anchor) {
+			insert_hydration(target, li, anchor);
+			if_block.m(li, null);
+			append_hydration(li, t);
+		},
+		p(ctx, dirty) {
+			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
+				if_block.p(ctx, dirty);
+			} else {
+				if_block.d(1);
+				if_block = current_block_type(ctx);
+
+				if (if_block) {
+					if_block.c();
+					if_block.m(li, t);
+				}
+			}
+		},
+		d(detaching) {
+			if (detaching) detach(li);
+			if_block.d();
+		}
+	};
+}
+
+function create_fragment$3(ctx) {
+	let div1;
+	let div0;
+	let if_block = /*breadcrumbs*/ ctx[0].length > 0 && create_if_block$2(ctx);
+
+	return {
+		c() {
+			div1 = element("div");
+			div0 = element("div");
+			if (if_block) if_block.c();
+			this.h();
+		},
+		l(nodes) {
+			div1 = claim_element(nodes, "DIV", { class: true, id: true });
+			var div1_nodes = children(div1);
+			div0 = claim_element(div1_nodes, "DIV", { class: true });
+			var div0_nodes = children(div0);
+			if (if_block) if_block.l(div0_nodes);
+			div0_nodes.forEach(detach);
+			div1_nodes.forEach(detach);
+			this.h();
+		},
+		h() {
+			attr(div0, "class", "section-container svelte-d3qrpf");
+			attr(div1, "class", "section");
+			attr(div1, "id", "section-d768fbf7");
+		},
+		m(target, anchor) {
+			insert_hydration(target, div1, anchor);
+			append_hydration(div1, div0);
+			if (if_block) if_block.m(div0, null);
+		},
+		p(ctx, [dirty]) {
+			if (/*breadcrumbs*/ ctx[0].length > 0) {
+				if (if_block) {
+					if_block.p(ctx, dirty);
+
+					if (dirty & /*breadcrumbs*/ 1) {
+						transition_in(if_block, 1);
+					}
+				} else {
+					if_block = create_if_block$2(ctx);
+					if_block.c();
+					transition_in(if_block, 1);
+					if_block.m(div0, null);
+				}
+			} else if (if_block) {
+				if_block.d(1);
+				if_block = null;
+			}
+		},
+		i(local) {
+			transition_in(if_block);
+		},
+		o: noop,
+		d(detaching) {
+			if (detaching) detach(div1);
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+function instance$3($$self, $$props, $$invalidate) {
+	let { title } = $$props;
+	let { description } = $$props;
+	const url = new URL('https://docs.primocms.org/guides/how-to-use-primo-headless');
+	const parts = url.pathname.split("/").filter(Boolean); // Split by '/' and filter out empty strings
+	let breadcrumbs = [];
+
+	fetch("https://docs.primocms.org/primo.json").then(res => res.json()).then(data => {
+		const page = data.pages.find(page => page.url === parts[0]);
+		const child = data.pages.find(page => page.url === parts[1]);
+
+		// console.log({ page, child });
+		$$invalidate(0, breadcrumbs = [
+			{ url: `/`, name: "Docs" },
+			...child
+			? [
+					{ url: `/${page.url}`, name: page.name },
+					{
+						url: `/${page.url}/${child.url}`,
+						name: child.name
+					}
+				]
+			: [{ url: `/${page.url}`, name: page.name }]
+		]);
+	});
+
+	$$self.$$set = $$props => {
+		if ('title' in $$props) $$invalidate(2, title = $$props.title);
+		if ('description' in $$props) $$invalidate(3, description = $$props.description);
+	};
+
+	return [breadcrumbs, url, title, description];
+}
+
+class Component$3 extends SvelteComponent {
+	constructor(options) {
+		super();
+		init(this, options, instance$3, create_fragment$3, safe_not_equal, { title: 2, description: 3 });
+	}
+}
 
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
 function createCommonjsModule(fn, basedir, module) {
@@ -10751,7 +11618,7 @@ var validateExtension = showdown.validateExtension;
 
 /* generated by Svelte v3.58.0 */
 
-function get_each_context$1(ctx, list, i) {
+function get_each_context$2(ctx, list, i) {
 	const child_ctx = ctx.slice();
 	child_ctx[15] = list[i];
 	return child_ctx;
@@ -10790,7 +11657,7 @@ function create_if_block_3(ctx) {
 }
 
 // (214:4) {#each header_links as link}
-function create_each_block$1(ctx) {
+function create_each_block$2(ctx) {
 	let a;
 	let span;
 	let t0_value = /*link*/ ctx[15].text + "";
@@ -10954,7 +11821,7 @@ function create_if_block_2(ctx) {
 }
 
 // (236:4) {#if video_id}
-function create_if_block_1$1(ctx) {
+function create_if_block_1$2(ctx) {
 	let div;
 	let iframe;
 	let iframe_src_value;
@@ -11006,7 +11873,7 @@ function create_if_block_1$1(ctx) {
 }
 
 // (250:6) {:else}
-function create_else_block$1(ctx) {
+function create_else_block$2(ctx) {
 	let icon;
 	let current;
 
@@ -11042,7 +11909,7 @@ function create_else_block$1(ctx) {
 }
 
 // (248:6) {#if docs}
-function create_if_block$2(ctx) {
+function create_if_block$3(ctx) {
 	let html_tag;
 	let html_anchor;
 
@@ -11076,7 +11943,7 @@ function create_if_block$2(ctx) {
 	};
 }
 
-function create_fragment$3(ctx) {
+function create_fragment$4(ctx) {
 	let scrolling = false;
 
 	let clear_scrolling = () => {
@@ -11104,7 +11971,7 @@ function create_fragment$3(ctx) {
 	let each_blocks = [];
 
 	for (let i = 0; i < each_value.length; i += 1) {
-		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
+		each_blocks[i] = create_each_block$2(get_each_context$2(ctx, each_value, i));
 	}
 
 	const out = i => transition_out(each_blocks[i], 1, 1, () => {
@@ -11112,8 +11979,8 @@ function create_fragment$3(ctx) {
 	});
 
 	let if_block0 = /*github_markdown_file*/ ctx[1] && create_if_block_2();
-	let if_block1 = /*video_id*/ ctx[0] && create_if_block_1$1(ctx);
-	const if_block_creators = [create_if_block$2, create_else_block$1];
+	let if_block1 = /*video_id*/ ctx[0] && create_if_block_1$2(ctx);
+	const if_block_creators = [create_if_block$3, create_else_block$2];
 	const if_blocks = [];
 
 	function select_block_type(ctx, dirty) {
@@ -11185,7 +12052,7 @@ function create_fragment$3(ctx) {
 			attr(link, "rel", "stylesheet");
 			attr(link, "href", "https://unpkg.com/highlightjs@9.16.2/styles/solarized-dark.css");
 			attr(div1, "class", "section");
-			attr(div1, "id", "section-e6d9ef29");
+			attr(div1, "id", "section-b3aa097b");
 		},
 		m(target, anchor) {
 			insert_hydration(target, div1, anchor);
@@ -11235,13 +12102,13 @@ function create_fragment$3(ctx) {
 				let i;
 
 				for (i = 0; i < each_value.length; i += 1) {
-					const child_ctx = get_each_context$1(ctx, each_value, i);
+					const child_ctx = get_each_context$2(ctx, each_value, i);
 
 					if (each_blocks[i]) {
 						each_blocks[i].p(child_ctx, dirty);
 						transition_in(each_blocks[i], 1);
 					} else {
-						each_blocks[i] = create_each_block$1(child_ctx);
+						each_blocks[i] = create_each_block$2(child_ctx);
 						each_blocks[i].c();
 						transition_in(each_blocks[i], 1);
 						each_blocks[i].m(nav, null);
@@ -11282,7 +12149,7 @@ function create_fragment$3(ctx) {
 				if (if_block1) {
 					if_block1.p(ctx, dirty);
 				} else {
-					if_block1 = create_if_block_1$1(ctx);
+					if_block1 = create_if_block_1$2(ctx);
 					if_block1.c();
 					if_block1.m(main, t2);
 				}
@@ -11352,7 +12219,7 @@ function create_fragment$3(ctx) {
 	};
 }
 
-function instance$3($$self, $$props, $$invalidate) {
+function instance$4($$self, $$props, $$invalidate) {
 	let { title } = $$props;
 	let { description } = $$props;
 	let { video_id } = $$props;
@@ -11458,11 +12325,11 @@ function instance$3($$self, $$props, $$invalidate) {
 	];
 }
 
-class Component$3 extends SvelteComponent {
+class Component$4 extends SvelteComponent {
 	constructor(options) {
 		super();
 
-		init(this, options, instance$3, create_fragment$3, safe_not_equal, {
+		init(this, options, instance$4, create_fragment$4, safe_not_equal, {
 			title: 6,
 			description: 7,
 			video_id: 0,
@@ -11474,7 +12341,7 @@ class Component$3 extends SvelteComponent {
 
 /* generated by Svelte v3.58.0 */
 
-function instance$4($$self, $$props, $$invalidate) {
+function instance$5($$self, $$props, $$invalidate) {
 	let { title } = $$props;
 	let { description } = $$props;
 
@@ -11486,16 +12353,16 @@ function instance$4($$self, $$props, $$invalidate) {
 	return [title, description];
 }
 
-class Component$4 extends SvelteComponent {
+class Component$5 extends SvelteComponent {
 	constructor(options) {
 		super();
-		init(this, options, instance$4, null, safe_not_equal, { title: 0, description: 1 });
+		init(this, options, instance$5, null, safe_not_equal, { title: 0, description: 1 });
 	}
 }
 
 /* generated by Svelte v3.58.0 */
 
-function create_fragment$4(ctx) {
+function create_fragment$5(ctx) {
 	let component_0;
 	let t0;
 	let component_1;
@@ -11503,27 +12370,37 @@ function create_fragment$4(ctx) {
 	let component_2;
 	let t2;
 	let component_3;
+	let t3;
+	let component_4;
 	let current;
 
 	component_0 = new Component({
 			props: {
-				title: "Primo Docs: Getting Started",
-				description: "You can download Primo as a desktop application or host it from any static host. "
+				title: "Primo Docs: Publishing",
+				description: ""
 			}
 		});
 
 	component_1 = new Component$2({
 			props: {
-				title: "Primo Docs: Getting Started",
-				description: "You can download Primo as a desktop application or host it from any static host. ",
-				secondary_logo: { "url": "/", "label": "Docs" },
+				title: "Primo Docs: Publishing",
+				description: "",
+				secondary_logo: {
+					"url": "http://localhost:5173/primo-docs",
+					"label": "docs"
+				},
 				nav: [
-					{ "link": { "url": "/", "label": "About" } },
 					{
-						"link": { "url": "/", "label": "Getting Started" }
+						"link": {
+							"url": "/getting-started",
+							"label": "Getting Started"
+						}
 					},
 					{
-						"link": { "url": "/", "label": "Development" }
+						"link": {
+							"url": "/development",
+							"label": "Development"
+						}
 					},
 					{
 						"link": {
@@ -11537,21 +12414,28 @@ function create_fragment$4(ctx) {
 
 	component_2 = new Component$3({
 			props: {
-				title: "Primo Docs: Getting Started",
-				description: "You can download Primo as a desktop application or host it from any static host. ",
-				video_id: "",
-				content: {
-					"html": "<h1 id=\"templating\">Templating</h1>\n<p>Primo utilizes <a href=\"https://svelte.dev/\">Svelte</a> as a templating engine. Svelte is a popular next-generation web development framework used to build interactive web applications. Since Svelte is a superset of HTML and has much more powerful templating capabilities compared to more traditional templating engines like <a href=\"https://handlebarsjs.com/\">Handlebars</a>, it's the perfect tool for creating simple, powerful components.</p>\n<h2 id=\"fields\">Fields</h2>\n<p>Component Fields allow you to define form fields that appear on the CMS side of Primo. When the site is published, the value of those fields is compiled into static HTML.</p>\n<p>At the moment, you can define 7 basic input types (text, image, Markdown, number, switch, URL, link), 1 informational type, and 2 composite types (group &amp; repeater).</p>\n<ul>\n<li><p>Text</p></li>\n<li><p>Image - accessible with {image.url} and {image.alt}</p></li>\n<li><p>Markdown - accessible with {@html description}</p></li>\n<li><p>Number</p></li>\n<li><p>Switch (true/false)</p></li>\n<li><p>URL</p></li>\n<li><p>Link - accessible with {link.url} and {link.label}</p></li>\n<li><p>Info (enables writing instructions to CMS users)</p></li>\n<li><p>Group (used to group fields together)</p></li>\n<li><p>Repeater (used for content lists)</p></li>\n</ul>\n<!-- -->\n<h2 id=\"svelte\"><strong>Svelte</strong></h2>\n<p>Field values can be accessed from the code using the field's key in order to output values into code, conditionally render content, and more.</p>\n<h3 id=\"texthttpssveltedevdocstemplatesyntaxtextexpressions\"><a href=\"https://svelte.dev/docs#template-syntax-text-expressions\"><strong>Text</strong></a></h3>\n<p>Output the value of a text/number field or the value of a JavaScript expression.</p>\n<pre><code class=\"hljs\"><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">h1</span>&gt;</span></span><span class=\"hljs-template-variable\">{heading}</span><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">h1</span>&gt;</span>\n<span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">h2</span>&gt;</span></span><span class=\"hljs-template-variable\">{heading.toUpperCase()}</span><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">h2</span>&gt;</span>\n</span></code></pre>\n<h3 id=\"htmlmarkdownfieldhttpssveltedevdocstemplatesyntaxhtml\"><a href=\"https://svelte.dev/docs#template-syntax-html\"><strong>HTML (Markdown Field)</strong></a></h3>\n<p>Output the HTML value of <strong>Markdown</strong> field using the <code>@html</code> tag inside a text expression and <code>.html</code>. Its Markdown value can be accessed with <code>.markdown</code>.</p>\n<p>Use the :global() modifier to target tags within the content (e.g. <code>:global(h1) { font-size: 30px })</code>.</p>\n<p>Note that HTML can only properly render within a <code>div</code> tag as it can contain heading elements. Attempting to render it within a <code>p</code> or <code>span</code> will create issues.</p>\n<pre><code class=\"hljs\"><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">div</span>&gt;</span></span><span class=\"hljs-template-variable\">{@html content.html}</span><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">div</span>&gt;</span>\n</span></code></pre>\n<h3 id=\"ifconditionalhttpssveltedevdocstemplatesyntaxif\"><a href=\"https://svelte.dev/docs#template-syntax-if\"><strong>If Conditional</strong></a></h3>\n<p>Conditionally render a block of code. This is particularly useful with the 'Switch' field type.</p>\n<pre><code class=\"hljs\"><span class=\"hljs-template-tag\">{#<span class=\"hljs-name\">if</span> image.url}</span><span class=\"language-xml\">\n  <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">img</span> <span class=\"hljs-attr\">src</span>=</span></span><span class=\"hljs-template-variable\">{image.url}</span><span class=\"language-xml\"><span class=\"hljs-tag\"> /&gt;</span>\n</span><span class=\"hljs-template-variable\">{:else <span class=\"hljs-keyword\">if</span> heading}</span><span class=\"language-xml\">\n  <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">h2</span>&gt;</span></span><span class=\"hljs-template-variable\">{heading}</span><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">h2</span>&gt;</span>\n</span><span class=\"hljs-template-variable\">{:else}</span><span class=\"language-xml\">\n  <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">span</span>&gt;</span></span><span class=\"hljs-template-variable\">{fallback}</span><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">span</span>&gt;</span>\n</span><span class=\"hljs-template-tag\">{/<span class=\"hljs-name\">if</span>}</span><span class=\"language-xml\">\n\n</span><span class=\"hljs-template-tag\">{#<span class=\"hljs-name\">if</span> show_footer}</span><span class=\"language-xml\">\n  <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">footer</span>&gt;</span>...<span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">footer</span>&gt;</span>\n</span><span class=\"hljs-template-tag\">{/<span class=\"hljs-name\">if</span>}</span><span class=\"language-xml\">\n</span></code></pre>\n<p>In some cases, it may be preferable to simply use an OR or ternary operator within a text expression.</p>\n<pre><code class=\"hljs html language-html\"><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">h1</span>&gt;</span>{heading || title || fallback}<span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">h1</span>&gt;</span>\n</code></pre>\n<h3 id=\"eachloophttpssveltedevdocstemplatesyntaxeach\"><a href=\"https://svelte.dev/docs#template-syntax-each\"><strong>Each Loop</strong></a></h3>\n<p>Iteratively render a <strong>Repeater</strong> field.</p>\n<pre><code class=\"hljs\"><span class=\"hljs-template-tag\">{#<span class=\"hljs-name\">each</span> links as link}</span><span class=\"language-xml\">\n  <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">a</span> <span class=\"hljs-attr\">href</span>=</span></span><span class=\"hljs-template-variable\">{link.url}</span><span class=\"language-xml\"><span class=\"hljs-tag\">&gt;</span></span><span class=\"hljs-template-variable\">{link.label}</span><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">a</span>&gt;</span>\n</span><span class=\"hljs-template-tag\">{/<span class=\"hljs-name\">each</span>}</span><span class=\"language-xml\">\n</span></code></pre>\n<h2 id=\"onpageediting\">On-page editing</h2>\n<p>Primo will automatically make fields editable on the page by matching a block's field values to its value within the block's DOM element.</p>\n<h3 id=\"implicit\">Implicit</h3>\n<p>All field types besides 'Select' and 'Switch' will be automatically editable, including those within Repeater and Group fields, so long as they are within their own element without any other text.</p>\n<pre><code class=\"hljs\"><span class=\"language-xml\"><span class=\"hljs-comment\">&lt;!-- These will work --&gt;</span>\n<span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">h1</span>&gt;</span>\n  <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">span</span>&gt;</span></span><span class=\"hljs-template-variable\">{heading}</span><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">span</span>&gt;</span>\n  <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">span</span>&gt;</span></span><span class=\"hljs-template-variable\">{subheading}</span><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">span</span>&gt;</span>\n<span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">h1</span>&gt;</span>\n<span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">div</span>&gt;</span>\n  <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">span</span>&gt;</span>&quot;<span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">span</span>&gt;</span>\n  <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">div</span>&gt;</span></span><span class=\"hljs-template-variable\">{@html quote}</span><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">div</span>&gt;</span>\n  <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">span</span>&gt;</span>&quot;<span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">span</span>&gt;</span>\n<span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">div</span>&gt;</span>\n\n<span class=\"hljs-comment\">&lt;!-- These will not --&gt;</span>\n<span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">h1</span>&gt;</span></span><span class=\"hljs-template-variable\">{heading}</span><span class=\"language-xml\"> - </span><span class=\"hljs-template-variable\">{subheading}</span><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">h1</span>&gt;</span>\n<span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">div</span>&gt;</span>&quot;</span><span class=\"hljs-template-variable\">{@html quote}</span><span class=\"language-xml\">&quot;<span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">div</span>&gt;</span>\n</span></code></pre>\n<h3 id=\"explicit\">Explicit</h3>\n<p>You can explicitly set a field value to be on-page editable by setting a <code>data-key</code> attribute with a value matching the field's key. This should only be necessary in cases where Primo can't automatically detect the field value.</p>\n<pre><code class=\"hljs\"><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">div</span> <span class=\"hljs-attr\">data-key</span>=<span class=\"hljs-string\">&quot;description&quot;</span>&gt;</span></span><span class=\"hljs-template-variable\">{@html description.html}</span><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">div</span>&gt;</span>\n\n<span class=\"hljs-comment\">&lt;!-- Repeater field --&gt;</span>\n<span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">ul</span>&gt;</span>\n  </span><span class=\"hljs-template-tag\">{#<span class=\"hljs-name\">each</span> teasers as teaser, i}</span><span class=\"language-xml\">\n    <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">li</span> <span class=\"hljs-attr\">data-key</span>=<span class=\"hljs-string\">&quot;teasers[</span></span></span><span class=\"hljs-template-variable\">{i}</span><span class=\"language-xml\"><span class=\"hljs-tag\"><span class=\"hljs-string\">].item&quot;</span>&gt;</span></span><span class=\"hljs-template-variable\">{teaser.item}</span><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">li</span>&gt;</span>\n  </span><span class=\"hljs-template-tag\">{/<span class=\"hljs-name\">each</span>}</span><span class=\"language-xml\">\n<span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">ul</span>&gt;</span>\n</span></code></pre>",
-					"markdown": "# Templating\n\nPrimo utilizes [Svelte](<https://svelte.dev/>) as a templating engine. Svelte is a popular next-generation web development framework used to build interactive web applications. Since Svelte is a superset of HTML and has much more powerful templating capabilities compared to more traditional templating engines like [Handlebars](<https://handlebarsjs.com/>), it's the perfect tool for creating simple, powerful components.\n\n## Fields\n\nComponent Fields allow you to define form fields that appear on the CMS side of Primo. When the site is published, the value of those fields is compiled into static HTML.\n\nAt the moment, you can define 7 basic input types (text, image, Markdown, number, switch, URL, link), 1 informational type, and 2 composite types (group & repeater).\n\n- Text\n\n- Image - accessible with {image.url} and {image.alt}\n\n- Markdown - accessible with {@html description}\n\n- Number\n\n- Switch (true/false)\n\n- URL\n\n- Link - accessible with {link.url} and {link.label}\n\n- Info (enables writing instructions to CMS users)\n\n- Group (used to group fields together)\n\n- Repeater (used for content lists)\n\n\n<!-- -->\n\n## **Svelte**\n\nField values can be accessed from the code using the field's key in order to output values into code, conditionally render content, and more.\n\n### [**Text**](<https://svelte.dev/docs#template-syntax-text-expressions>)\n\nOutput the value of a text/number field or the value of a JavaScript expression.\n\n```\n<h1>{heading}</h1>\n<h2>{heading.toUpperCase()}</h2>\n```\n\n### [**HTML (Markdown Field)**](<https://svelte.dev/docs#template-syntax-html>)\n\nOutput the HTML value of **Markdown** field using the `@html` tag inside a text expression and `.html`. Its Markdown value can be accessed with `.markdown`.\n\nUse the :global() modifier to target tags within the content (e.g. `:global(h1) { font-size: 30px })`.\n\nNote that HTML can only properly render within a `div` tag as it can contain heading elements. Attempting to render it within a `p` or `span` will create issues.\n\n```\n<div>{@html content.html}</div>\n```\n\n### [**If Conditional**](<https://svelte.dev/docs#template-syntax-if>)\n\nConditionally render a block of code. This is particularly useful with the 'Switch' field type.\n\n```\n{#if image.url}\n  <img src={image.url} />\n{:else if heading}\n  <h2>{heading}</h2>\n{:else}\n  <span>{fallback}</span>\n{/if}\n\n{#if show_footer}\n  <footer>...</footer>\n{/if}\n```\n\nIn some cases, it may be preferable to simply use an OR or ternary operator within a text expression.\n\n```html\n<h1>{heading || title || fallback}</h1>\n```\n\n### [**Each Loop**](<https://svelte.dev/docs#template-syntax-each>)\n\nIteratively render a **Repeater** field.\n\n```\n{#each links as link}\n  <a href={link.url}>{link.label}</a>\n{/each}\n```\n\n## On-page editing\n\nPrimo will automatically make fields editable on the page by matching a block's field values to its value within the block's DOM element.\n\n### Implicit\n\nAll field types besides 'Select' and 'Switch' will be automatically editable, including those within Repeater and Group fields, so long as they are within their own element without any other text.\n\n```\n<!-- These will work -->\n<h1>\n  <span>{heading}</span>\n  <span>{subheading}</span>\n</h1>\n<div>\n  <span>\"</span>\n  <div>{@html quote}</div>\n  <span>\"</span>\n</div>\n\n<!-- These will not -->\n<h1>{heading} - {subheading}</h1>\n<div>\"{@html quote}\"</div>\n```\n\n### Explicit\n\nYou can explicitly set a field value to be on-page editable by setting a `data-key` attribute with a value matching the field's key. This should only be necessary in cases where Primo can't automatically detect the field value.\n\n```\n<div data-key=\"description\">{@html description.html}</div>\n\n<!-- Repeater field -->\n<ul>\n  {#each teasers as teaser, i}\n    <li data-key=\"teasers[{i}].item\">{teaser.item}</li>\n  {/each}\n</ul>\n```\n\n"
-				},
-				github_markdown_file: ""
+				title: "Primo Docs: Publishing",
+				description: ""
 			}
 		});
 
 	component_3 = new Component$4({
 			props: {
-				title: "Primo Docs: Getting Started",
-				description: "You can download Primo as a desktop application or host it from any static host. "
+				title: "Primo Docs: Publishing",
+				description: "",
+				video_id: "",
+				content: {
+					"html": "<h1>How to serve Primo pages from SvelteKit</h1><p>You can use the serverside load hook to intercept requests based on a blocklist or allowlist and fetch/return a static Primo page from the site’s repository instead.</p><p>This is useful when you have some content pages in your SvelteKit app that you want to have easily by yourself and other content editors, or when you have a full Primo site that you want to wrap in a SvelteKit application.</p><h2>Example</h2><p><a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link\" href=\"https://github.com/primocms/sveltekit-with-primo\">Here’s a repo</a> that demonstrates how to load Primo pages from a SvelteKit codebase.</p><p></p><p></p><p></p><p></p><p></p><p></p>",
+					"markdown": "# How to serve Primo pages from SvelteKit\n\nYou can use the serverside load hook to intercept requests based on a blocklist or allowlist and fetch/return a static Primo page from the site’s repository instead.\n\nThis is useful when you have some content pages in your SvelteKit app that you want to have easily by yourself and other content editors, or when you have a full Primo site that you want to wrap in a SvelteKit application.\n\n## Example\n\n[Here’s a repo](<https://github.com/primocms/sveltekit-with-primo>) that demonstrates how to load Primo pages from a SvelteKit codebase.\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+				},
+				github_markdown_file: ""
+			}
+		});
+
+	component_4 = new Component$5({
+			props: {
+				title: "Primo Docs: Publishing",
+				description: ""
 			}
 		});
 
@@ -11564,6 +12448,8 @@ function create_fragment$4(ctx) {
 			create_component(component_2.$$.fragment);
 			t2 = space();
 			create_component(component_3.$$.fragment);
+			t3 = space();
+			create_component(component_4.$$.fragment);
 		},
 		l(nodes) {
 			claim_component(component_0.$$.fragment, nodes);
@@ -11573,6 +12459,8 @@ function create_fragment$4(ctx) {
 			claim_component(component_2.$$.fragment, nodes);
 			t2 = claim_space(nodes);
 			claim_component(component_3.$$.fragment, nodes);
+			t3 = claim_space(nodes);
+			claim_component(component_4.$$.fragment, nodes);
 		},
 		m(target, anchor) {
 			mount_component(component_0, target, anchor);
@@ -11582,6 +12470,8 @@ function create_fragment$4(ctx) {
 			mount_component(component_2, target, anchor);
 			insert_hydration(target, t2, anchor);
 			mount_component(component_3, target, anchor);
+			insert_hydration(target, t3, anchor);
+			mount_component(component_4, target, anchor);
 			current = true;
 		},
 		p: noop,
@@ -11591,6 +12481,7 @@ function create_fragment$4(ctx) {
 			transition_in(component_1.$$.fragment, local);
 			transition_in(component_2.$$.fragment, local);
 			transition_in(component_3.$$.fragment, local);
+			transition_in(component_4.$$.fragment, local);
 			current = true;
 		},
 		o(local) {
@@ -11598,6 +12489,7 @@ function create_fragment$4(ctx) {
 			transition_out(component_1.$$.fragment, local);
 			transition_out(component_2.$$.fragment, local);
 			transition_out(component_3.$$.fragment, local);
+			transition_out(component_4.$$.fragment, local);
 			current = false;
 		},
 		d(detaching) {
@@ -11608,15 +12500,17 @@ function create_fragment$4(ctx) {
 			destroy_component(component_2, detaching);
 			if (detaching) detach(t2);
 			destroy_component(component_3, detaching);
+			if (detaching) detach(t3);
+			destroy_component(component_4, detaching);
 		}
 	};
 }
 
-class Component$5 extends SvelteComponent {
+class Component$6 extends SvelteComponent {
 	constructor(options) {
 		super();
-		init(this, options, null, create_fragment$4, safe_not_equal, {});
+		init(this, options, null, create_fragment$5, safe_not_equal, {});
 	}
 }
 
-export default Component$5;
+export default Component$6;
