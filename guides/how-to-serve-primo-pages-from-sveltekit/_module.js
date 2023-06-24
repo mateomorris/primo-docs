@@ -7848,7 +7848,7 @@ function create_if_block$2(ctx) {
 		i(local) {
 			if (!ul_intro) {
 				add_render_callback(() => {
-					ul_intro = create_in_transition(ul, fade, {});
+					ul_intro = create_in_transition(ul, fade, { duration: 100 });
 					ul_intro.start();
 				});
 			}
@@ -11624,7 +11624,7 @@ function get_each_context$2(ctx, list, i) {
 	return child_ctx;
 }
 
-// (220:8) {#if link.active}
+// (221:8) {#if link.active}
 function create_if_block_3(ctx) {
 	let icon;
 	let current;
@@ -11656,7 +11656,7 @@ function create_if_block_3(ctx) {
 	};
 }
 
-// (214:4) {#each header_links as link}
+// (215:4) {#each header_links as link}
 function create_each_block$2(ctx) {
 	let a;
 	let span;
@@ -11759,7 +11759,7 @@ function create_each_block$2(ctx) {
 	};
 }
 
-// (227:4) {#if github_markdown_file}
+// (228:4) {#if github_markdown_file}
 function create_if_block_2(ctx) {
 	let a;
 	let icon;
@@ -11820,7 +11820,7 @@ function create_if_block_2(ctx) {
 	};
 }
 
-// (236:4) {#if video_id}
+// (237:4) {#if video_id}
 function create_if_block_1$2(ctx) {
 	let div;
 	let iframe;
@@ -11872,7 +11872,7 @@ function create_if_block_1$2(ctx) {
 	};
 }
 
-// (250:6) {:else}
+// (251:6) {:else}
 function create_else_block$2(ctx) {
 	let icon;
 	let current;
@@ -11908,7 +11908,7 @@ function create_else_block$2(ctx) {
 	};
 }
 
-// (248:6) {#if docs}
+// (249:6) {#if docs}
 function create_if_block$3(ctx) {
 	let html_tag;
 	let html_anchor;
@@ -12245,6 +12245,7 @@ function instance$4($$self, $$props, $$invalidate) {
 
 	async function createHeaderLinks(content_node) {
 		await tick();
+		if (!content_node) return;
 
 		$$invalidate(4, header_links = Array.from(content_node.children).filter(n => ["H1", "H2"].includes(n.tagName)).map((n, i) => {
 			return {
@@ -12301,7 +12302,7 @@ function instance$4($$self, $$props, $$invalidate) {
 		}
 
 		if ($$self.$$.dirty & /*docs, content_node*/ 12) {
-			 docs && content_node && createHeaderLinks(content_node);
+			 docs && createHeaderLinks(content_node);
 		}
 
 		if ($$self.$$.dirty & /*header_links, scrollY*/ 48) {

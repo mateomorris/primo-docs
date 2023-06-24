@@ -7744,7 +7744,7 @@ function create_if_block$2(ctx) {
 		i(local) {
 			if (!ul_intro) {
 				add_render_callback(() => {
-					ul_intro = create_in_transition(ul, fade, {});
+					ul_intro = create_in_transition(ul, fade, { duration: 100 });
 					ul_intro.start();
 				});
 			}
