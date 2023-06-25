@@ -11166,7 +11166,7 @@ function create_fragment$3(ctx) {
 			t1 = claim_space(main_nodes);
 			if (if_block1) if_block1.l(main_nodes);
 			t2 = claim_space(main_nodes);
-			div0 = claim_element(main_nodes, "DIV", { class: true });
+			div0 = claim_element(main_nodes, "DIV", { class: true, "data-key": true });
 			var div0_nodes = children(div0);
 			if_block2.l(div0_nodes);
 			div0_nodes.forEach(detach);
@@ -11180,6 +11180,7 @@ function create_fragment$3(ctx) {
 		h() {
 			attr(nav, "class", "svelte-v9kn9v");
 			attr(div0, "class", "content svelte-v9kn9v");
+			attr(div0, "data-key", "content");
 			attr(main, "class", "svelte-v9kn9v");
 			attr(section, "class", "section-container svelte-v9kn9v");
 			attr(link, "rel", "stylesheet");
