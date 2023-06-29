@@ -8113,14 +8113,14 @@ function create_fragment$5(ctx) {
 
 	component_0 = new Component({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: How to store page content on Github",
 				description: ""
 			}
 		});
 
 	component_1 = new Component$2({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: How to store page content on Github",
 				description: "",
 				secondary_logo: {
 					"url": "http://localhost:5173/primo-docs",
@@ -8151,17 +8151,17 @@ function create_fragment$5(ctx) {
 
 	component_2 = new Component$3({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: How to store page content on Github",
 				description: ""
 			}
 		});
 
 	component_3 = new Component$4({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: How to store page content on Github",
 				description: "",
 				content: {
-					"html": "<h1>How to store page content on Github</h1><p>Storing content in a Github repository enables you to collaborate, version, and manage it more easily. Docs sites like this one typically commit their content to Git especially to easily enable contributions and edits.</p><p>In the same way that you can fetch content from pages on other Primo sites, you can also fetch content from other sources - including a Github repository. Instead of having to utilize Github's API, we can easily grab content directly from the Markdown files by fetching their raw urls.</p><p>This approach allows you to build, develop, and manage your site in Primo, while committing some subset of pages to a separate repository where they can be collaborated on and versioned. For instance - on this site, the main pages are stored in a repo and the guides are fully managed from Primo. </p>",
+					"html": "<h1>How to store page content on Github</h1><p>Storing content in a Github repository enables you to collaborate, version, and manage it more easily. Docs sites like this one typically commit their content to Git especially to easily enable contributions and edits.</p><p>In the same way that you can fetch content from pages on other Primo sites, you can also fetch content from other sources - including a Github repository. Instead of having to utilize Github's API, we can easily grab content directly from the Markdown files by fetching their raw urls.</p><p>This approach allows you to build, develop, and manage your site in Primo, while committing some subset of pages to a separate repository where they can be collaborated on and versioned. For instance - on this site, the main pages are stored in a repo and the guides are fully managed from Primo.</p>",
 					"markdown": "# How to store page content on Github\n\nStoring content in a Github repository enables you to collaborate, version, and manage it more easily. Docs sites like this one typically commit their content to Git especially to easily enable contributions and edits.\n\nIn the same way that you can fetch content from pages on other Primo sites, you can also fetch content from other sources - including a Github repository. Instead of having to utilize Github's API, we can easily grab content directly from the Markdown files by fetching their raw urls.\n\nThis approach allows you to build, develop, and manage your site in Primo, while committing some subset of pages to a separate repository where they can be collaborated on and versioned. For instance - on this site, the main pages are stored in a repo and the guides are fully managed from Primo.\n\n"
 				}
 			}
@@ -8169,7 +8169,7 @@ function create_fragment$5(ctx) {
 
 	component_4 = new Component$5({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: How to store page content on Github",
 				description: ""
 			}
 		});

@@ -11250,8 +11250,8 @@ function get_each_context$1(ctx, list, i) {
 	return child_ctx;
 }
 
-// (221:8) {#if link.active}
-function create_if_block_3(ctx) {
+// (218:8) {#if link.active}
+function create_if_block_4(ctx) {
 	let icon;
 	let current;
 	icon = new Component$1({ props: { icon: "bx:chevron-right" } });
@@ -11293,7 +11293,7 @@ function create_each_block$1(ctx) {
 	let a_href_value;
 	let a_class_value;
 	let current;
-	let if_block = /*link*/ ctx[15].active && create_if_block_3();
+	let if_block = /*link*/ ctx[15].active && create_if_block_4();
 
 	return {
 		c() {
@@ -11334,15 +11334,15 @@ function create_each_block$1(ctx) {
 			current = true;
 		},
 		p(ctx, dirty) {
-			if ((!current || dirty & /*header_links*/ 16) && t0_value !== (t0_value = /*link*/ ctx[15].text + "")) set_data(t0, t0_value);
+			if ((!current || dirty & /*header_links*/ 32) && t0_value !== (t0_value = /*link*/ ctx[15].text + "")) set_data(t0, t0_value);
 
 			if (/*link*/ ctx[15].active) {
 				if (if_block) {
-					if (dirty & /*header_links*/ 16) {
+					if (dirty & /*header_links*/ 32) {
 						transition_in(if_block, 1);
 					}
 				} else {
-					if_block = create_if_block_3();
+					if_block = create_if_block_4();
 					if_block.c();
 					transition_in(if_block, 1);
 					if_block.m(a, t2);
@@ -11357,15 +11357,15 @@ function create_each_block$1(ctx) {
 				check_outros();
 			}
 
-			if (!current || dirty & /*header_links*/ 16 && a_href_value !== (a_href_value = "#" + /*link*/ ctx[15].id)) {
+			if (!current || dirty & /*header_links*/ 32 && a_href_value !== (a_href_value = "#" + /*link*/ ctx[15].id)) {
 				attr(a, "href", a_href_value);
 			}
 
-			if (!current || dirty & /*header_links*/ 16 && a_class_value !== (a_class_value = "" + (null_to_empty(/*link*/ ctx[15].level) + " svelte-v9kn9v"))) {
+			if (!current || dirty & /*header_links*/ 32 && a_class_value !== (a_class_value = "" + (null_to_empty(/*link*/ ctx[15].level) + " svelte-v9kn9v"))) {
 				attr(a, "class", a_class_value);
 			}
 
-			if (!current || dirty & /*header_links, header_links*/ 16) {
+			if (!current || dirty & /*header_links, header_links*/ 32) {
 				toggle_class(a, "passed", /*link*/ ctx[15].passed);
 			}
 		},
@@ -11385,8 +11385,8 @@ function create_each_block$1(ctx) {
 	};
 }
 
-// (228:4) {#if github_markdown_file}
-function create_if_block_2(ctx) {
+// (225:4) {#if github_markdown_file}
+function create_if_block_3(ctx) {
 	let a;
 	let icon;
 	let t0;
@@ -11446,8 +11446,8 @@ function create_if_block_2(ctx) {
 	};
 }
 
-// (237:4) {#if video_id}
-function create_if_block_1$1(ctx) {
+// (234:4) {#if video_id}
+function create_if_block_2(ctx) {
 	let div;
 	let iframe;
 	let iframe_src_value;
@@ -11498,7 +11498,7 @@ function create_if_block_1$1(ctx) {
 	};
 }
 
-// (251:6) {:else}
+// (249:6) {:else}
 function create_else_block$1(ctx) {
 	let icon;
 	let current;
@@ -11534,8 +11534,8 @@ function create_else_block$1(ctx) {
 	};
 }
 
-// (249:6) {#if docs}
-function create_if_block$2(ctx) {
+// (247:21) 
+function create_if_block_1$1(ctx) {
 	let html_tag;
 	let html_anchor;
 
@@ -11554,11 +11554,47 @@ function create_if_block$2(ctx) {
 			html_tag.a = html_anchor;
 		},
 		m(target, anchor) {
-			html_tag.m(/*docs*/ ctx[3], target, anchor);
+			html_tag.m(/*docs*/ ctx[4], target, anchor);
 			insert_hydration(target, html_anchor, anchor);
 		},
 		p(ctx, dirty) {
-			if (dirty & /*docs*/ 8) html_tag.p(/*docs*/ ctx[3]);
+			if (dirty & /*docs*/ 16) html_tag.p(/*docs*/ ctx[4]);
+		},
+		i: noop,
+		o: noop,
+		d(detaching) {
+			if (detaching) detach(html_anchor);
+			if (detaching) html_tag.d();
+		}
+	};
+}
+
+// (245:6) {#if content.html}
+function create_if_block$2(ctx) {
+	let html_tag;
+	let raw_value = /*content*/ ctx[1].html + "";
+	let html_anchor;
+
+	return {
+		c() {
+			html_tag = new HtmlTagHydration(false);
+			html_anchor = empty();
+			this.h();
+		},
+		l(nodes) {
+			html_tag = claim_html_tag(nodes, false);
+			html_anchor = empty();
+			this.h();
+		},
+		h() {
+			html_tag.a = html_anchor;
+		},
+		m(target, anchor) {
+			html_tag.m(raw_value, target, anchor);
+			insert_hydration(target, html_anchor, anchor);
+		},
+		p(ctx, dirty) {
+			if (dirty & /*content*/ 2 && raw_value !== (raw_value = /*content*/ ctx[1].html + "")) html_tag.p(raw_value);
 		},
 		i: noop,
 		o: noop,
@@ -11593,7 +11629,7 @@ function create_fragment$3(ctx) {
 	let mounted;
 	let dispose;
 	add_render_callback(/*onwindowscroll*/ ctx[9]);
-	let each_value = /*header_links*/ ctx[4];
+	let each_value = /*header_links*/ ctx[5];
 	let each_blocks = [];
 
 	for (let i = 0; i < each_value.length; i += 1) {
@@ -11604,14 +11640,15 @@ function create_fragment$3(ctx) {
 		each_blocks[i] = null;
 	});
 
-	let if_block0 = /*github_markdown_file*/ ctx[1] && create_if_block_2();
-	let if_block1 = /*video_id*/ ctx[0] && create_if_block_1$1(ctx);
-	const if_block_creators = [create_if_block$2, create_else_block$1];
+	let if_block0 = /*github_markdown_file*/ ctx[2] && create_if_block_3();
+	let if_block1 = /*video_id*/ ctx[0] && create_if_block_2(ctx);
+	const if_block_creators = [create_if_block$2, create_if_block_1$1, create_else_block$1];
 	const if_blocks = [];
 
 	function select_block_type(ctx, dirty) {
-		if (/*docs*/ ctx[3]) return 0;
-		return 1;
+		if (/*content*/ ctx[1].html) return 0;
+		if (/*docs*/ ctx[4]) return 1;
+		return 2;
 	}
 
 	current_block_type_index = select_block_type(ctx);
@@ -11717,15 +11754,15 @@ function create_fragment$3(ctx) {
 			}
 		},
 		p(ctx, [dirty]) {
-			if (dirty & /*scrollY*/ 32 && !scrolling) {
+			if (dirty & /*scrollY*/ 64 && !scrolling) {
 				scrolling = true;
 				clearTimeout(scrolling_timeout);
-				scrollTo(window.pageXOffset, /*scrollY*/ ctx[5]);
+				scrollTo(window.pageXOffset, /*scrollY*/ ctx[6]);
 				scrolling_timeout = setTimeout(clear_scrolling, 100);
 			}
 
-			if (dirty & /*header_links*/ 16) {
-				each_value = /*header_links*/ ctx[4];
+			if (dirty & /*header_links*/ 32) {
+				each_value = /*header_links*/ ctx[5];
 				let i;
 
 				for (i = 0; i < each_value.length; i += 1) {
@@ -11751,13 +11788,13 @@ function create_fragment$3(ctx) {
 				check_outros();
 			}
 
-			if (/*github_markdown_file*/ ctx[1]) {
+			if (/*github_markdown_file*/ ctx[2]) {
 				if (if_block0) {
-					if (dirty & /*github_markdown_file*/ 2) {
+					if (dirty & /*github_markdown_file*/ 4) {
 						transition_in(if_block0, 1);
 					}
 				} else {
-					if_block0 = create_if_block_2();
+					if_block0 = create_if_block_3();
 					if_block0.c();
 					transition_in(if_block0, 1);
 					if_block0.m(main, t1);
@@ -11776,7 +11813,7 @@ function create_fragment$3(ctx) {
 				if (if_block1) {
 					if_block1.p(ctx, dirty);
 				} else {
-					if_block1 = create_if_block_1$1(ctx);
+					if_block1 = create_if_block_2(ctx);
 					if_block1.c();
 					if_block1.m(main, t2);
 				}
@@ -11858,13 +11895,13 @@ function instance$3($$self, $$props, $$invalidate) {
 
 	async function get_docs() {
 		if (!github_markdown_file) {
-			$$invalidate(3, docs = content.html);
+			$$invalidate(4, docs = content.html);
 		} else {
 			const { data } = await axios.get(github_markdown_file);
 			const converted = converter.makeHtml(data);
 
 			// console.log({data, converted})
-			$$invalidate(3, docs = converted);
+			$$invalidate(4, docs = converted);
 		}
 	}
 
@@ -11874,7 +11911,7 @@ function instance$3($$self, $$props, $$invalidate) {
 		await tick();
 		if (!content_node) return;
 
-		$$invalidate(4, header_links = Array.from(content_node.children).filter(n => ["H1", "H2"].includes(n.tagName)).map((n, i) => {
+		$$invalidate(5, header_links = Array.from(content_node.children).filter(n => ["H1", "H2"].includes(n.tagName)).map((n, i) => {
 			return {
 				level: n.tagName,
 				text: n.textContent,
@@ -11888,7 +11925,7 @@ function instance$3($$self, $$props, $$invalidate) {
 	let scrollY;
 
 	function setActiveLink(scrollY) {
-		$$invalidate(4, header_links = header_links.map((link, i) => {
+		$$invalidate(5, header_links = header_links.map((link, i) => {
 			const element = link.node;
 			const top = element ? element.offsetTop : null;
 			const passed = scrollY >= top;
@@ -11905,34 +11942,34 @@ function instance$3($$self, $$props, $$invalidate) {
 	}
 
 	function onwindowscroll() {
-		$$invalidate(5, scrollY = window.pageYOffset);
+		$$invalidate(6, scrollY = window.pageYOffset);
 	}
 
 	function div0_binding($$value) {
 		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
 			content_node = $$value;
-			$$invalidate(2, content_node);
+			$$invalidate(3, content_node);
 		});
 	}
 
 	$$self.$$set = $$props => {
-		if ('title' in $$props) $$invalidate(6, title = $$props.title);
-		if ('description' in $$props) $$invalidate(7, description = $$props.description);
+		if ('title' in $$props) $$invalidate(7, title = $$props.title);
+		if ('description' in $$props) $$invalidate(8, description = $$props.description);
 		if ('video_id' in $$props) $$invalidate(0, video_id = $$props.video_id);
-		if ('content' in $$props) $$invalidate(8, content = $$props.content);
-		if ('github_markdown_file' in $$props) $$invalidate(1, github_markdown_file = $$props.github_markdown_file);
+		if ('content' in $$props) $$invalidate(1, content = $$props.content);
+		if ('github_markdown_file' in $$props) $$invalidate(2, github_markdown_file = $$props.github_markdown_file);
 	};
 
 	$$self.$$.update = () => {
-		if ($$self.$$.dirty & /*github_markdown_file*/ 2) {
+		if ($$self.$$.dirty & /*github_markdown_file*/ 4) {
 			 (get_docs());
 		}
 
-		if ($$self.$$.dirty & /*docs, content_node*/ 12) {
+		if ($$self.$$.dirty & /*docs, content_node*/ 24) {
 			 docs && createHeaderLinks(content_node);
 		}
 
-		if ($$self.$$.dirty & /*header_links, scrollY*/ 48) {
+		if ($$self.$$.dirty & /*header_links, scrollY*/ 96) {
 			// $: console.log({scrollY})
 			 header_links.length > 0 && setActiveLink(scrollY);
 		}
@@ -11940,6 +11977,7 @@ function instance$3($$self, $$props, $$invalidate) {
 
 	return [
 		video_id,
+		content,
 		github_markdown_file,
 		content_node,
 		docs,
@@ -11947,7 +11985,6 @@ function instance$3($$self, $$props, $$invalidate) {
 		scrollY,
 		title,
 		description,
-		content,
 		onwindowscroll,
 		div0_binding
 	];
@@ -11958,11 +11995,11 @@ class Component$3 extends SvelteComponent {
 		super();
 
 		init(this, options, instance$3, create_fragment$3, safe_not_equal, {
-			title: 6,
-			description: 7,
+			title: 7,
+			description: 8,
 			video_id: 0,
-			content: 8,
-			github_markdown_file: 1
+			content: 1,
+			github_markdown_file: 2
 		});
 	}
 }
@@ -12044,8 +12081,8 @@ function create_fragment$4(ctx) {
 				description: "",
 				video_id: "",
 				content: {
-					"html": "<h1>Publishing</h1><p>To publish, you need to either download your site &amp; host it manually, or enter your Github Token to publish to Github - this is the recommended option. Primo will create a new repository under your account or you can deploy to an existing repository. </p><p></p><p>Once you've deployed to your repository, you can publish your site to any modern web host &amp; auto-deploy it when Primo updates the repository. </p><p></p><p></p>",
-					"markdown": "# Publishing\n\nTo publish, you need to either download your site & host it manually, or enter your Github Token to publish to Github - this is the recommended option. Primo will create a new repository under your account or you can deploy to an existing repository.\n\n\n\nOnce you've deployed to your repository, you can publish your site to any modern web host & auto-deploy it when Primo updates the repository.\n\n\n\n\n\n"
+					"html": "<h1>Publishing Primo Sites</h1><p>To publish, you need to either download your site &amp; host it manually, or enter your Github Token to publish to Github - this is the recommended option. Primo will create a new repository under your account or you can deploy to an existing repository.</p><p>Once you've deployed to your repository, you can publish your site to any modern web host &amp; auto-deploy it when you publish updates to the repository from Primo.</p><h2>Connecting to Github</h2><ol><li><p>Go to <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link\" href=\"https://github.com/settings/tokens/new\">Github settings &gt; Generate new token</a>.</p></li><li><p>Give your token a name, select an expiration date (ideally 'No expiration') and <strong>select the repo</strong> permission.</p></li><li><p>Copy + paste the generated token token into Primo &amp; click 'Connect'.</p></li><li><p>Once you're connected, you can choose to either deploy to an existing repo or create a new one.</p></li></ol><h2>Deploying to a web host</h2><p>The easiest way to get your Primo sites online is to deploy them to a Github repository, then sign up for a modern web host like <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link\" href=\"https://vercel.com\">Vercel</a>, <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link\" href=\"https://netlify.com\">Netlify</a>, or <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link\" href=\"https://render.com\">Render</a> to publish your Github repository to the web. When you deploy changes to the repo from Primo, they'll be auto-published to the host without needing to set up additional CI/CD. Below, you can find specific instructions for each host.</p><h3>Deploying to <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link\" href=\"https://vercel.com\">Vercel</a></h3><p>Vercel is the recommended web host since it offers the most straightforward path to get your sites online.</p><ol><li><p>Create a new project</p></li><li><p>Choose your Primo site's repo as the source</p></li><li><p>Click 'Deploy'</p></li></ol><p></p><h3>Deploying to <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link\" href=\"https://netlify.com\">Netlify</a></h3><ol><li><p>Under 'Sites', select 'Import from Git'</p></li><li><p>Click 'Deploy with Github'</p></li><li><p>Choose your Primo site's repo as the source</p></li><li><p>Click 'Deploy demotest'</p></li></ol><p></p><h3>Deploying to <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link\" href=\"https://render.com\">Render</a></h3><ol><li><p>From the dashboard, click 'New Static Site'</p></li><li><p>Choose your Primo site's repo as the source</p></li><li><p>For \"Publish Directory\", type \"<code>./</code>\"</p></li><li><p>Click 'Create Static Site'</p></li></ol><p></p><h3>Deploying to <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link\" href=\"https://pages.github.com/\">Github Pages</a></h3><blockquote><p>⚠️ Github Pages isn't recommended as a host due to conflicts with publishing to subdomains (e.g. <code>mateomorris.github.io/blog</code>). All of the hosts listed above also have free personal plans, can be signed into with your Github account, and can be spun up just as quickly.</p></blockquote><ol><li><p>Ensure your site's deployed repo is named \"<code>yourgithubusername.github.io</code>\"</p></li><li><p>After a moment, your site should be published to \"<code>yourgithubusername.github.io</code>\"</p></li></ol><p></p>",
+					"markdown": "# Publishing Primo Sites\n\nTo publish, you need to either download your site & host it manually, or enter your Github Token to publish to Github - this is the recommended option. Primo will create a new repository under your account or you can deploy to an existing repository.\n\nOnce you've deployed to your repository, you can publish your site to any modern web host & auto-deploy it when you publish updates to the repository from Primo.\n\n## Connecting to Github\n\n1. Go to [Github settings > Generate new token](<https://github.com/settings/tokens/new>).\n\n2. Give your token a name, select an expiration date (ideally 'No expiration') and **select the repo** permission.\n\n3. Copy + paste the generated token token into Primo & click 'Connect'.\n\n4. Once you're connected, you can choose to either deploy to an existing repo or create a new one.\n\n\n<!-- -->\n\n## Deploying to a web host\n\nThe easiest way to get your Primo sites online is to deploy them to a Github repository, then sign up for a modern web host like [Vercel](<https://vercel.com>), [Netlify](<https://netlify.com>), or [Render](<https://render.com>) to publish your Github repository to the web. When you deploy changes to the repo from Primo, they'll be auto-published to the host without needing to set up additional CI/CD. Below, you can find specific instructions for each host.\n\n### Deploying to [Vercel](<https://vercel.com>)\n\nVercel is the recommended web host since it offers the most straightforward path to get your sites online.\n\n1. Create a new project\n\n2. Choose your Primo site's repo as the source\n\n3. Click 'Deploy'\n\n\n<!-- -->\n\n\n\n### Deploying to [Netlify](<https://netlify.com>)\n\n1. Under 'Sites', select 'Import from Git'\n\n2. Click 'Deploy with Github'\n\n3. Choose your Primo site's repo as the source\n\n4. Click 'Deploy demotest'\n\n\n<!-- -->\n\n\n\n### Deploying to [Render](<https://render.com>)\n\n1. From the dashboard, click 'New Static Site'\n\n2. Choose your Primo site's repo as the source\n\n3. For \"Publish Directory\", type \"`./`\"\n\n4. Click 'Create Static Site'\n\n\n<!-- -->\n\n\n\n### Deploying to [Github Pages](<https://pages.github.com/>)\n\n> ⚠️ Github Pages isn't recommended as a host due to conflicts with publishing to subdomains (e.g. `mateomorris.github.io/blog`). All of the hosts listed above also have free personal plans, can be signed into with your Github account, and can be spun up just as quickly.\n\n1. Ensure your site's deployed repo is named \"`yourgithubusername.github.io`\"\n\n2. After a moment, your site should be published to \"`yourgithubusername.github.io`\"\n\n\n<!-- -->\n\n\n\n"
 				},
 				github_markdown_file: ""
 			}

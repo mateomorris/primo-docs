@@ -8113,14 +8113,14 @@ function create_fragment$5(ctx) {
 
 	component_0 = new Component({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: How to use Primo Headless",
 				description: ""
 			}
 		});
 
 	component_1 = new Component$2({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: How to use Primo Headless",
 				description: "",
 				secondary_logo: {
 					"url": "http://localhost:5173/primo-docs",
@@ -8151,14 +8151,14 @@ function create_fragment$5(ctx) {
 
 	component_2 = new Component$3({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: How to use Primo Headless",
 				description: ""
 			}
 		});
 
 	component_3 = new Component$4({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: How to use Primo Headless",
 				description: "",
 				content: {
 					"html": "<h1>How to use Primo Headless</h1><blockquote><p>This guide is about accessing a Primo site’s content from a framework. To <em>render</em> Primo pages from within your existing SvelteKit codebase, read <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link link link link link\" href=\"https://primocms.org/guides/using-primo-with-sveltekit\">using Primo with SvelteKit</a>.</p></blockquote><p>You can access your site from any frontend framework by fetching its site file from its deployed repository.</p><p>A site file is a JSON file deployed with Primo sites which has the properties of “site, pages, sections, symbols”. It defines the entire site and is rarely larger than half a megabyte but can inflate if storing a lot of content or code.</p><h2>Example</h2><p>In <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link\" href=\"https://github.com/mateomorris/primo-headless\">this SvelteKit repository</a>, we can see the site file being fetched directly from the site’s repository in order to hydrate some content in the application (in this case blog posts). It gets the list of blog posts from the list of child pages of Blog. Since the content is fetched from the server, it loads fully rendered.</p><p></p><p></p><p></p><p></p>",
@@ -8169,7 +8169,7 @@ function create_fragment$5(ctx) {
 
 	component_4 = new Component$5({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: How to use Primo Headless",
 				description: ""
 			}
 		});

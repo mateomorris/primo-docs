@@ -497,24 +497,20 @@
     <div class="section" id="section-a27d2a89">
         <section class="section-container svelte-v9kn9v">
             <nav class="svelte-v9kn9v"></nav>
-            <main class="svelte-v9kn9v"><a class="button pr svelte-v9kn9v" href="https://github.com/primocms/docs" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden role="img" width="1em" height="1em" viewBox="0 0 24 24" class="iconify iconify--bxs"><!-- HTML_TAG_START -->
-                        <path fill="currentColor" d="m18.988 2.012l3 3L19.701 7.3l-3-3zM8 16h3l7.287-7.287l-3-3L8 13z" />
-                        <path fill="currentColor" d="M19 19H8.158c-.026 0-.053.01-.079.01c-.033 0-.066-.009-.1-.01H5V5h6.847l2-2H5c-1.103 0-2 .896-2 2v14c0 1.104.897 2 2 2h14a2 2 0 0 0 2-2v-8.668l-2 2V19z" /><!-- HTML_TAG_END -->
-                    </svg>
+            <main class="svelte-v9kn9v"><a class="button pr svelte-v9kn9v" href="https://github.com/primocms/docs" target="_blank">
                     <span class="svelte-v9kn9v">suggest edits</span></a>
 
-                <div class="content svelte-v9kn9v" data-key="content">
-                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden role="img" width="1em" height="1em" viewBox="0 0 24 24" class="iconify iconify--line-md"><!-- HTML_TAG_START -->
-                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2">
-                            <path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z">
-                                <animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0" />
-                            </path>
-                            <path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12">
-                                <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0" />
-                                <animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12" />
-                            </path>
-                        </g><!-- HTML_TAG_END -->
-                    </svg>
+                <div class="content svelte-v9kn9v" data-key="content"><!-- HTML_TAG_START -->
+                    <h1 id="primo">Primo</h1>
+                    <p>Primo is a new kind of monolithic CMS that makes it significantly easier to publish websites by providing a delightful content management experience and an embedded development environment. Primo sites get uploaded to a Github repository as a static site bundle, from where they can be deployed to any web host (usually for free).</p>
+                    <h2 id="comparison">Comparison</h2>
+                    <p>Primo is most technically different from traditional monolithic CMSs like WordPress, Drupal, and Joomla in that it doesn't host your site for you, but instead builds the site as a static bundle so that they can be hosted by a separate server. Additionally, Primo offers more immediate control over the site's code by embedding a modular development environment, where custom development in a traditional monolithic CMS is a much more involved process.</p>
+                    <h2 id="projectstatus">Project Status</h2>
+                    <p>Primo version 2 is in Public Beta as of April 28, 2023. Version 2 introduces significant usability and stability improvements over version 1 and is much more scalable since it stores sites, pages, and sections in a database instead of a flat file backend.</p>
+                    <h2 id="howitworks">How it works</h2>
+                    <p>Primo is a SvelteKit application using Supabase as a backend. Sites, pages, page sections, and symbols (i.e. parent components) are all stored in the database as individual rows containing each's code, fields, and content.</p>
+                    <p>On-page editing works by matching a block's field values to text, link, and image values or explicitly set <code>data-key</code> attributes within the block's rendered HTML. Editable text is powered by <code>contentEditable = true</code> and a TipTap/ProseMirror editor for Markdown fields. The dev environment is powered by CodeMirror.</p>
+                    <p>Rollup and the Svelte compiler are used to compile page blocks into Svelte components (alongside PostCSS for nesting) and to build the static files for the deployed website, which Primo then uploads to Github via its REST API.</p><!-- HTML_TAG_END -->
                 </div>
             </main>
         </section>

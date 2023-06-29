@@ -11643,8 +11643,8 @@ function get_each_context$2(ctx, list, i) {
 	return child_ctx;
 }
 
-// (221:8) {#if link.active}
-function create_if_block_3(ctx) {
+// (218:8) {#if link.active}
+function create_if_block_4(ctx) {
 	let icon;
 	let current;
 	icon = new Component$1({ props: { icon: "bx:chevron-right" } });
@@ -11686,7 +11686,7 @@ function create_each_block$2(ctx) {
 	let a_href_value;
 	let a_class_value;
 	let current;
-	let if_block = /*link*/ ctx[15].active && create_if_block_3();
+	let if_block = /*link*/ ctx[15].active && create_if_block_4();
 
 	return {
 		c() {
@@ -11727,15 +11727,15 @@ function create_each_block$2(ctx) {
 			current = true;
 		},
 		p(ctx, dirty) {
-			if ((!current || dirty & /*header_links*/ 16) && t0_value !== (t0_value = /*link*/ ctx[15].text + "")) set_data(t0, t0_value);
+			if ((!current || dirty & /*header_links*/ 32) && t0_value !== (t0_value = /*link*/ ctx[15].text + "")) set_data(t0, t0_value);
 
 			if (/*link*/ ctx[15].active) {
 				if (if_block) {
-					if (dirty & /*header_links*/ 16) {
+					if (dirty & /*header_links*/ 32) {
 						transition_in(if_block, 1);
 					}
 				} else {
-					if_block = create_if_block_3();
+					if_block = create_if_block_4();
 					if_block.c();
 					transition_in(if_block, 1);
 					if_block.m(a, t2);
@@ -11750,15 +11750,15 @@ function create_each_block$2(ctx) {
 				check_outros();
 			}
 
-			if (!current || dirty & /*header_links*/ 16 && a_href_value !== (a_href_value = "#" + /*link*/ ctx[15].id)) {
+			if (!current || dirty & /*header_links*/ 32 && a_href_value !== (a_href_value = "#" + /*link*/ ctx[15].id)) {
 				attr(a, "href", a_href_value);
 			}
 
-			if (!current || dirty & /*header_links*/ 16 && a_class_value !== (a_class_value = "" + (null_to_empty(/*link*/ ctx[15].level) + " svelte-v9kn9v"))) {
+			if (!current || dirty & /*header_links*/ 32 && a_class_value !== (a_class_value = "" + (null_to_empty(/*link*/ ctx[15].level) + " svelte-v9kn9v"))) {
 				attr(a, "class", a_class_value);
 			}
 
-			if (!current || dirty & /*header_links, header_links*/ 16) {
+			if (!current || dirty & /*header_links, header_links*/ 32) {
 				toggle_class(a, "passed", /*link*/ ctx[15].passed);
 			}
 		},
@@ -11778,8 +11778,8 @@ function create_each_block$2(ctx) {
 	};
 }
 
-// (228:4) {#if github_markdown_file}
-function create_if_block_2(ctx) {
+// (225:4) {#if github_markdown_file}
+function create_if_block_3(ctx) {
 	let a;
 	let icon;
 	let t0;
@@ -11839,8 +11839,8 @@ function create_if_block_2(ctx) {
 	};
 }
 
-// (237:4) {#if video_id}
-function create_if_block_1$2(ctx) {
+// (234:4) {#if video_id}
+function create_if_block_2(ctx) {
 	let div;
 	let iframe;
 	let iframe_src_value;
@@ -11891,7 +11891,7 @@ function create_if_block_1$2(ctx) {
 	};
 }
 
-// (251:6) {:else}
+// (249:6) {:else}
 function create_else_block$2(ctx) {
 	let icon;
 	let current;
@@ -11927,8 +11927,8 @@ function create_else_block$2(ctx) {
 	};
 }
 
-// (249:6) {#if docs}
-function create_if_block$3(ctx) {
+// (247:21) 
+function create_if_block_1$2(ctx) {
 	let html_tag;
 	let html_anchor;
 
@@ -11947,11 +11947,47 @@ function create_if_block$3(ctx) {
 			html_tag.a = html_anchor;
 		},
 		m(target, anchor) {
-			html_tag.m(/*docs*/ ctx[3], target, anchor);
+			html_tag.m(/*docs*/ ctx[4], target, anchor);
 			insert_hydration(target, html_anchor, anchor);
 		},
 		p(ctx, dirty) {
-			if (dirty & /*docs*/ 8) html_tag.p(/*docs*/ ctx[3]);
+			if (dirty & /*docs*/ 16) html_tag.p(/*docs*/ ctx[4]);
+		},
+		i: noop,
+		o: noop,
+		d(detaching) {
+			if (detaching) detach(html_anchor);
+			if (detaching) html_tag.d();
+		}
+	};
+}
+
+// (245:6) {#if content.html}
+function create_if_block$3(ctx) {
+	let html_tag;
+	let raw_value = /*content*/ ctx[1].html + "";
+	let html_anchor;
+
+	return {
+		c() {
+			html_tag = new HtmlTagHydration(false);
+			html_anchor = empty();
+			this.h();
+		},
+		l(nodes) {
+			html_tag = claim_html_tag(nodes, false);
+			html_anchor = empty();
+			this.h();
+		},
+		h() {
+			html_tag.a = html_anchor;
+		},
+		m(target, anchor) {
+			html_tag.m(raw_value, target, anchor);
+			insert_hydration(target, html_anchor, anchor);
+		},
+		p(ctx, dirty) {
+			if (dirty & /*content*/ 2 && raw_value !== (raw_value = /*content*/ ctx[1].html + "")) html_tag.p(raw_value);
 		},
 		i: noop,
 		o: noop,
@@ -11986,7 +12022,7 @@ function create_fragment$4(ctx) {
 	let mounted;
 	let dispose;
 	add_render_callback(/*onwindowscroll*/ ctx[9]);
-	let each_value = /*header_links*/ ctx[4];
+	let each_value = /*header_links*/ ctx[5];
 	let each_blocks = [];
 
 	for (let i = 0; i < each_value.length; i += 1) {
@@ -11997,14 +12033,15 @@ function create_fragment$4(ctx) {
 		each_blocks[i] = null;
 	});
 
-	let if_block0 = /*github_markdown_file*/ ctx[1] && create_if_block_2();
-	let if_block1 = /*video_id*/ ctx[0] && create_if_block_1$2(ctx);
-	const if_block_creators = [create_if_block$3, create_else_block$2];
+	let if_block0 = /*github_markdown_file*/ ctx[2] && create_if_block_3();
+	let if_block1 = /*video_id*/ ctx[0] && create_if_block_2(ctx);
+	const if_block_creators = [create_if_block$3, create_if_block_1$2, create_else_block$2];
 	const if_blocks = [];
 
 	function select_block_type(ctx, dirty) {
-		if (/*docs*/ ctx[3]) return 0;
-		return 1;
+		if (/*content*/ ctx[1].html) return 0;
+		if (/*docs*/ ctx[4]) return 1;
+		return 2;
 	}
 
 	current_block_type_index = select_block_type(ctx);
@@ -12110,15 +12147,15 @@ function create_fragment$4(ctx) {
 			}
 		},
 		p(ctx, [dirty]) {
-			if (dirty & /*scrollY*/ 32 && !scrolling) {
+			if (dirty & /*scrollY*/ 64 && !scrolling) {
 				scrolling = true;
 				clearTimeout(scrolling_timeout);
-				scrollTo(window.pageXOffset, /*scrollY*/ ctx[5]);
+				scrollTo(window.pageXOffset, /*scrollY*/ ctx[6]);
 				scrolling_timeout = setTimeout(clear_scrolling, 100);
 			}
 
-			if (dirty & /*header_links*/ 16) {
-				each_value = /*header_links*/ ctx[4];
+			if (dirty & /*header_links*/ 32) {
+				each_value = /*header_links*/ ctx[5];
 				let i;
 
 				for (i = 0; i < each_value.length; i += 1) {
@@ -12144,13 +12181,13 @@ function create_fragment$4(ctx) {
 				check_outros();
 			}
 
-			if (/*github_markdown_file*/ ctx[1]) {
+			if (/*github_markdown_file*/ ctx[2]) {
 				if (if_block0) {
-					if (dirty & /*github_markdown_file*/ 2) {
+					if (dirty & /*github_markdown_file*/ 4) {
 						transition_in(if_block0, 1);
 					}
 				} else {
-					if_block0 = create_if_block_2();
+					if_block0 = create_if_block_3();
 					if_block0.c();
 					transition_in(if_block0, 1);
 					if_block0.m(main, t1);
@@ -12169,7 +12206,7 @@ function create_fragment$4(ctx) {
 				if (if_block1) {
 					if_block1.p(ctx, dirty);
 				} else {
-					if_block1 = create_if_block_1$2(ctx);
+					if_block1 = create_if_block_2(ctx);
 					if_block1.c();
 					if_block1.m(main, t2);
 				}
@@ -12251,13 +12288,13 @@ function instance$4($$self, $$props, $$invalidate) {
 
 	async function get_docs() {
 		if (!github_markdown_file) {
-			$$invalidate(3, docs = content.html);
+			$$invalidate(4, docs = content.html);
 		} else {
 			const { data } = await axios.get(github_markdown_file);
 			const converted = converter.makeHtml(data);
 
 			// console.log({data, converted})
-			$$invalidate(3, docs = converted);
+			$$invalidate(4, docs = converted);
 		}
 	}
 
@@ -12267,7 +12304,7 @@ function instance$4($$self, $$props, $$invalidate) {
 		await tick();
 		if (!content_node) return;
 
-		$$invalidate(4, header_links = Array.from(content_node.children).filter(n => ["H1", "H2"].includes(n.tagName)).map((n, i) => {
+		$$invalidate(5, header_links = Array.from(content_node.children).filter(n => ["H1", "H2"].includes(n.tagName)).map((n, i) => {
 			return {
 				level: n.tagName,
 				text: n.textContent,
@@ -12281,7 +12318,7 @@ function instance$4($$self, $$props, $$invalidate) {
 	let scrollY;
 
 	function setActiveLink(scrollY) {
-		$$invalidate(4, header_links = header_links.map((link, i) => {
+		$$invalidate(5, header_links = header_links.map((link, i) => {
 			const element = link.node;
 			const top = element ? element.offsetTop : null;
 			const passed = scrollY >= top;
@@ -12298,34 +12335,34 @@ function instance$4($$self, $$props, $$invalidate) {
 	}
 
 	function onwindowscroll() {
-		$$invalidate(5, scrollY = window.pageYOffset);
+		$$invalidate(6, scrollY = window.pageYOffset);
 	}
 
 	function div0_binding($$value) {
 		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
 			content_node = $$value;
-			$$invalidate(2, content_node);
+			$$invalidate(3, content_node);
 		});
 	}
 
 	$$self.$$set = $$props => {
-		if ('title' in $$props) $$invalidate(6, title = $$props.title);
-		if ('description' in $$props) $$invalidate(7, description = $$props.description);
+		if ('title' in $$props) $$invalidate(7, title = $$props.title);
+		if ('description' in $$props) $$invalidate(8, description = $$props.description);
 		if ('video_id' in $$props) $$invalidate(0, video_id = $$props.video_id);
-		if ('content' in $$props) $$invalidate(8, content = $$props.content);
-		if ('github_markdown_file' in $$props) $$invalidate(1, github_markdown_file = $$props.github_markdown_file);
+		if ('content' in $$props) $$invalidate(1, content = $$props.content);
+		if ('github_markdown_file' in $$props) $$invalidate(2, github_markdown_file = $$props.github_markdown_file);
 	};
 
 	$$self.$$.update = () => {
-		if ($$self.$$.dirty & /*github_markdown_file*/ 2) {
+		if ($$self.$$.dirty & /*github_markdown_file*/ 4) {
 			 (get_docs());
 		}
 
-		if ($$self.$$.dirty & /*docs, content_node*/ 12) {
+		if ($$self.$$.dirty & /*docs, content_node*/ 24) {
 			 docs && createHeaderLinks(content_node);
 		}
 
-		if ($$self.$$.dirty & /*header_links, scrollY*/ 48) {
+		if ($$self.$$.dirty & /*header_links, scrollY*/ 96) {
 			// $: console.log({scrollY})
 			 header_links.length > 0 && setActiveLink(scrollY);
 		}
@@ -12333,6 +12370,7 @@ function instance$4($$self, $$props, $$invalidate) {
 
 	return [
 		video_id,
+		content,
 		github_markdown_file,
 		content_node,
 		docs,
@@ -12340,7 +12378,6 @@ function instance$4($$self, $$props, $$invalidate) {
 		scrollY,
 		title,
 		description,
-		content,
 		onwindowscroll,
 		div0_binding
 	];
@@ -12351,11 +12388,11 @@ class Component$4 extends SvelteComponent {
 		super();
 
 		init(this, options, instance$4, create_fragment$4, safe_not_equal, {
-			title: 6,
-			description: 7,
+			title: 7,
+			description: 8,
 			video_id: 0,
-			content: 8,
-			github_markdown_file: 1
+			content: 1,
+			github_markdown_file: 2
 		});
 	}
 }
@@ -12397,14 +12434,14 @@ function create_fragment$5(ctx) {
 
 	component_0 = new Component({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: How to serve Primo pages from SvelteKit",
 				description: ""
 			}
 		});
 
 	component_1 = new Component$2({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: How to serve Primo pages from SvelteKit",
 				description: "",
 				secondary_logo: {
 					"url": "http://localhost:5173/primo-docs",
@@ -12435,14 +12472,14 @@ function create_fragment$5(ctx) {
 
 	component_2 = new Component$3({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: How to serve Primo pages from SvelteKit",
 				description: ""
 			}
 		});
 
 	component_3 = new Component$4({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: How to serve Primo pages from SvelteKit",
 				description: "",
 				video_id: "",
 				content: {
@@ -12455,7 +12492,7 @@ function create_fragment$5(ctx) {
 
 	component_4 = new Component$5({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: How to serve Primo pages from SvelteKit",
 				description: ""
 			}
 		});

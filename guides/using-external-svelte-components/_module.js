@@ -8113,14 +8113,14 @@ function create_fragment$5(ctx) {
 
 	component_0 = new Component({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: Using external Svelte components",
 				description: ""
 			}
 		});
 
 	component_1 = new Component$2({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: Using external Svelte components",
 				description: "",
 				secondary_logo: {
 					"url": "http://localhost:5173/primo-docs",
@@ -8151,25 +8151,25 @@ function create_fragment$5(ctx) {
 
 	component_2 = new Component$3({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: Using external Svelte components",
 				description: ""
 			}
 		});
 
 	component_3 = new Component$4({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: Using external Svelte components",
 				description: "",
 				content: {
-					"html": "<h1>Using external Svelte components</h1><p>In the same way that you can import libraries from your blocks’ JS, you can also import your own libraries and components directly from their repository. By running the dev environment locally, you can also import and use components as you work on them.</p><h2>Example</h2><p>Fork this repo</p><p>Add your components, build, and deploy</p><p>Import from Github raw url in Primo</p><p>Passing props</p><p>App gets hydrated</p><p><a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link link link\" href=\"https://github.com/mateomorris/primo-components\">Github repo</a></p>",
-					"markdown": "# Using external Svelte components\n\nIn the same way that you can import libraries from your blocks’ JS, you can also import your own libraries and components directly from their repository. By running the dev environment locally, you can also import and use components as you work on them.\n\n## Example\n\nFork this repo\n\nAdd your components, build, and deploy\n\nImport from Github raw url in Primo\n\nPassing props\n\nApp gets hydrated\n\n[Github repo](<https://github.com/mateomorris/primo-components>)\n\n"
+					"html": "<h1>Using external Svelte components</h1><p>In the same way that you can import libraries from your blocks’ JS, you can also import your <em>own</em> libraries and components directly from your site's repository (or npm). This may be necessary for using some Svelte libraries due to an <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link\" href=\"https://github.com/primocms/primo/issues/264\">existing issue</a> with bundling. </p><h2>Example</h2><ol><li><p>Fork <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" class=\"link link link link link link link link\" href=\"https://github.com/mateomorris/primo-components\">this repo</a></p></li><li><p>Add your components, build, and deploy</p></li><li><p>Import from Github raw url in Primo</p></li><li><p>Passing props</p></li><li><p>App gets hydrated</p></li></ol>",
+					"markdown": "# Using external Svelte components\n\nIn the same way that you can import libraries from your blocks’ JS, you can also import your *own* libraries and components directly from your site's repository (or npm). This may be necessary for using some Svelte libraries due to an [existing issue](<https://github.com/primocms/primo/issues/264>) with bundling.\n\n## Example\n\n1. Fork [this repo](<https://github.com/mateomorris/primo-components>)\n\n2. Add your components, build, and deploy\n\n3. Import from Github raw url in Primo\n\n4. Passing props\n\n5. App gets hydrated\n\n\n<!-- -->\n\n"
 				}
 			}
 		});
 
 	component_4 = new Component$5({
 			props: {
-				title: "Primo Docs: Publishing",
+				title: "Primo Docs: Using external Svelte components",
 				description: ""
 			}
 		});

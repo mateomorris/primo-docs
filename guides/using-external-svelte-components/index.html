@@ -3,7 +3,7 @@
 
 <head>
     <meta name="generator" content="Primo" />
-    <title>Primo Docs: Publishing</title><!-- HEAD_svelte-tc9q34_START -->
+    <title>Primo Docs: Using external Svelte components</title><!-- HEAD_svelte-tc9q34_START -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <link rel="shortcut icon" type="image/png" href="https://res.cloudinary.com/primoaf/image/upload/v1659676914/favicon_roaxv0.png">
@@ -406,14 +406,25 @@
         <div class="section">
             <div class="section-container content svelte-1eln4k7"><!-- HTML_TAG_START -->
                 <h1>Using external Svelte components</h1>
-                <p>In the same way that you can import libraries from your blocks’ JS, you can also import your own libraries and components directly from their repository. By running the dev environment locally, you can also import and use components as you work on them.</p>
+                <p>In the same way that you can import libraries from your blocks’ JS, you can also import your <em>own</em> libraries and components directly from your site's repository (or npm). This may be necessary for using some Svelte libraries due to an <a target="_blank" rel="noopener noreferrer nofollow" class="link link" href="https://github.com/primocms/primo/issues/264">existing issue</a> with bundling. </p>
                 <h2>Example</h2>
-                <p>Fork this repo</p>
-                <p>Add your components, build, and deploy</p>
-                <p>Import from Github raw url in Primo</p>
-                <p>Passing props</p>
-                <p>App gets hydrated</p>
-                <p><a target="_blank" rel="noopener noreferrer nofollow" class="link link link link" href="https://github.com/mateomorris/primo-components">Github repo</a></p><!-- HTML_TAG_END -->
+                <ol>
+                    <li>
+                        <p>Fork <a target="_blank" rel="noopener noreferrer nofollow" class="link link link link link link link link" href="https://github.com/mateomorris/primo-components">this repo</a></p>
+                    </li>
+                    <li>
+                        <p>Add your components, build, and deploy</p>
+                    </li>
+                    <li>
+                        <p>Import from Github raw url in Primo</p>
+                    </li>
+                    <li>
+                        <p>Passing props</p>
+                    </li>
+                    <li>
+                        <p>App gets hydrated</p>
+                    </li>
+                </ol><!-- HTML_TAG_END -->
             </div>
         </div>
     </div>
