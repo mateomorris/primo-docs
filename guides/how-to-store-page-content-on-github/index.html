@@ -3,7 +3,7 @@
 
 <head>
     <meta name="generator" content="Primo" />
-    <title>Primo Docs: How to store page content on Github</title><!-- HEAD_svelte-tc9q34_START -->
+    <title>Primo Docs: How to retrieve page content from Github</title><!-- HEAD_svelte-tc9q34_START -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <link rel="shortcut icon" type="image/png" href="https://res.cloudinary.com/primoaf/image/upload/v1659676914/favicon_roaxv0.png">
@@ -369,8 +369,16 @@
             text-decoration: underline
         }
 
-        .section-container.svelte-1eln4k7 {
+        .section-container.svelte-26sji5 {
             max-width: 700px
+        }
+
+        .content.svelte-26sji5 .button {
+            color: #222;
+            text-decoration: none;
+            font-weight: 500;
+            margin-block: 1.5rem;
+            display: inline-block
         }
     </style>
 </head>
@@ -404,11 +412,43 @@
     </div>
     <div class="section" id="section-2e03442a">
         <div class="section">
-            <div class="section-container content svelte-1eln4k7"><!-- HTML_TAG_START -->
-                <h1>How to store page content on Github</h1>
-                <p>Storing content in a Github repository enables you to collaborate, version, and manage it more easily. Docs sites like this one typically commit their content to Git especially to easily enable contributions and edits.</p>
-                <p>In the same way that you can fetch content from pages on other Primo sites, you can also fetch content from other sources - including a Github repository. Instead of having to utilize Github's API, we can easily grab content directly from the Markdown files by fetching their raw urls.</p>
-                <p>This approach allows you to build, develop, and manage your site in Primo, while committing some subset of pages to a separate repository where they can be collaborated on and versioned. For instance - on this site, the main pages are stored in a repo and the guides are fully managed from Primo.</p><!-- HTML_TAG_END -->
+            <div class="section-container content svelte-26sji5" data-key="null"><!-- HTML_TAG_START -->
+                <h1 id="howtoretrievepagecontentfromgithub">How to retrieve page content from Github</h1>
+                <p>In the same way that you can fetch content from pages on other Primo sites, you can also fetch content from other sources - including a Github repository. Storing content in a Github repository enables you to collaborate, version, and manage it more easily. Docs sites like this one typically commit their content to Git especially to easily enable contributions and edits. Instead of having to utilize Github's API, we can easily grab content directly from the Markdown files by fetching their raw URLs.</p>
+                <p>This approach allows you to build, develop, and manage your site in Primo, while committing some subset of pages to a separate repository where they can be collaborated on and versioned. For instance - on this site, the main pages are stored in a repo and the guides are fully managed from Primo.</p>
+                <h2 id="instructions">Instructions</h2>
+                <p>Here we'll walk through how to store Markdown in a Github repo. These instructions use the Primo Docs as an example, since most of its content is stored in a repo.</p>
+                <ol>
+                    <li>
+                        <p>Set up your pages in Primo.</p>
+                    </li>
+                    <li>
+                        <p>Commit your content to a Github repo (ideally as Markdown files).
+                            <img src="https://github.com/primocms/docs/blob/main/assets/guides_storing_content_in_github.png?raw=true" alt="Github docs repo" />
+                        </p>
+                    </li>
+                    <li>
+                        <p>Fetch the content from a Block using the raw Github url. If it's stored as Markdown, you can parse it using a parsing library like <a href="https://github.com/showdownjs/showdown">Showdown</a>.</p>
+                    </li>
+                </ol>
+                <h3 id="example">Example</h3>
+                <p>If you've created a repository with your content and a Block with a 'URL' field with the key of <code>github_markdown_file_url</code>, the code below would render the Markdown as HTML. You can download the full Block below the code example.</p>
+                <p>HTML: </p>
+                <pre><code class="hljs"><span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><span class="hljs-template-variable">{@html content}</span><span class="language-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</span></code></pre>
+                <p>JS:</p>
+                <pre><code class="hljs javascript language-javascript"><span class="hljs-keyword">import</span> showdown <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;showdown&quot;</span>;
+<span class="hljs-keyword">const</span> converter = <span class="hljs-keyword">new</span> showdown.<span class="hljs-title class_">Converter</span>();
+
+<span class="hljs-keyword">let</span> content = <span class="hljs-string">&#x27;&#x27;</span>;
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">get_content</span>(<span class="hljs-params">url</span>) {
+  <span class="hljs-keyword">const</span> markdown = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(url).<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> res.<span class="hljs-title function_">text</span>());
+  <span class="hljs-keyword">const</span> converted = converter.<span class="hljs-title function_">makeHtml</span>(markdown);
+  content = converted;
+}
+<span class="hljs-attr">$</span>: <span class="hljs-title function_">get_content</span>(github_markdown_file_url);
+</code></pre>
+                <p><a class="button" href="https://raw.githubusercontent.com/primocms/docs/main/assets/Markdown%20from%20Github.json" download="markdown_from_github.json">Download Block</a></p><!-- HTML_TAG_END -->
             </div>
         </div>
     </div>

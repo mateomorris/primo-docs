@@ -8026,7 +8026,7 @@ function create_fragment$4(ctx) {
 			var div2_nodes = children(div2);
 			div1 = claim_element(div2_nodes, "DIV", { class: true });
 			var div1_nodes = children(div1);
-			div0 = claim_element(div1_nodes, "DIV", { class: true });
+			div0 = claim_element(div1_nodes, "DIV", { class: true, "data-key": true });
 			var div0_nodes = children(div0);
 			div0_nodes.forEach(detach);
 			div1_nodes.forEach(detach);
@@ -8034,7 +8034,8 @@ function create_fragment$4(ctx) {
 			this.h();
 		},
 		h() {
-			attr(div0, "class", "section-container content svelte-1eln4k7");
+			attr(div0, "class", "section-container content svelte-26sji5");
+			attr(div0, "data-key", "null");
 			attr(div1, "class", "section");
 			attr(div2, "class", "section");
 			attr(div2, "id", "section-2e03442a");
@@ -8113,14 +8114,14 @@ function create_fragment$5(ctx) {
 
 	component_0 = new Component({
 			props: {
-				title: "Primo Docs: How to store page content on Github",
+				title: "Primo Docs: How to retrieve page content from Github",
 				description: ""
 			}
 		});
 
 	component_1 = new Component$2({
 			props: {
-				title: "Primo Docs: How to store page content on Github",
+				title: "Primo Docs: How to retrieve page content from Github",
 				description: "",
 				secondary_logo: {
 					"url": "http://localhost:5173/primo-docs",
@@ -8151,25 +8152,25 @@ function create_fragment$5(ctx) {
 
 	component_2 = new Component$3({
 			props: {
-				title: "Primo Docs: How to store page content on Github",
+				title: "Primo Docs: How to retrieve page content from Github",
 				description: ""
 			}
 		});
 
 	component_3 = new Component$4({
 			props: {
-				title: "Primo Docs: How to store page content on Github",
+				title: "Primo Docs: How to retrieve page content from Github",
 				description: "",
 				content: {
-					"html": "<h1>How to store page content on Github</h1><p>Storing content in a Github repository enables you to collaborate, version, and manage it more easily. Docs sites like this one typically commit their content to Git especially to easily enable contributions and edits.</p><p>In the same way that you can fetch content from pages on other Primo sites, you can also fetch content from other sources - including a Github repository. Instead of having to utilize Github's API, we can easily grab content directly from the Markdown files by fetching their raw urls.</p><p>This approach allows you to build, develop, and manage your site in Primo, while committing some subset of pages to a separate repository where they can be collaborated on and versioned. For instance - on this site, the main pages are stored in a repo and the guides are fully managed from Primo.</p>",
-					"markdown": "# How to store page content on Github\n\nStoring content in a Github repository enables you to collaborate, version, and manage it more easily. Docs sites like this one typically commit their content to Git especially to easily enable contributions and edits.\n\nIn the same way that you can fetch content from pages on other Primo sites, you can also fetch content from other sources - including a Github repository. Instead of having to utilize Github's API, we can easily grab content directly from the Markdown files by fetching their raw urls.\n\nThis approach allows you to build, develop, and manage your site in Primo, while committing some subset of pages to a separate repository where they can be collaborated on and versioned. For instance - on this site, the main pages are stored in a repo and the guides are fully managed from Primo.\n\n"
+					"html": "<h1 id=\"howtoretrievepagecontentfromgithub\">How to retrieve page content from Github</h1>\n<p>In the same way that you can fetch content from pages on other Primo sites, you can also fetch content from other sources - including a Github repository. Storing content in a Github repository enables you to collaborate, version, and manage it more easily. Docs sites like this one typically commit their content to Git especially to easily enable contributions and edits. Instead of having to utilize Github's API, we can easily grab content directly from the Markdown files by fetching their raw URLs.</p>\n<p>This approach allows you to build, develop, and manage your site in Primo, while committing some subset of pages to a separate repository where they can be collaborated on and versioned. For instance - on this site, the main pages are stored in a repo and the guides are fully managed from Primo.</p>\n<h2 id=\"instructions\">Instructions</h2>\n<p>Here we'll walk through how to store Markdown in a Github repo. These instructions use the Primo Docs as an example, since most of its content is stored in a repo.</p>\n<ol>\n<li><p>Set up your pages in Primo.</p></li>\n<li><p>Commit your content to a Github repo (ideally as Markdown files).\n<img src=\"https://github.com/primocms/docs/blob/main/assets/guides_storing_content_in_github.png?raw=true\" alt=\"Github docs repo\" /></p></li>\n<li><p>Fetch the content from a Block using the raw Github url. If it's stored as Markdown, you can parse it using a parsing library like <a href=\"https://github.com/showdownjs/showdown\">Showdown</a>.</p></li>\n</ol>\n<h3 id=\"example\">Example</h3>\n<p>If you've created a repository with your content and a Block with a 'URL' field with the key of <code>github_markdown_file_url</code>, the code below would render the Markdown as HTML. You can download the full Block below the code example.</p>\n<p>HTML: </p>\n<pre><code class=\"hljs\"><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">div</span>&gt;</span></span><span class=\"hljs-template-variable\">{@html content}</span><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">div</span>&gt;</span>\n</span></code></pre>\n<p>JS:</p>\n<pre><code class=\"hljs javascript language-javascript\"><span class=\"hljs-keyword\">import</span> showdown <span class=\"hljs-keyword\">from</span> <span class=\"hljs-string\">&quot;showdown&quot;</span>;\n<span class=\"hljs-keyword\">const</span> converter = <span class=\"hljs-keyword\">new</span> showdown.<span class=\"hljs-title class_\">Converter</span>();\n\n<span class=\"hljs-keyword\">let</span> content = <span class=\"hljs-string\">&#x27;&#x27;</span>;\n<span class=\"hljs-keyword\">async</span> <span class=\"hljs-keyword\">function</span> <span class=\"hljs-title function_\">get_content</span>(<span class=\"hljs-params\">url</span>) {\n  <span class=\"hljs-keyword\">const</span> markdown = <span class=\"hljs-keyword\">await</span> <span class=\"hljs-title function_\">fetch</span>(url).<span class=\"hljs-title function_\">then</span>(<span class=\"hljs-function\"><span class=\"hljs-params\">res</span> =&gt;</span> res.<span class=\"hljs-title function_\">text</span>());\n  <span class=\"hljs-keyword\">const</span> converted = converter.<span class=\"hljs-title function_\">makeHtml</span>(markdown);\n  content = converted;\n}\n<span class=\"hljs-attr\">$</span>: <span class=\"hljs-title function_\">get_content</span>(github_markdown_file_url);\n</code></pre>\n<p><a class=\"button\" href=\"https://raw.githubusercontent.com/primocms/docs/main/assets/Markdown%20from%20Github.json\" download=\"markdown_from_github.json\">Download Block</a></p>",
+					"markdown": "# How to retrieve page content from Github\n\nIn the same way that you can fetch content from pages on other Primo sites, you can also fetch content from other sources - including a Github repository. Storing content in a Github repository enables you to collaborate, version, and manage it more easily. Docs sites like this one typically commit their content to Git especially to easily enable contributions and edits. Instead of having to utilize Github's API, we can easily grab content directly from the Markdown files by fetching their raw URLs.\n\nThis approach allows you to build, develop, and manage your site in Primo, while committing some subset of pages to a separate repository where they can be collaborated on and versioned. For instance - on this site, the main pages are stored in a repo and the guides are fully managed from Primo.\n\n## Instructions\n\nHere we'll walk through how to store Markdown in a Github repo. These instructions use the Primo Docs as an example, since most of its content is stored in a repo.\n\n1. Set up your pages in Primo.\n\n2. Commit your content to a Github repo (ideally as Markdown files).\n![Github docs repo](https://github.com/primocms/docs/blob/main/assets/guides_storing_content_in_github.png?raw=true)\n\n3. Fetch the content from a Block using the raw Github url. If it's stored as Markdown, you can parse it using a parsing library like [Showdown](<https://github.com/showdownjs/showdown>).\n\n### Example\nIf you've created a repository with your content and a Block with a 'URL' field with the key of `github_markdown_file_url`, the code below would render the Markdown as HTML. You can download the full Block below the code example.\n\nHTML: \n```\n<div>{@html content}</div>\n```\n\nJS:\n```javascript\nimport showdown from \"showdown\";\nconst converter = new showdown.Converter();\n\nlet content = '';\nasync function get_content(url) {\n  const markdown = await fetch(url).then(res => res.text());\n  const converted = converter.makeHtml(markdown);\n  content = converted;\n}\n$: get_content(github_markdown_file_url);\n```\n\n<a class=\"button\" href=\"https://raw.githubusercontent.com/primocms/docs/main/assets/Markdown%20from%20Github.json\" download=\"markdown_from_github.json\">Download Block</a>"
 				}
 			}
 		});
 
 	component_4 = new Component$5({
 			props: {
-				title: "Primo Docs: How to store page content on Github",
+				title: "Primo Docs: How to retrieve page content from Github",
 				description: ""
 			}
 		});

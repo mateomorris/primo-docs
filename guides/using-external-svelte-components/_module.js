@@ -8026,7 +8026,7 @@ function create_fragment$4(ctx) {
 			var div2_nodes = children(div2);
 			div1 = claim_element(div2_nodes, "DIV", { class: true });
 			var div1_nodes = children(div1);
-			div0 = claim_element(div1_nodes, "DIV", { class: true });
+			div0 = claim_element(div1_nodes, "DIV", { class: true, "data-key": true });
 			var div0_nodes = children(div0);
 			div0_nodes.forEach(detach);
 			div1_nodes.forEach(detach);
@@ -8034,7 +8034,8 @@ function create_fragment$4(ctx) {
 			this.h();
 		},
 		h() {
-			attr(div0, "class", "section-container content svelte-1eln4k7");
+			attr(div0, "class", "section-container content svelte-26sji5");
+			attr(div0, "data-key", "null");
 			attr(div1, "class", "section");
 			attr(div2, "class", "section");
 			attr(div2, "id", "section-5b319540");
