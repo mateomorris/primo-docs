@@ -7963,7 +7963,7 @@ function create_fragment$3(ctx) {
 function instance$3($$self, $$props, $$invalidate) {
 	let { title } = $$props;
 	let { description } = $$props;
-	const in_primo = window.location.origin.includes('primo');
+	const in_primo = window.location.origin.includes('vercel');
 
 	const url = new URL(in_primo
 		? 'https://docs.primocms.org/guides/how-to-use-primo-headless'
