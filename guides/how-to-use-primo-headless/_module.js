@@ -8098,12 +8098,16 @@ function create_fragment$4(ctx) {
 	let div1;
 	let div0;
 	let raw_value = /*content*/ ctx[0].html + "";
+	let t;
+	let link;
 
 	return {
 		c() {
 			div2 = element("div");
 			div1 = element("div");
 			div0 = element("div");
+			t = space();
+			link = element("link");
 			this.h();
 		},
 		l(nodes) {
@@ -8115,6 +8119,8 @@ function create_fragment$4(ctx) {
 			var div0_nodes = children(div0);
 			div0_nodes.forEach(detach);
 			div1_nodes.forEach(detach);
+			t = claim_space(div2_nodes);
+			link = claim_element(div2_nodes, "LINK", { rel: true, href: true });
 			div2_nodes.forEach(detach);
 			this.h();
 		},
@@ -8122,6 +8128,8 @@ function create_fragment$4(ctx) {
 			attr(div0, "class", "section-container content svelte-26sji5");
 			attr(div0, "data-key", "null");
 			attr(div1, "class", "section");
+			attr(link, "rel", "stylesheet");
+			attr(link, "href", "https://unpkg.com/highlightjs@9.16.2/styles/solarized-dark.css");
 			attr(div2, "class", "section");
 			attr(div2, "id", "section-cf17a964");
 		},
@@ -8131,6 +8139,8 @@ function create_fragment$4(ctx) {
 			append_hydration(div1, div0);
 			div0.innerHTML = raw_value;
 			/*div0_binding*/ ctx[4](div0);
+			append_hydration(div2, t);
+			append_hydration(div2, link);
 		},
 		p(ctx, [dirty]) {
 			if (dirty & /*content*/ 1 && raw_value !== (raw_value = /*content*/ ctx[0].html + "")) div0.innerHTML = raw_value;		},
@@ -8166,15 +8176,17 @@ function instance$4($$self, $$props, $$invalidate) {
 		if ($$self.$$.dirty & /*content_node*/ 2) {
 			 if (content_node) {
 				const button = content_node.querySelector("button[data-download]");
-				console.log({ button });
-				const download_url = button.dataset.download;
 
-				button.onclick = () => {
-					fetch(download_url).then(response => response.blob()).then(blob => {
-						FileSaver_min.saveAs(blob, "block.json"); // get the response as a Blob
-						// name the file as you wish
-					}).catch(console.error); // log errors
-				};
+				if (button) {
+					const download_url = button.dataset.download;
+
+					button.onclick = () => {
+						fetch(download_url).then(response => response.blob()).then(blob => {
+							FileSaver_min.saveAs(blob, "block.json"); // get the response as a Blob
+							// name the file as you wish
+						}).catch(console.error); // log errors
+					};
+				}
 			}
 		}
 	};
