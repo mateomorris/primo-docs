@@ -1,443 +1,201 @@
-<!DOCTYPE html>
-<html lang="en">
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta name="generator" content="Primo" />
+      <title>Primo Docs: How to retrieve page content from Github</title><!-- HEAD_svelte-tc9q34_START --><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta charset="UTF-8"><link rel="shortcut icon" type="image/png" href="https://res.cloudinary.com/primoaf/image/upload/v1659676914/favicon_roaxv0.png"><meta name="description" content=""><style>@import url("https://unpkg.com/@primo-app/primo@1.3.64/reset.css");
+@import url(https://fonts.bunny.net/css?family=archivo:200,300,300i,400,400i,500,500i,600,600i,700,700i|inter:300,400,500,600,700,800);
 
-<head>
-    <meta name="generator" content="Primo" />
-    <title>Primo Docs: How to retrieve page content from Github</title><!-- HEAD_svelte-tc9q34_START -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8">
-    <link rel="shortcut icon" type="image/png" href="https://res.cloudinary.com/primoaf/image/upload/v1659676914/favicon_roaxv0.png">
-    <meta name="description" content="">
-    <style>
-        @import url("https://unpkg.com/@primo-app/primo@1.3.64/reset.css");
-        @import url(https://fonts.bunny.net/css?family=archivo:200,300,300i,400,400i,500,500i,600,600i,700,700i|inter:300,400,500,600,700,800);
+html {
+  /* Colors */
+  --color-accent: #35d994;
 
-        html {
-            /* Colors */
-            --color-accent: #35d994;
+  /* Default property values */
+  --background: #111;
+  --color: #c2c2c2;
+  --padding: 2rem;
+  --box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
+  --border-radius: 8px;
+  --max-width: 1200px;
+  --border-color: #333;
+  --transition-time: 0.1s;
+  --transition: var(--transition-time) color,
+    var(--transition-time) background-color, var(--transition-time) border-color,
+    var(--transition-time) text-decoration-color,
+    var(--transition-time) box-shadow, var(--transtion-time) transform;
+}
 
-            /* Default property values */
-            --background: #111;
-            --color: #c2c2c2;
-            --padding: 2rem;
-            --box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
-            --border-radius: 8px;
-            --max-width: 1200px;
-            --border-color: #333;
-            --transition-time: 0.1s;
-            --transition: var(--transition-time) color,
-                var(--transition-time) background-color, var(--transition-time) border-color,
-                var(--transition-time) text-decoration-color,
-                var(--transition-time) box-shadow, var(--transtion-time) transform;
-        }
+#page {
+  font-family: "Inter", sans-serif;
+  color: var(--color);
+  line-height: 1.6;
+  font-size: 1rem;
+  background: #111;
+  font-weight: 300;
+}
 
-        #page {
-            font-family: "Inter", sans-serif;
-            color: var(--color);
-            line-height: 1.6;
-            font-size: 1rem;
-            background: #111;
-            font-weight: 300;
-        }
+.content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--padding);
 
-        .content {
-            max-width: var(--max-width);
-            margin: 0 auto;
-            padding: var(--padding);
-
-            /*   pre {
+  /*   pre {
     padding: 2rem;
     background: #222;
     border-radius: 0.25rem;
     margin-bottom: 2rem;
     margin-top: 1em;
   } */
-        }
+}
 
-        .content img {
-            width: 100%;
-            margin: 2rem 0;
-            box-shadow: var(--box-shadow);
-            border-radius: var(--border-radius);
-        }
+.content img {
+    width: 100%;
+    margin: 2rem 0;
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-radius);
+  }
 
-        .content p {
-            padding: 0.25rem 0;
-            line-height: 1.5;
-            color: var(--color);
-        }
+.content p {
+    padding: 0.25rem 0;
+    line-height: 1.5;
+    color: var(--color);
+  }
 
-        .content strong {
-            font-weight: 500;
-            color: white;
-        }
+.content strong {
+    font-weight: 500;
+    color: white;
+  }
 
-        .content a {
-            text-decoration: underline;
-        }
+.content a {
+    text-decoration: underline;
+  }
 
-        .content h1 {
-            line-height: 1.2;
-            font-size: 2.25rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            color: white;
-        }
+.content h1 {
+    line-height: 1.2;
+    font-size: 2.25rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: white;
+  }
 
-        .content h2 {
-            font-size: 1.75rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            margin-top: 2rem;
-            color: white;
-        }
+.content h2 {
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    margin-top: 2rem;
+    color: white;
+  }
 
-        .content h3 {
-            font-size: 1.5rem;
-            font-weight: 500;
-            margin-bottom: 0.25rem;
-            margin-top: 1rem;
-            color: white;
-        }
+.content h3 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    margin-top: 1rem;
+    color: white;
+  }
 
-        .content h4 {
-            font-size: 1.15rem;
-            font-weight: 500;
-            margin-bottom: 0.25rem;
-            margin-top: 1rem;
-            color: white;
-        }
+.content h4 {
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    margin-top: 1rem;
+    color: white;
+  }
 
-        .content h5 {
-            font-size: 1rem;
-            font-weight: 500;
-            margin-bottom: 0.25rem;
-            margin-top: 1rem;
-            color: white;
-        }
+.content h5 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    margin-top: 1rem;
+    color: white;
+  }
 
-        .content ul {
-            list-style: disc;
-            padding: 0.5rem 0;
-            padding-left: 1.25rem;
-        }
+.content ul {
+    list-style: disc;
+    padding: 0.5rem 0;
+    padding-left: 1.25rem;
+  }
 
-        .content ol {
-            list-style: decimal;
-            padding: 0.5rem 0;
-            padding-left: 1.25rem;
-        }
+.content ol {
+    list-style: decimal;
+    padding: 0.5rem 0;
+    padding-left: 1.25rem;
+  }
 
-        .content blockquote {
-            border: 1px solid #222;
-            margin: 1rem 0;
-            padding: 2rem;
-            box-shadow: var(--box-shadow);
-            border-radius: var(--border-radius);
-        }
+.content blockquote {
+    border: 1px solid #222;
+    margin: 1rem 0;
+    padding: 2rem;
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-radius);
+  }
 
-        .section-container {
-            max-width: var(--max-width, 1200px);
-            margin: 0 auto;
-            padding: 3rem var(--padding, 1rem);
-        }
+.section-container {
+  max-width: var(--max-width, 1200px);
+  margin: 0 auto;
+  padding: 3rem var(--padding, 1rem);
+}
 
-        .heading {
-            font-size: 3rem;
-            line-height: 1;
-            font-weight: 500;
-            margin: 0;
-        }
+.heading {
+  font-size: 3rem;
+  line-height: 1;
+  font-weight: 500;
+  margin: 0;
+}
 
-        .button {
-            color: white;
-            background: var(--color-accent);
-            border-radius: 5px;
-            padding: 8px 20px;
-            transition: var(--transition);
-        }
+.button {
+  color: white;
+  background: var(--color-accent);
+  border-radius: 5px;
+  padding: 8px 20px;
+  transition: var(--transition);
+}
 
-        .button:hover {
-            box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);
-        }
+.button:hover {
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);
+  }
 
-        .button.inverted {
-            background: transparent;
-            color: var(--color-accent);
-            border: 2px solid var(--color-accent);
-        }
-    </style><!-- HEAD_svelte-tc9q34_END -->
-    <style>
-        header.svelte-2f98hs.svelte-2f98hs.svelte-2f98hs {
-            background: var(--background, white);
-            border-bottom: 1px solid var(--border-color, #e5e5e7);
-            padding-top: .75rem
-        }
-
-        .section-container.svelte-2f98hs.svelte-2f98hs.svelte-2f98hs {
-            padding-top: 1rem;
-            padding-bottom: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center
-        }
-
-        .parent-nav.svelte-2f98hs.svelte-2f98hs.svelte-2f98hs {
-            font-size: 0.75rem;
-            padding-block: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            opacity: 0;
-            transition: 0.2s opacity
-        }
-
-        .parent-nav.svelte-2f98hs .logo.svelte-2f98hs.svelte-2f98hs {
-            display: flex;
-            align-items: baseline
-        }
-
-        .parent-nav.svelte-2f98hs .logo.svelte-2f98hs svg {
-            width: 5rem
-        }
-
-        .parent-nav.svelte-2f98hs nav.svelte-2f98hs.svelte-2f98hs {
-            gap: 1.5rem
-        }
-
-        .parent-nav.svelte-2f98hs nav.svelte-2f98hs a.svelte-2f98hs:hover {
-            color: var(--color-accent)
-        }
-
-        .parent-nav.loaded.svelte-2f98hs.svelte-2f98hs.svelte-2f98hs {
-            opacity: 1
-        }
-
-        .logos.svelte-2f98hs.svelte-2f98hs.svelte-2f98hs {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem
-        }
-
-        .logos.svelte-2f98hs a.link.svelte-2f98hs.svelte-2f98hs {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: white;
-            border-bottom: 2px solid transparent;
-            transition: border-color 0.1s
-        }
-
-        .logos.svelte-2f98hs a.link.svelte-2f98hs.svelte-2f98hs:hover {
-            border-color: var(--color-accent);
-            color: white
-        }
-
-        .navigation.svelte-2f98hs.svelte-2f98hs.svelte-2f98hs {
-            display: flex;
-            gap: 1.5rem
-        }
-
-        nav.svelte-2f98hs.svelte-2f98hs.svelte-2f98hs {
-            display: flex;
-            align-items: center;
-            gap: 2rem
-        }
-
-        nav.svelte-2f98hs .dropdown.svelte-2f98hs.svelte-2f98hs {
-            position: relative
-        }
-
-        nav.svelte-2f98hs .dropdown .title.svelte-2f98hs.svelte-2f98hs {
-            display: flex;
-            gap: 0.25rem;
-            align-items: center
-        }
-
-        nav.svelte-2f98hs .dropdown ul.svelte-2f98hs.svelte-2f98hs {
-            position: absolute;
-            right: 0;
-            gap: 0.25rem;
-            background: #222;
-            padding: 0.75rem;
-            text-wrap: nowrap;
-            display: none;
-            text-decoration: underline;
-            white-space: nowrap;
-            z-index: 9
-        }
-
-        nav.svelte-2f98hs .dropdown:hover ul.svelte-2f98hs.svelte-2f98hs,
-        nav.svelte-2f98hs .dropdown.active ul.svelte-2f98hs.svelte-2f98hs {
-            display: grid
-        }
-
-        nav.svelte-2f98hs a.link.active.svelte-2f98hs.svelte-2f98hs {
-            border-bottom: 2px solid var(--color-accent);
-            transition: border-color 0.1s;
-            font-size: 1rem
-        }
-
-        nav.svelte-2f98hs a.link.svelte-2f98hs.svelte-2f98hs {
-            display: none
-        }
-
-        nav.svelte-2f98hs a.link.svelte-2f98hs.svelte-2f98hs:hover {
-            color: white;
-            transition: 0.3s
-        }
-
-        nav.svelte-2f98hs button#close.svelte-2f98hs.svelte-2f98hs {
-            display: none
-        }
-
-        .call-to-action.svelte-2f98hs.svelte-2f98hs.svelte-2f98hs {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem
-        }
-
-        .call-to-action.svelte-2f98hs .locale-selector select {
-            background: transparent
-        }
-
-        nav#mobile-nav.svelte-2f98hs.svelte-2f98hs.svelte-2f98hs {
-            position: absolute;
-            flex-direction: column;
-            text-align: center;
-            background: var(--background);
-            box-shadow: var(--box-shadow);
-            border-radius: var(--border-radius);
-            left: 0.5rem;
-            top: 0.5rem;
-            right: 0.5rem;
-            padding: 2rem;
-            z-index: 9
-        }
-
-        nav#mobile-nav.svelte-2f98hs a.link.svelte-2f98hs.svelte-2f98hs {
-            display: block
-        }
-
-        nav#mobile-nav.svelte-2f98hs button#close.svelte-2f98hs.svelte-2f98hs {
-            display: block;
-            position: absolute;
-            right: 1rem;
-            top: 1rem
-        }
-
-        @media(min-width: 900px) {
-            .call-to-action.svelte-2f98hs.svelte-2f98hs.svelte-2f98hs {
-                display: none
-            }
-
-            #open.svelte-2f98hs.svelte-2f98hs.svelte-2f98hs,
-            #mobile-nav.svelte-2f98hs.svelte-2f98hs.svelte-2f98hs {
-                display: none
-            }
-
-            nav.svelte-2f98hs a.link.svelte-2f98hs.svelte-2f98hs {
-                display: inline-block;
-                border-bottom: 2px solid transparent;
-                transition: border-color 0.1s
-            }
-
-            nav.svelte-2f98hs a.link.svelte-2f98hs.svelte-2f98hs:hover {
-                border-color: var(--color-accent)
-            }
-        }
-
-        .section-container.svelte-d3qrpf {
-            padding-block: 1rem
-        }
-
-        ul.svelte-d3qrpf {
-            display: flex;
-            gap: 1rem
-        }
-
-        li.svelte-d3qrpf {
-            display: flex
-        }
-
-        li.svelte-d3qrpf:not(:last-child):after {
-            content: ">";
-            padding-left: 1rem;
-            font-weight: 700
-        }
-
-        a.svelte-d3qrpf {
-            text-decoration: underline
-        }
-
-        .section-container.svelte-26sji5 {
-            max-width: 700px
-        }
-
-        .content.svelte-26sji5 .button {
-            color: #222;
-            text-decoration: none;
-            font-weight: 500;
-            margin-block: 1.5rem;
-            display: inline-block
-        }
-    </style>
-</head>
-
-<body id="page">
-
-    <div class="section" id="section-7cf1ea69">
-        <header class="svelte-2f98hs">
-            <div class="parent-nav section-container svelte-2f98hs">
-                <nav class="svelte-2f98hs"></nav>
-            </div>
-            <div class="section-container svelte-2f98hs">
-                <div class="logos svelte-2f98hs"><a href="/" class="link svelte-2f98hs">Primo Docs</a></div>
-                <div class="navigation svelte-2f98hs">
-                    <nav class="svelte-2f98hs"><a href="/getting-started" class="link svelte-2f98hs">Getting Started</a><a href="/development" class="link svelte-2f98hs">Development</a><a href="/publishing" class="link svelte-2f98hs">Publishing</a>
-                        <div class="dropdown svelte-2f98hs"><button class="title svelte-2f98hs"><span>Guides</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden role="img" width="1em" height="1em" viewBox="0 0 24 24" class="iconify iconify--tabler"><!-- HTML_TAG_START -->
-                                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6" /><!-- HTML_TAG_END -->
-                                </svg></button>
-                        </div>
-                    </nav>
-                    <div class="call-to-action svelte-2f98hs"><button id="open" class="svelte-2f98hs"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden role="img" width="30" height="30" viewBox="0 0 24 24" class="iconify iconify--material-symbols"><!-- HTML_TAG_START -->
-                                <path fill="currentColor" d="M3 18v-2h18v2H3Zm0-5v-2h18v2H3Zm0-5V6h18v2H3Z" /><!-- HTML_TAG_END -->
-                            </svg></button></div>
-                </div>
-            </div>
-        </header>
-    </div>
-    <div class="section" id="section-fe32e1e5">
-        <div class="section-container svelte-d3qrpf"></div>
-    </div>
-    <div class="section" id="section-2e03442a">
-        <div class="section">
-            <div class="section-container content svelte-26sji5" data-key="null"><!-- HTML_TAG_START -->
-                <h1 id="howtoretrievepagecontentfromgithub">How to retrieve page content from Github</h1>
-                <p>In the same way that you can fetch content from pages on other Primo sites, you can also fetch content from other sources - including a Github repository. Storing content in a Github repository enables you to collaborate, version, and manage it more easily. Docs sites like this one typically commit their content to Git especially to easily enable contributions and edits. Instead of having to utilize Github's API, we can easily grab content directly from the Markdown files by fetching their raw URLs.</p>
-                <p>This approach allows you to build, develop, and manage your site in Primo, while committing some subset of pages to a separate repository where they can be collaborated on and versioned. For instance - on this site, the main pages are stored in a repo and the guides are fully managed from Primo.</p>
-                <h2 id="instructions">Instructions</h2>
-                <p>Here we'll walk through how to store Markdown in a Github repo. These instructions use the Primo Docs as an example, since most of its content is stored in a repo.</p>
-                <ol>
-                    <li>
-                        <p>Set up your pages in Primo.</p>
-                    </li>
-                    <li>
-                        <p>Commit your content to a Github repo (ideally as Markdown files).
-                            <img src="https://github.com/primocms/docs/blob/main/assets/guides_storing_content_in_github.png?raw=true" alt="Github docs repo" />
-                        </p>
-                    </li>
-                    <li>
-                        <p>Fetch the content from a Block using the raw Github url. If it's stored as Markdown, you can parse it using a parsing library like <a href="https://github.com/showdownjs/showdown">Showdown</a>.</p>
-                    </li>
-                </ol>
-                <h3 id="example">Example</h3>
-                <p>If you've created a repository with your content and a Block with a 'URL' field with the key of <code>github_markdown_file_url</code>, the code below would render the Markdown as HTML. You can download the full Block below the code example.</p>
-                <p>HTML: </p>
-                <pre><code class="hljs"><span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><span class="hljs-template-variable">{@html content}</span><span class="language-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+.button.inverted {
+    background: transparent;
+    color: var(--color-accent);
+    border: 2px solid var(--color-accent);
+  }
+</style><!-- HEAD_svelte-tc9q34_END -->
+      <style>header.svelte-1px084z.svelte-1px084z.svelte-1px084z{background:var(--background, white);border-bottom:1px solid var(--border-color, #e5e5e7);padding-top:0.75rem}.section-container.svelte-1px084z.svelte-1px084z.svelte-1px084z{padding-top:1rem;padding-bottom:1rem;display:flex;justify-content:space-between;align-items:center}.parent-nav.svelte-1px084z.svelte-1px084z.svelte-1px084z{font-size:0.75rem;padding-block:0.5rem;display:flex;align-items:center;justify-content:space-between;opacity:0;transition:0.2s opacity}.parent-nav.svelte-1px084z .logo.svelte-1px084z.svelte-1px084z{display:flex;align-items:baseline}.parent-nav.svelte-1px084z .logo.svelte-1px084z svg{width:5rem}.parent-nav.svelte-1px084z nav.svelte-1px084z.svelte-1px084z{gap:1.5rem}.parent-nav.svelte-1px084z nav.svelte-1px084z a.svelte-1px084z:hover{color:var(--color-accent)}.parent-nav.loaded.svelte-1px084z.svelte-1px084z.svelte-1px084z{opacity:1}.logos.svelte-1px084z.svelte-1px084z.svelte-1px084z{display:flex;align-items:center;gap:0.5rem}.logos.svelte-1px084z a.link.svelte-1px084z.svelte-1px084z{font-size:1.25rem;font-weight:600;color:white;border-bottom:2px solid transparent;transition:border-color 0.1s}.logos.svelte-1px084z a.link.svelte-1px084z.svelte-1px084z:hover{border-color:var(--color-accent);color:white}.navigation.svelte-1px084z.svelte-1px084z.svelte-1px084z{display:flex;gap:1.5rem}.search.svelte-1px084z input.svelte-1px084z.svelte-1px084z{border-radius:1rem;padding:0.125rem 1rem;background:#222}.search.svelte-1px084z ul.svelte-1px084z.svelte-1px084z{position:absolute}.search.svelte-1px084z li.svelte-1px084z.svelte-1px084z{padding:0.75rem 1rem;background:#222}.search.svelte-1px084z li.svelte-1px084z a.svelte-1px084z{transition:0.1}.search.svelte-1px084z li.svelte-1px084z a.svelte-1px084z:hover{-webkit-text-decoration:underline white;text-decoration:underline white}nav.svelte-1px084z.svelte-1px084z.svelte-1px084z{display:flex;align-items:center;gap:2rem}nav.svelte-1px084z .dropdown.svelte-1px084z.svelte-1px084z{position:relative}nav.svelte-1px084z .dropdown .title.svelte-1px084z.svelte-1px084z{display:flex;gap:0.25rem;align-items:center}nav.svelte-1px084z .dropdown ul.svelte-1px084z.svelte-1px084z{position:absolute;right:0;gap:0.25rem;background:#222;padding:0.75rem;text-wrap:nowrap;display:none;text-decoration:underline;white-space:nowrap;z-index:9}nav.svelte-1px084z .dropdown:hover ul.svelte-1px084z.svelte-1px084z,nav.svelte-1px084z .dropdown.active ul.svelte-1px084z.svelte-1px084z{display:grid}nav.svelte-1px084z a.link.active.svelte-1px084z.svelte-1px084z{border-bottom:2px solid var(--color-accent);transition:border-color 0.1s;font-size:1rem}nav.svelte-1px084z a.link.svelte-1px084z.svelte-1px084z{display:none}nav.svelte-1px084z a.link.svelte-1px084z.svelte-1px084z:hover{color:white;transition:0.3s}nav.svelte-1px084z button#close.svelte-1px084z.svelte-1px084z{display:none}.call-to-action.svelte-1px084z.svelte-1px084z.svelte-1px084z{display:flex;align-items:center;gap:1.5rem}.call-to-action.svelte-1px084z .locale-selector select{background:transparent}nav#mobile-nav.svelte-1px084z.svelte-1px084z.svelte-1px084z{position:absolute;flex-direction:column;text-align:center;background:var(--background);box-shadow:var(--box-shadow);border-radius:var(--border-radius);left:0.5rem;top:0.5rem;right:0.5rem;padding:2rem;z-index:9}nav#mobile-nav.svelte-1px084z a.link.svelte-1px084z.svelte-1px084z{display:block}nav#mobile-nav.svelte-1px084z button#close.svelte-1px084z.svelte-1px084z{display:block;position:absolute;right:1rem;top:1rem}@media(min-width: 900px){.call-to-action.svelte-1px084z.svelte-1px084z.svelte-1px084z{display:none}#open.svelte-1px084z.svelte-1px084z.svelte-1px084z,#mobile-nav.svelte-1px084z.svelte-1px084z.svelte-1px084z{display:none}nav.svelte-1px084z a.link.svelte-1px084z.svelte-1px084z{display:inline-block;border-bottom:2px solid transparent;transition:border-color 0.1s}nav.svelte-1px084z a.link.svelte-1px084z.svelte-1px084z:hover{border-color:var(--color-accent)}}
+.section-container.svelte-d3qrpf{padding-block:1rem}ul.svelte-d3qrpf{display:flex;gap:1rem}li.svelte-d3qrpf{display:flex}li.svelte-d3qrpf:not(:last-child):after{content:">";padding-left:1rem;font-weight:700}a.svelte-d3qrpf{text-decoration:underline}
+.section-container.svelte-26sji5{max-width:700px}.content.svelte-26sji5 .button{color:#222;text-decoration:none;font-weight:500;margin-block:1.5rem;display:inline-block}</style>
+    </head>
+    <body id="page">
+       
+<div class="section" id="section-7cf1ea69"><header class="svelte-1px084z"><div class="parent-nav section-container svelte-1px084z">
+    <nav class="svelte-1px084z"></nav></div>
+  <div class="section-container svelte-1px084z"><div class="logos svelte-1px084z"><a href="/" class="link svelte-1px084z">Primo Docs</a></div>
+    <div class="navigation svelte-1px084z"><div class="search svelte-1px084z"><input type="text" placeholder="🔎 search" class="svelte-1px084z" value="">
+        <ul class="svelte-1px084z"></ul></div>
+      <nav class="svelte-1px084z"><a href="/getting-started" class="link svelte-1px084z">Getting Started</a><a href="/development" class="link svelte-1px084z">Development</a><a href="/publishing" class="link svelte-1px084z">Publishing</a>
+        <div class="dropdown svelte-1px084z"><button class="title svelte-1px084z"><span>Guides</span>
+            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden role="img" width="1em" height="1em" viewBox="0 0 24 24" class="iconify iconify--tabler"><!-- HTML_TAG_START --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/><!-- HTML_TAG_END --></svg></button>
+          </div></nav>
+      <div class="call-to-action svelte-1px084z"><button id="open" class="svelte-1px084z"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden role="img" width="30" height="30" viewBox="0 0 24 24" class="iconify iconify--material-symbols"><!-- HTML_TAG_START --><path fill="currentColor" d="M3 18v-2h18v2H3Zm0-5v-2h18v2H3Zm0-5V6h18v2H3Z"/><!-- HTML_TAG_END --></svg></button></div></div>
+    </div></header></div> 
+<div class="section" id="section-fe32e1e5"><div class="section-container svelte-d3qrpf"></div></div> 
+<div class="section" id="section-2e03442a"><div class="section"><div class="section-container content svelte-26sji5" data-key="null"><!-- HTML_TAG_START --><h1 id="howtoretrievepagecontentfromgithub">How to retrieve page content from Github</h1>
+<p>In the same way that you can fetch content from pages on other Primo sites, you can also fetch content from other sources - including a Github repository. Storing content in a Github repository enables you to collaborate, version, and manage it more easily. Docs sites like this one typically commit their content to Git especially to easily enable contributions and edits. Instead of having to utilize Github's API, we can easily grab content directly from the Markdown files by fetching their raw URLs.</p>
+<p>This approach allows you to build, develop, and manage your site in Primo, while committing some subset of pages to a separate repository where they can be collaborated on and versioned. For instance - on this site, the main pages are stored in a repo and the guides are fully managed from Primo.</p>
+<h2 id="instructions">Instructions</h2>
+<p>Here we'll walk through how to store Markdown in a Github repo. These instructions use the Primo Docs as an example, since most of its content is stored in a repo.</p>
+<ol>
+<li><p>Set up your pages in Primo.</p></li>
+<li><p>Commit your content to a Github repo (ideally as Markdown files).
+<img src="https://github.com/primocms/docs/blob/main/assets/guides_storing_content_in_github.png?raw=true" alt="Github docs repo" /></p></li>
+<li><p>Fetch the content from a Block using the raw Github url. If it's stored as Markdown, you can parse it using a parsing library like <a href="https://github.com/showdownjs/showdown">Showdown</a>.</p></li>
+</ol>
+<h3 id="example">Example</h3>
+<p>If you've created a repository with your content and a Block with a 'URL' field with the key of <code>github_markdown_file_url</code>, the code below would render the Markdown as HTML. You can download the full Block below the code example.</p>
+<p>HTML: </p>
+<pre><code class="hljs"><span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><span class="hljs-template-variable">{@html content}</span><span class="language-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </span></code></pre>
-                <p>JS:</p>
-                <pre><code class="hljs javascript language-javascript"><span class="hljs-keyword">import</span> showdown <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;showdown&quot;</span>;
+<p>JS:</p>
+<pre><code class="hljs javascript language-javascript"><span class="hljs-keyword">import</span> showdown <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;showdown&quot;</span>;
 <span class="hljs-keyword">const</span> converter = <span class="hljs-keyword">new</span> showdown.<span class="hljs-title class_">Converter</span>();
 
 <span class="hljs-keyword">let</span> content = <span class="hljs-string">&#x27;&#x27;</span>;
@@ -448,24 +206,48 @@
 }
 <span class="hljs-attr">$</span>: <span class="hljs-title function_">get_content</span>(github_markdown_file_url);
 </code></pre>
-                <p><button class="button" data-download="https://raw.githubusercontent.com/primocms/docs/main/assets/Markdown%20from%20Github.json">Download Block</button></p><!-- HTML_TAG_END -->
-            </div>
-        </div>
-        <link rel="stylesheet" href="https://unpkg.com/highlightjs@9.16.2/styles/solarized-dark.css">
-    </div>
+<p><button class="button" data-download="https://raw.githubusercontent.com/primocms/docs/main/assets/Markdown%20from%20Github.json">Download Block</button></p><!-- HTML_TAG_END --></div></div>
+<link rel="stylesheet" href="https://unpkg.com/highlightjs@9.16.2/styles/solarized-dark.css"></div> 
 
-    <script type="module">
-        const path = window.location.pathname === '/' ? '' : window.location.pathname
-        const [{
-            default: App
-        }] = await Promise.all([
-            import(path + '/_module.js')
-        ]).catch(e => console.error(e))
-        new App({
-            target: document.querySelector('body'),
-            hydrate: true,
-        })
+      <script type="module">
+      import('/_symbols/f3ebdadb-9df4-4840-bc05-7b7c73f0c9ba.js')
+      .then(({default:App}) => {
+        
+            new App({
+              target: document.querySelector('#section-fe32e1e5'),
+              hydrate: true,
+              props: {}
+            })
+          
+      })
+      .catch(e => console.error(e))
+    
+
+      import('/_symbols/98ef2e01-7e22-4d4b-ad27-6a51f83bb751.js')
+      .then(({default:App}) => {
+        
+            new App({
+              target: document.querySelector('#section-2e03442a'),
+              hydrate: true,
+              props: {"content":{"html":"<h1 id=\"howtoretrievepagecontentfromgithub\">How to retrieve page content from Github</h1>\n<p>In the same way that you can fetch content from pages on other Primo sites, you can also fetch content from other sources - including a Github repository. Storing content in a Github repository enables you to collaborate, version, and manage it more easily. Docs sites like this one typically commit their content to Git especially to easily enable contributions and edits. Instead of having to utilize Github's API, we can easily grab content directly from the Markdown files by fetching their raw URLs.</p>\n<p>This approach allows you to build, develop, and manage your site in Primo, while committing some subset of pages to a separate repository where they can be collaborated on and versioned. For instance - on this site, the main pages are stored in a repo and the guides are fully managed from Primo.</p>\n<h2 id=\"instructions\">Instructions</h2>\n<p>Here we'll walk through how to store Markdown in a Github repo. These instructions use the Primo Docs as an example, since most of its content is stored in a repo.</p>\n<ol>\n<li><p>Set up your pages in Primo.</p></li>\n<li><p>Commit your content to a Github repo (ideally as Markdown files).\n<img src=\"https://github.com/primocms/docs/blob/main/assets/guides_storing_content_in_github.png?raw=true\" alt=\"Github docs repo\" /></p></li>\n<li><p>Fetch the content from a Block using the raw Github url. If it's stored as Markdown, you can parse it using a parsing library like <a href=\"https://github.com/showdownjs/showdown\">Showdown</a>.</p></li>\n</ol>\n<h3 id=\"example\">Example</h3>\n<p>If you've created a repository with your content and a Block with a 'URL' field with the key of <code>github_markdown_file_url</code>, the code below would render the Markdown as HTML. You can download the full Block below the code example.</p>\n<p>HTML: </p>\n<pre><code class=\"hljs\"><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">div</span>&gt;</span></span><span class=\"hljs-template-variable\">{@html content}</span><span class=\"language-xml\"><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">div</span>&gt;</span>\n</span></code></pre>\n<p>JS:</p>\n<pre><code class=\"hljs javascript language-javascript\"><span class=\"hljs-keyword\">import</span> showdown <span class=\"hljs-keyword\">from</span> <span class=\"hljs-string\">&quot;showdown&quot;</span>;\n<span class=\"hljs-keyword\">const</span> converter = <span class=\"hljs-keyword\">new</span> showdown.<span class=\"hljs-title class_\">Converter</span>();\n\n<span class=\"hljs-keyword\">let</span> content = <span class=\"hljs-string\">&#x27;&#x27;</span>;\n<span class=\"hljs-keyword\">async</span> <span class=\"hljs-keyword\">function</span> <span class=\"hljs-title function_\">get_content</span>(<span class=\"hljs-params\">url</span>) {\n  <span class=\"hljs-keyword\">const</span> markdown = <span class=\"hljs-keyword\">await</span> <span class=\"hljs-title function_\">fetch</span>(url).<span class=\"hljs-title function_\">then</span>(<span class=\"hljs-function\"><span class=\"hljs-params\">res</span> =&gt;</span> res.<span class=\"hljs-title function_\">text</span>());\n  <span class=\"hljs-keyword\">const</span> converted = converter.<span class=\"hljs-title function_\">makeHtml</span>(markdown);\n  content = converted;\n}\n<span class=\"hljs-attr\">$</span>: <span class=\"hljs-title function_\">get_content</span>(github_markdown_file_url);\n</code></pre>\n<p><button class=\"button\" data-download=\"https://raw.githubusercontent.com/primocms/docs/main/assets/Markdown%20from%20Github.json\">Download Block</button></p>","markdown":"# How to retrieve page content from Github\n\nIn the same way that you can fetch content from pages on other Primo sites, you can also fetch content from other sources - including a Github repository. Storing content in a Github repository enables you to collaborate, version, and manage it more easily. Docs sites like this one typically commit their content to Git especially to easily enable contributions and edits. Instead of having to utilize Github's API, we can easily grab content directly from the Markdown files by fetching their raw URLs.\n\nThis approach allows you to build, develop, and manage your site in Primo, while committing some subset of pages to a separate repository where they can be collaborated on and versioned. For instance - on this site, the main pages are stored in a repo and the guides are fully managed from Primo.\n\n## Instructions\n\nHere we'll walk through how to store Markdown in a Github repo. These instructions use the Primo Docs as an example, since most of its content is stored in a repo.\n\n1. Set up your pages in Primo.\n\n2. Commit your content to a Github repo (ideally as Markdown files).\n![Github docs repo](https://github.com/primocms/docs/blob/main/assets/guides_storing_content_in_github.png?raw=true)\n\n3. Fetch the content from a Block using the raw Github url. If it's stored as Markdown, you can parse it using a parsing library like [Showdown](<https://github.com/showdownjs/showdown>).\n\n### Example\nIf you've created a repository with your content and a Block with a 'URL' field with the key of `github_markdown_file_url`, the code below would render the Markdown as HTML. You can download the full Block below the code example.\n\nHTML: \n```\n<div>{@html content}</div>\n```\n\nJS:\n```javascript\nimport showdown from \"showdown\";\nconst converter = new showdown.Converter();\n\nlet content = '';\nasync function get_content(url) {\n  const markdown = await fetch(url).then(res => res.text());\n  const converted = converter.makeHtml(markdown);\n  content = converted;\n}\n$: get_content(github_markdown_file_url);\n```\n\n<button class=\"button\" data-download=\"https://raw.githubusercontent.com/primocms/docs/main/assets/Markdown%20from%20Github.json\">Download Block</button>"}}
+            })
+          
+      })
+      .catch(e => console.error(e))
+    
+
+      import('/_symbols/a7332832-1c91-4fe4-9308-da5710b57686.js')
+      .then(({default:App}) => {
+        
+            new App({
+              target: document.querySelector('#section-7cf1ea69'),
+              hydrate: true,
+              props: {"secondary_logo":{"url":"http://localhost:5173/primo-docs","label":"docs"},"nav":[{"link":{"url":"/getting-started","label":"Getting Started"}},{"link":{"url":"/development","label":"Development"}},{"link":{"url":"/publishing","label":"Publishing"}}]}
+            })
+          
+      })
+      .catch(e => console.error(e))
     </script>
-</body>
-
-</html>
+    </body>
+  </html>
+  
