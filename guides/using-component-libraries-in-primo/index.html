@@ -1,0 +1,299 @@
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta name="generator" content="Primo" />
+      <title>Primo Docs</title><!-- HEAD_svelte-79wqze_START --><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta charset="UTF-8"><link rel="shortcut icon" type="image/png" href="https://res.cloudinary.com/primoaf/image/upload/v1659676914/favicon_roaxv0.png"><script src="https://cdn.tailwindcss.com"></script><meta name="description" content="Primo is a free &amp; open source, component-based CMS that makes it easy to build visually-editable static sites."><style>@import url("https://unpkg.com/@primo-app/primo@1.3.64/reset.css");
+@import url(https://fonts.bunny.net/css?family=archivo:200,300,300i,400,400i,500,500i,600,600i,700,700i|inter:300,400,500,600,700,800);
+
+html {
+  /* Colors */
+  --color-accent: #35d994;
+
+  /* Default property values */
+  --background: #111;
+  --color: #c2c2c2;
+  --padding: 2rem;
+  --box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
+  --border-radius: 8px;
+  --max-width: 1200px;
+  --border-color: #333;
+  --transition-time: 0.1s;
+  --transition: var(--transition-time) color,
+    var(--transition-time) background-color, var(--transition-time) border-color,
+    var(--transition-time) text-decoration-color,
+    var(--transition-time) box-shadow, var(--transtion-time) transform;
+}
+
+#page {
+  font-family: "Inter", sans-serif;
+  color: var(--color);
+  line-height: 1.6;
+  font-size: 1rem;
+  background: #111;
+  font-weight: 300;
+}
+
+.content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--padding);
+
+  /*   pre {
+    padding: 2rem;
+    background: #222;
+    border-radius: 0.25rem;
+    margin-bottom: 2rem;
+    margin-top: 1em;
+  } */
+}
+
+.content img {
+    width: 100%;
+    margin: 2rem 0;
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-radius);
+  }
+
+.content p {
+    padding: 0.25rem 0;
+    line-height: 1.5;
+    color: var(--color);
+  }
+
+.content strong {
+    font-weight: 500;
+    color: white;
+  }
+
+.content a {
+    text-decoration: underline;
+  }
+
+.content h1 {
+    line-height: 1.2;
+    font-size: 2.25rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: white;
+  }
+
+.content h2 {
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    margin-top: 2rem;
+    color: white;
+  }
+
+.content h3 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    margin-top: 1rem;
+    color: white;
+  }
+
+.content h4 {
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    margin-top: 1rem;
+    color: white;
+  }
+
+.content h5 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    margin-top: 1rem;
+    color: white;
+  }
+
+.content ul {
+    list-style: disc;
+    padding: 0.5rem 0;
+    padding-left: 1.25rem;
+  }
+
+.content ol {
+    list-style: decimal;
+    padding: 0.5rem 0;
+    padding-left: 1.25rem;
+  }
+
+.content blockquote {
+    border: 1px solid #222;
+    margin: 1rem 0;
+    padding: 2rem;
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-radius);
+  }
+
+.section-container {
+  max-width: var(--max-width, 1200px);
+  margin: 0 auto;
+  padding: 3rem var(--padding, 1rem);
+}
+
+.heading {
+  font-size: 3rem;
+  line-height: 1;
+  font-weight: 500;
+  margin: 0;
+}
+
+.button {
+  color: white;
+  background: var(--color-accent);
+  border-radius: 5px;
+  padding: 8px 20px;
+  transition: var(--transition);
+}
+
+.button:hover {
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);
+  }
+
+.button.inverted {
+    background: transparent;
+    color: var(--color-accent);
+    border: 2px solid var(--color-accent);
+  }
+</style><!-- HEAD_svelte-79wqze_END -->
+      <style>header.svelte-1k15pli.svelte-1k15pli.svelte-1k15pli{background:var(--background, white);border-bottom:1px solid var(--border-color, #e5e5e7);padding-top:0.75rem}.section-container.svelte-1k15pli.svelte-1k15pli.svelte-1k15pli{padding-top:1rem;padding-bottom:1rem;display:flex;justify-content:space-between;align-items:center}.parent-nav.svelte-1k15pli.svelte-1k15pli.svelte-1k15pli{font-size:0.75rem;padding-block:0.5rem;display:flex;align-items:center;justify-content:space-between;opacity:0;transition:0.2s opacity}.parent-nav.svelte-1k15pli .logo.svelte-1k15pli.svelte-1k15pli{display:flex;align-items:baseline}.parent-nav.svelte-1k15pli .logo.svelte-1k15pli svg{width:5rem}.parent-nav.svelte-1k15pli nav.svelte-1k15pli.svelte-1k15pli{gap:1.5rem}.parent-nav.svelte-1k15pli nav.svelte-1k15pli a.svelte-1k15pli:hover{color:var(--color-accent)}.parent-nav.loaded.svelte-1k15pli.svelte-1k15pli.svelte-1k15pli{opacity:1}.logos.svelte-1k15pli.svelte-1k15pli.svelte-1k15pli{display:flex;align-items:center;gap:0.5rem}.logos.svelte-1k15pli a.link.svelte-1k15pli.svelte-1k15pli{font-size:1.25rem;font-weight:600;color:white;border-bottom:2px solid transparent;transition:border-color 0.1s}.logos.svelte-1k15pli a.link.svelte-1k15pli.svelte-1k15pli:hover{border-color:var(--color-accent);color:white}.navigation.svelte-1k15pli.svelte-1k15pli.svelte-1k15pli{display:flex;gap:1.5rem}.search.svelte-1k15pli input.svelte-1k15pli.svelte-1k15pli{border-radius:1rem;padding:0.125rem 1rem;background:#222}.search.svelte-1k15pli ul.svelte-1k15pli.svelte-1k15pli{position:absolute;z-index:9}.search.svelte-1k15pli li.svelte-1k15pli.svelte-1k15pli{padding:0.75rem 1rem;background:#222}.search.svelte-1k15pli li.svelte-1k15pli a.svelte-1k15pli{transition:0.1}.search.svelte-1k15pli li.svelte-1k15pli a.svelte-1k15pli:hover{-webkit-text-decoration:underline white;text-decoration:underline white}nav.svelte-1k15pli.svelte-1k15pli.svelte-1k15pli{display:flex;align-items:center;gap:2rem}nav.svelte-1k15pli .dropdown.svelte-1k15pli.svelte-1k15pli{position:relative}nav.svelte-1k15pli .dropdown .title.svelte-1k15pli.svelte-1k15pli{display:flex;gap:0.25rem;align-items:center}nav.svelte-1k15pli .dropdown ul.svelte-1k15pli.svelte-1k15pli{position:absolute;right:0;gap:0.25rem;background:#222;padding:0.75rem;text-wrap:nowrap;display:none;text-decoration:underline;white-space:nowrap;z-index:9}nav.svelte-1k15pli .dropdown:hover ul.svelte-1k15pli.svelte-1k15pli,nav.svelte-1k15pli .dropdown.active ul.svelte-1k15pli.svelte-1k15pli{display:grid}nav.svelte-1k15pli a.link.active.svelte-1k15pli.svelte-1k15pli{border-bottom:2px solid var(--color-accent);transition:border-color 0.1s;font-size:1rem}nav.svelte-1k15pli a.link.svelte-1k15pli.svelte-1k15pli{display:none}nav.svelte-1k15pli a.link.svelte-1k15pli.svelte-1k15pli:hover{color:white;transition:0.3s}nav.svelte-1k15pli button#close.svelte-1k15pli.svelte-1k15pli{display:none}.call-to-action.svelte-1k15pli.svelte-1k15pli.svelte-1k15pli{display:flex;align-items:center;gap:1.5rem}.call-to-action.svelte-1k15pli .locale-selector select{background:transparent}nav#mobile-nav.svelte-1k15pli.svelte-1k15pli.svelte-1k15pli{position:absolute;flex-direction:column;text-align:center;background:var(--background);box-shadow:var(--box-shadow);border-radius:var(--border-radius);left:0.5rem;top:0.5rem;right:0.5rem;padding:2rem;z-index:9}nav#mobile-nav.svelte-1k15pli a.link.svelte-1k15pli.svelte-1k15pli{display:block}nav#mobile-nav.svelte-1k15pli button#close.svelte-1k15pli.svelte-1k15pli{display:block;position:absolute;right:1rem;top:1rem}@media(min-width: 900px){.call-to-action.svelte-1k15pli.svelte-1k15pli.svelte-1k15pli{display:none}#open.svelte-1k15pli.svelte-1k15pli.svelte-1k15pli,#mobile-nav.svelte-1k15pli.svelte-1k15pli.svelte-1k15pli{display:none}nav.svelte-1k15pli a.link.svelte-1k15pli.svelte-1k15pli{display:inline-block;border-bottom:2px solid transparent;transition:border-color 0.1s}nav.svelte-1k15pli a.link.svelte-1k15pli.svelte-1k15pli:hover{border-color:var(--color-accent)}}
+section.svelte-1yjq35p.svelte-1yjq35p{display:grid;place-items:flex-start;gap:4rem;position:relative}section.svelte-1yjq35p nav.svelte-1yjq35p{display:none;place-content:flex-start;position:-webkit-sticky;position:sticky;top:1rem}section.svelte-1yjq35p nav a.svelte-1yjq35p{display:flex;align-items:center;padding:0.25rem 0;padding-right:3rem;border-right:1px solid var(--border-color);transition:0.1s border-color;offset:30rem}section.svelte-1yjq35p nav a.active.svelte-1yjq35p{color:white}section.svelte-1yjq35p nav a.passed.svelte-1yjq35p{border-color:var(--color-accent)}section.svelte-1yjq35p nav a.svelte-1yjq35p svg{color:var(--color-accent);position:absolute;right:100%}section.svelte-1yjq35p nav .H1.svelte-1yjq35p{font-size:1rem}section.svelte-1yjq35p nav .H2.svelte-1yjq35p{font-size:0.825rem}section.svelte-1yjq35p nav .H3.svelte-1yjq35p{font-size:0.75rem;padding-left:0.5rem}section.svelte-1yjq35p main.svelte-1yjq35p{max-width:600px}section.svelte-1yjq35p main .button.pr.svelte-1yjq35p{display:flex;align-items:center;gap:0.5rem;background:#222;color:#ddd;font-size:0.875rem;position:fixed;right:1rem;bottom:1rem}section.svelte-1yjq35p main .video.svelte-1yjq35p{padding-top:63%;height:0;position:relative;margin-bottom:3rem}section.svelte-1yjq35p main .video iframe.svelte-1yjq35p{border:2px solid #393939;position:absolute;width:100%;height:100%;inset:0}section.svelte-1yjq35p main .content.svelte-1yjq35p{padding:0;margin:initial}section.svelte-1yjq35p main .content.svelte-1yjq35p a[href$="#gh-light-mode-only"]{display:none}section.svelte-1yjq35p main .content.svelte-1yjq35p img[alt="Primo"]{width:10rem}section.svelte-1yjq35p main .content.svelte-1yjq35p h3{margin-top:1rem}section.svelte-1yjq35p main .content.svelte-1yjq35p img{width:100%;margin:1rem 0}section.svelte-1yjq35p main .content.svelte-1yjq35p hr{margin:4rem 0;border-color:var(--border-color)}section.svelte-1yjq35p main .content.svelte-1yjq35p p{font-family:"Inter", sans-serif}@media(min-width: 800px){section.svelte-1yjq35p.svelte-1yjq35p{grid-template-columns:minmax(auto, 15rem) auto}section.svelte-1yjq35p nav.svelte-1yjq35p{display:grid}}</style>
+    </head>
+    <body id="page">
+       
+<div class="section" id="section-401a0a50"><header class="svelte-1k15pli"><div class="parent-nav section-container svelte-1k15pli">
+    <nav class="svelte-1k15pli"></nav></div>
+  <div class="section-container svelte-1k15pli"><div class="logos svelte-1k15pli"><a href="/" class="link svelte-1k15pli">Primo Docs</a></div>
+    <div class="navigation svelte-1k15pli"><div class="search svelte-1k15pli"><input type="text" placeholder="🔎 search" class="svelte-1k15pli" value="">
+        <ul class="svelte-1k15pli"></ul></div>
+      <nav class="svelte-1k15pli"><a href="/getting-started" class="link svelte-1k15pli">Getting Started</a><a href="/development" class="link svelte-1k15pli">Development</a><a href="/publishing" class="link svelte-1k15pli">Publishing</a><div class="dropdown svelte-1k15pli"><button class="title svelte-1k15pli"><span>Guides</span>
+                </button>
+              <ul class="svelte-1k15pli"><li class="svelte-1k15pli"><a href="/guides/serving-pages-with-sveltekit-and-primo" class="svelte-1k15pli">How to server Primo pages from SvelteKit</a>
+                  </li><li class="svelte-1k15pli"><a href="/guides/utilizing-primo-headless" class="svelte-1k15pli">How to use Primo headless</a>
+                  </li><li class="svelte-1k15pli"><a href="/guides/storing-content-on-github" class="svelte-1k15pli">How to server Primo page content from Github</a>
+                  </li><li class="svelte-1k15pli"><a href="/guides/using-component-libraries-in-primo" class="svelte-1k15pli">Using Component Libraries in Primo</a>
+                  </li></ul>
+            </div></nav>
+      <div class="call-to-action svelte-1k15pli"><button id="open" class="svelte-1k15pli"></button></div></div>
+    </div></header></div> 
+<div class="section" id="section-fde21ed7"><section class="section-container svelte-1yjq35p"><nav class="svelte-1yjq35p"></nav>
+  <main class="svelte-1yjq35p">
+    
+    <div class="content svelte-1yjq35p" data-key="content"><!-- HTML_TAG_START --><h1 id="usingcomponentlibrariesinprimo">Using Component Libraries in Primo</h1>
+<p>You can build more quickly in Primo by utilizing external component libraries meant to work with Svelte or HTML/CSS. Since you don't have to <code>npm install</code> in Primo, you can use <em>most</em> component libraries by importing the library or individual component in your Block's JS and mounting it from your Block's HTML. Workarounds are necessary in some cases to get certain libraries to import correctly. By importing components individually, you can also cherry pick components from different systems. </p>
+<h2 id="carbondesignsystemhttpscarbondesignsystemcom"><a href="https://carbondesignsystem.com/">Carbon Design System</a></h2>
+<ol>
+<li>Use <a href="https://carbon-components-svelte.onrender.com/">Carbon Components Svelte</a> </li>
+<li>Import components from your Block's JS as direct imports  (see the <a href="https://cdn.jsdelivr.net/npm/carbon-components-svelte/src/">full list of components</a>) rather than named imports. Mount them in your HTML. </li>
+<li>Link the stylesheet from your Block's HTML. </li>
+</ol>
+<h3 id="exampleaccordionhttpscarboncomponentssvelteonrendercomcomponentsaccordion">Example (<a href="https://carbon-components-svelte.onrender.com/components/Accordion">Accordion</a>)</h3>
+<p>Here we're importing the <code>Accordion</code> and <code>AccordionItem</code> components and creating a repeater field to create content for each accordion item. 
+<img src="https://dbfnrqvkgwkjkzqgnfrd.supabase.co/storage/v1/object/public/images/manual/Screenshot%202023-09-15%20at%201.57.55%20PM.png?t=2023-09-15T17%3A59%3A10.238Z" alt="carbon component in Primo" /></p>
+<p><strong>HTML</strong></p>
+<pre><code class="hljs html language-html"><span class="hljs-tag">&lt;<span class="hljs-name">Accordion</span>&gt;</span>
+  {#each items as { title, content }}
+    <span class="hljs-tag">&lt;<span class="hljs-name">AccordionItem</span> {<span class="hljs-attr">title</span>}&gt;</span>
+      {@html content}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">AccordionItem</span>&gt;</span>
+  {/each}
+<span class="hljs-tag">&lt;/<span class="hljs-name">Accordion</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">link</span>
+  <span class="hljs-attr">rel</span>=<span class="hljs-string">&quot;stylesheet&quot;</span>
+  <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;https://unpkg.com/carbon-components-svelte/css/white.css&quot;</span> /&gt;</span>
+</code></pre>
+<p><br>
+<strong>JS</strong> </p>
+<pre><code class="hljs javascript language-javascript"><span class="hljs-keyword">import</span> <span class="hljs-title class_">Accordion</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;carbon-components-svelte/src/Accordion/Accordion.svelte&quot;</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-title class_">AccordionItem</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;carbon-components-svelte/src/Accordion/AccordionItem.svelte&quot;</span>;
+</code></pre>
+<p><br>
+<strong>Fields</strong></p>
+<pre><code class="hljs text language-text">Repeater -&gt; Title (text), Content (markdown)
+</code></pre>
+<hr />
+<h2 id="shoelacehttpsshoelacestyle"><a href="https://shoelace.style/">Shoelace</a></h2>
+<p>The autoloader doesn't work, but you can import components individually (see the 'installing' section at the bottom of any component's page for a CDN url). </p>
+<h3 id="examplecarouselhttpsshoelacestylecomponentscarousel">Example (<a href="https://shoelace.style/components/carousel">Carousel</a>)</h3>
+<p>Here we're importing the Carousel component and setting up a repeater field for each carousel item containing an image field type. </p>
+<p><img src="https://dbfnrqvkgwkjkzqgnfrd.supabase.co/storage/v1/object/public/images/manual/Screenshot%202023-09-15%20at%203.38.46%20PM.png?t=2023-09-15T19%3A39%3A06.825Z" alt="Shoelace in Primo" /></p>
+<p><img src="https://dbfnrqvkgwkjkzqgnfrd.supabase.co/storage/v1/object/public/images/manual/Screenshot%202023-09-15%20at%203.40.40%20PM.png?t=2023-09-15T19%3A41%3A03.554Z" alt="Fields for Shoelace component in Primo" /></p>
+<p><strong>HTML</strong></p>
+<pre><code class="hljs html language-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;section-container&quot;</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">sl-carousel</span> <span class="hljs-attr">pagination</span> <span class="hljs-attr">navigation</span> <span class="hljs-attr">loop</span>&gt;</span>
+    {#each carousel_items as { image }}
+      <span class="hljs-tag">&lt;<span class="hljs-name">sl-carousel-item</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">alt</span>=<span class="hljs-string">{image.alt}</span> <span class="hljs-attr">src</span>=<span class="hljs-string">{image.src}</span> /&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">sl-carousel-item</span>&gt;</span>
+    {/each}
+  <span class="hljs-tag">&lt;/<span class="hljs-name">sl-carousel</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<p><br></p>
+<p><strong>JS</strong></p>
+<pre><code class="hljs javascript language-javascript"><span class="hljs-keyword">import</span> <span class="hljs-string">&#x27;https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.8.0/cdn/components/carousel/carousel.js&#x27;</span>;
+</code></pre>
+<hr />
+<h2 id="flowbitehttpsflowbitecom"><a href="https://flowbite.com/">Flowbite</a></h2>
+<p>Flowbite is a <a href="https://tailwindcss.com">Tailwind CSS</a> library, and <a href="https://flowbite-svelte.com/">Flowbite Svelte</a> is its Svelte version. It requires adding Tailwind using its JS Play CDN (meaning it needs to load the library in the client before it can render the utility class styles), but for most projects this won't be an issue. </p>
+<ol>
+<li>Use <a href="https://flowbite-svelte.com/">Flowbite Svelte</a></li>
+<li>Import components as described in the Flowbite Svelte docs. </li>
+<li>Install Tailwind in your page or site by adding <code>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</code> to your Page or Site HTML. </li>
+</ol>
+<h3 id="exampletabshttpsflowbitesveltecomdocscomponentstabs">Example (<a href="https://flowbite-svelte.com/docs/components/tabs">Tabs)</a></h3>
+<p>Here we're importing the Tabs component and setting up a repeater field for each tab item containing a Text and Markdown field type, destructing the <code>title</code> and <code>content</code> subfields to make them easier to pass along.</p>
+<p><strong>HTML</strong></p>
+<pre><code class="hljs html language-html"><span class="hljs-tag">&lt;<span class="hljs-name">Tabs</span> <span class="hljs-attr">defaultClass</span>=<span class="hljs-string">&quot;flex rounded-lg divide-x divide-gray-200 shadow dark:divide-gray-700&quot;</span>&gt;</span>
+  {#each tabs as {title, content}}
+    <span class="hljs-tag">&lt;<span class="hljs-name">TabItem</span> {<span class="hljs-attr">title</span>}&gt;</span>
+      {@html content}
+  <span class="hljs-tag">&lt;/<span class="hljs-name">TabItem</span>&gt;</span>
+  {/each}
+<span class="hljs-tag">&lt;/<span class="hljs-name">Tabs</span>&gt;</span>
+</code></pre>
+<p><br>
+<strong>JS</strong></p>
+<pre><code class="hljs JS language-JS">  <span class="hljs-keyword">import</span> { <span class="hljs-title class_">Tabs</span>, <span class="hljs-title class_">TabItem</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;flowbite-svelte&#x27;</span>;
+</code></pre><!-- HTML_TAG_END --></div></main></section>
+
+<link rel="stylesheet" href="https://unpkg.com/highlightjs@9.16.2/styles/solarized-dark.css">
+
+
+ 
+          </div> 
+
+      <script type="module">
+      import('/_symbols/9aaca21c-4e7a-41d5-a03b-98dc08754b0f.js')
+      .then(({default:App}) => {
+        
+            new App({
+              target: document.querySelector('#section-fde21ed7'),
+              hydrate: true,
+              props: {"video_id":"","content":{"html":"<h1 id=\"usingcomponentlibrariesinprimo\">Using Component Libraries in Primo</h1>\n<p>You can build more quickly in Primo by utilizing external component libraries meant to work with Svelte or HTML/CSS. Since you don't have to <code>npm install</code> in Primo, you can use <em>most</em> component libraries by importing the library or individual component in your Block's JS and mounting it from your Block's HTML. Workarounds are necessary in some cases to get certain libraries to import correctly. By importing components individually, you can also cherry pick components from different systems. </p>\n<h2 id=\"carbondesignsystemhttpscarbondesignsystemcom\"><a href=\"https://carbondesignsystem.com/\">Carbon Design System</a></h2>\n<ol>\n<li>Use <a href=\"https://carbon-components-svelte.onrender.com/\">Carbon Components Svelte</a> </li>\n<li>Import components from your Block's JS as direct imports  (see the <a href=\"https://cdn.jsdelivr.net/npm/carbon-components-svelte/src/\">full list of components</a>) rather than named imports. Mount them in your HTML. </li>\n<li>Link the stylesheet from your Block's HTML. </li>\n</ol>\n<h3 id=\"exampleaccordionhttpscarboncomponentssvelteonrendercomcomponentsaccordion\">Example (<a href=\"https://carbon-components-svelte.onrender.com/components/Accordion\">Accordion</a>)</h3>\n<p>Here we're importing the <code>Accordion</code> and <code>AccordionItem</code> components and creating a repeater field to create content for each accordion item. \n<img src=\"https://dbfnrqvkgwkjkzqgnfrd.supabase.co/storage/v1/object/public/images/manual/Screenshot%202023-09-15%20at%201.57.55%20PM.png?t=2023-09-15T17%3A59%3A10.238Z\" alt=\"carbon component in Primo\" /></p>\n<p><strong>HTML</strong></p>\n<pre><code class=\"hljs html language-html\"><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">Accordion</span>&gt;</span>\n  {#each items as { title, content }}\n    <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">AccordionItem</span> {<span class=\"hljs-attr\">title</span>}&gt;</span>\n      {@html content}\n    <span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">AccordionItem</span>&gt;</span>\n  {/each}\n<span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">Accordion</span>&gt;</span>\n\n<span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">link</span>\n  <span class=\"hljs-attr\">rel</span>=<span class=\"hljs-string\">&quot;stylesheet&quot;</span>\n  <span class=\"hljs-attr\">href</span>=<span class=\"hljs-string\">&quot;https://unpkg.com/carbon-components-svelte/css/white.css&quot;</span> /&gt;</span>\n</code></pre>\n<p><br>\n<strong>JS</strong> </p>\n<pre><code class=\"hljs javascript language-javascript\"><span class=\"hljs-keyword\">import</span> <span class=\"hljs-title class_\">Accordion</span> <span class=\"hljs-keyword\">from</span> <span class=\"hljs-string\">&quot;carbon-components-svelte/src/Accordion/Accordion.svelte&quot;</span>;\n<span class=\"hljs-keyword\">import</span> <span class=\"hljs-title class_\">AccordionItem</span> <span class=\"hljs-keyword\">from</span> <span class=\"hljs-string\">&quot;carbon-components-svelte/src/Accordion/AccordionItem.svelte&quot;</span>;\n</code></pre>\n<p><br>\n<strong>Fields</strong></p>\n<pre><code class=\"hljs text language-text\">Repeater -&gt; Title (text), Content (markdown)\n</code></pre>\n<hr />\n<h2 id=\"shoelacehttpsshoelacestyle\"><a href=\"https://shoelace.style/\">Shoelace</a></h2>\n<p>The autoloader doesn't work, but you can import components individually (see the 'installing' section at the bottom of any component's page for a CDN url). </p>\n<h3 id=\"examplecarouselhttpsshoelacestylecomponentscarousel\">Example (<a href=\"https://shoelace.style/components/carousel\">Carousel</a>)</h3>\n<p>Here we're importing the Carousel component and setting up a repeater field for each carousel item containing an image field type. </p>\n<p><img src=\"https://dbfnrqvkgwkjkzqgnfrd.supabase.co/storage/v1/object/public/images/manual/Screenshot%202023-09-15%20at%203.38.46%20PM.png?t=2023-09-15T19%3A39%3A06.825Z\" alt=\"Shoelace in Primo\" /></p>\n<p><img src=\"https://dbfnrqvkgwkjkzqgnfrd.supabase.co/storage/v1/object/public/images/manual/Screenshot%202023-09-15%20at%203.40.40%20PM.png?t=2023-09-15T19%3A41%3A03.554Z\" alt=\"Fields for Shoelace component in Primo\" /></p>\n<p><strong>HTML</strong></p>\n<pre><code class=\"hljs html language-html\"><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">div</span> <span class=\"hljs-attr\">class</span>=<span class=\"hljs-string\">&quot;section-container&quot;</span>&gt;</span>\n  <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">sl-carousel</span> <span class=\"hljs-attr\">pagination</span> <span class=\"hljs-attr\">navigation</span> <span class=\"hljs-attr\">loop</span>&gt;</span>\n    {#each carousel_items as { image }}\n      <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">sl-carousel-item</span>&gt;</span>\n        <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">img</span> <span class=\"hljs-attr\">alt</span>=<span class=\"hljs-string\">{image.alt}</span> <span class=\"hljs-attr\">src</span>=<span class=\"hljs-string\">{image.src}</span> /&gt;</span>\n      <span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">sl-carousel-item</span>&gt;</span>\n    {/each}\n  <span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">sl-carousel</span>&gt;</span>\n<span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">div</span>&gt;</span>\n</code></pre>\n<p><br></p>\n<p><strong>JS</strong></p>\n<pre><code class=\"hljs javascript language-javascript\"><span class=\"hljs-keyword\">import</span> <span class=\"hljs-string\">&#x27;https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.8.0/cdn/components/carousel/carousel.js&#x27;</span>;\n</code></pre>\n<hr />\n<h2 id=\"flowbitehttpsflowbitecom\"><a href=\"https://flowbite.com/\">Flowbite</a></h2>\n<p>Flowbite is a <a href=\"https://tailwindcss.com\">Tailwind CSS</a> library, and <a href=\"https://flowbite-svelte.com/\">Flowbite Svelte</a> is its Svelte version. It requires adding Tailwind using its JS Play CDN (meaning it needs to load the library in the client before it can render the utility class styles), but for most projects this won't be an issue. </p>\n<ol>\n<li>Use <a href=\"https://flowbite-svelte.com/\">Flowbite Svelte</a></li>\n<li>Import components as described in the Flowbite Svelte docs. </li>\n<li>Install Tailwind in your page or site by adding <code>&lt;script src=\"https://cdn.tailwindcss.com\"&gt;&lt;/script&gt;</code> to your Page or Site HTML. </li>\n</ol>\n<h3 id=\"exampletabshttpsflowbitesveltecomdocscomponentstabs\">Example (<a href=\"https://flowbite-svelte.com/docs/components/tabs\">Tabs)</a></h3>\n<p>Here we're importing the Tabs component and setting up a repeater field for each tab item containing a Text and Markdown field type, destructing the <code>title</code> and <code>content</code> subfields to make them easier to pass along.</p>\n<p><strong>HTML</strong></p>\n<pre><code class=\"hljs html language-html\"><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">Tabs</span> <span class=\"hljs-attr\">defaultClass</span>=<span class=\"hljs-string\">&quot;flex rounded-lg divide-x divide-gray-200 shadow dark:divide-gray-700&quot;</span>&gt;</span>\n  {#each tabs as {title, content}}\n    <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">TabItem</span> {<span class=\"hljs-attr\">title</span>}&gt;</span>\n      {@html content}\n  <span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">TabItem</span>&gt;</span>\n  {/each}\n<span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">Tabs</span>&gt;</span>\n</code></pre>\n<p><br>\n<strong>JS</strong></p>\n<pre><code class=\"hljs JS language-JS\">  <span class=\"hljs-keyword\">import</span> { <span class=\"hljs-title class_\">Tabs</span>, <span class=\"hljs-title class_\">TabItem</span> } <span class=\"hljs-keyword\">from</span> <span class=\"hljs-string\">&#x27;flowbite-svelte&#x27;</span>;\n</code></pre>","markdown":"# Using Component Libraries in Primo\nYou can build more quickly in Primo by utilizing external component libraries meant to work with Svelte or HTML/CSS. Since you don't have to `npm install` in Primo, you can use *most* component libraries by importing the library or individual component in your Block's JS and mounting it from your Block's HTML. Workarounds are necessary in some cases to get certain libraries to import correctly. By importing components individually, you can also cherry pick components from different systems. \n\n## [Carbon Design System](https://carbondesignsystem.com/)\n1. Use [Carbon Components Svelte](https://carbon-components-svelte.onrender.com/) \n2. Import components from your Block's JS as direct imports  (see the [full list of components](https://cdn.jsdelivr.net/npm/carbon-components-svelte/src/)) rather than named imports. Mount them in your HTML. \n3. Link the stylesheet from your Block's HTML. \n\n### Example ([Accordion](https://carbon-components-svelte.onrender.com/components/Accordion))\nHere we're importing the `Accordion` and `AccordionItem` components and creating a repeater field to create content for each accordion item. \n![carbon component in Primo](https://dbfnrqvkgwkjkzqgnfrd.supabase.co/storage/v1/object/public/images/manual/Screenshot%202023-09-15%20at%201.57.55%20PM.png?t=2023-09-15T17%3A59%3A10.238Z)\n\n**HTML**\n```html\n<Accordion>\n  {#each items as { title, content }}\n    <AccordionItem {title}>\n      {@html content}\n    </AccordionItem>\n  {/each}\n</Accordion>\n\n<link\n  rel=\"stylesheet\"\n  href=\"https://unpkg.com/carbon-components-svelte/css/white.css\" />\n```\n<br>\n**JS** \n```javascript\nimport Accordion from \"carbon-components-svelte/src/Accordion/Accordion.svelte\";\nimport AccordionItem from \"carbon-components-svelte/src/Accordion/AccordionItem.svelte\";\n```\n\n<br>\n**Fields**\n```text\nRepeater -> Title (text), Content (markdown)\n```\n\n---\n\n## [Shoelace](https://shoelace.style/)\nThe autoloader doesn't work, but you can import components individually (see the 'installing' section at the bottom of any component's page for a CDN url). \n\n### Example ([Carousel](https://shoelace.style/components/carousel))\nHere we're importing the Carousel component and setting up a repeater field for each carousel item containing an image field type. \n\n![Shoelace in Primo](https://dbfnrqvkgwkjkzqgnfrd.supabase.co/storage/v1/object/public/images/manual/Screenshot%202023-09-15%20at%203.38.46%20PM.png?t=2023-09-15T19%3A39%3A06.825Z)\n\n![Fields for Shoelace component in Primo](https://dbfnrqvkgwkjkzqgnfrd.supabase.co/storage/v1/object/public/images/manual/Screenshot%202023-09-15%20at%203.40.40%20PM.png?t=2023-09-15T19%3A41%3A03.554Z)\n\n\n**HTML**\n\n```html\n<div class=\"section-container\">\n  <sl-carousel pagination navigation loop>\n    {#each carousel_items as { image }}\n      <sl-carousel-item>\n        <img alt={image.alt} src={image.src} />\n      </sl-carousel-item>\n    {/each}\n  </sl-carousel>\n</div>\n```\n<br>\n\n**JS**\n```javascript\nimport 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.8.0/cdn/components/carousel/carousel.js';\n```\n\n---\n\n## [Flowbite](https://flowbite.com/)\nFlowbite is a [Tailwind CSS](https://tailwindcss.com) library, and [Flowbite Svelte](https://flowbite-svelte.com/) is its Svelte version. It requires adding Tailwind using its JS Play CDN (meaning it needs to load the library in the client before it can render the utility class styles), but for most projects this won't be an issue. \n\n1. Use [Flowbite Svelte](https://flowbite-svelte.com/)\n2. Import components as described in the Flowbite Svelte docs. \n3. Install Tailwind in your page or site by adding `<script src=\"https://cdn.tailwindcss.com\"></script>` to your Page or Site HTML. \n\n### Example ([Tabs)](https://flowbite-svelte.com/docs/components/tabs)\nHere we're importing the Tabs component and setting up a repeater field for each tab item containing a Text and Markdown field type, destructing the `title` and `content` subfields to make them easier to pass along.\n\n**HTML**\n```html\n<Tabs defaultClass=\"flex rounded-lg divide-x divide-gray-200 shadow dark:divide-gray-700\">\n  {#each tabs as {title, content}}\n    <TabItem {title}>\n      {@html content}\n  </TabItem>\n  {/each}\n</Tabs>\n```\n<br>\n**JS**\n```JS\n  import { Tabs, TabItem } from 'flowbite-svelte';\n``` "},"github_markdown_file":""}
+            })
+          
+      })
+      .catch(e => console.error(e))
+    
+
+      import('/_symbols/a7332832-1c91-4fe4-9308-da5710b57686.js')
+      .then(({default:App}) => {
+        
+            new App({
+              target: document.querySelector('#section-401a0a50'),
+              hydrate: true,
+              props: {"secondary_logo":{"url":"http://localhost:5173/primo-docs","label":"docs"},"nav":[{"link":{"url":"/getting-started","label":"Getting Started"},"dropdown":[]},{"link":{"url":"/development","label":"Development"},"dropdown":[]},{"link":{"url":"/publishing","label":"Publishing"},"dropdown":[]},{"link":{"label":"Guides","url":"","active":false},"dropdown":[{"link":{"label":"How to server Primo pages from SvelteKit","url":"/guides/serving-pages-with-sveltekit-and-primo","active":false}},{"link":{"label":"How to use Primo headless","url":"/guides/utilizing-primo-headless","active":false}},{"link":{"label":"How to server Primo page content from Github","url":"/guides/storing-content-on-github","active":false}},{"link":{"label":"Using Component Libraries in Primo","url":"/guides/using-component-libraries-in-primo","active":false}}]}]}
+            })
+          
+      })
+      .catch(e => console.error(e))
+    </script>
+    </body>
+  </html>
+  
